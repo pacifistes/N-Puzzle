@@ -46,10 +46,41 @@ be different. Read up on why, that’s the point.)
 
 
 Pseudo-Implementation of A*
+***************************************************
+set opened <- { initial }
+			// States to be examined and candidates to expansion
 
-set opened { initial }
+set closed <- NULL
+			// States already selected by the algorithm, compared to the solution and expanded
+bool succes <- false
+while (opened != NULLand SUCCES == FALSE)
+	state e -< select_according_to_Astar_strategy_in (opened)
+	If is_final (e) // Compares e to a solution state
+		Then
+			success <- true
+		Else
+			opened <- opened -e
+			closed <- closed + e
+			ForEach state s in expand(e) do
+				If (s is not in opened and s is not in closed)
+					opened <- opened + s
+					predecessor(s) <- e
+					g(s) <- g(e) + C(e-->s)
+				Else // s is in opened or in closed
+					If g(s) + h(s) > g(e) + C(e-->s) + h(s)
+					// i.e f value >'potentially new' f value
+						g(s) <- g(e) + C(e-->s)
+						predecessor(s) <- e
+						If s is in closed
+							closed <- closed - s
+							opened <- opened + s
 
 
+
+
+***************************************************
+
+*****************************************************
 TODO
 	Parser
 		- ignorer les lignes commentaires
@@ -69,3 +100,97 @@ TODO
 		The ordered sequence of states that make up the solution, according to the search
 		The puzzle may be unsolvable, in which case you have to inform the user and
 		exit
+
+
+
+7	4	3
+2	0	5
+8	6	1
+
+Step 1
+2	2	0
+2	2	1
+1	2	4
+total h = 16 g = 0
+
+Object:
+
+
+***********************
+
+Step 2
+
+7	0	3
+2	4	5
+8	6	1
+
+2	3	0
+2	1	1
+
+total h = g = 1
+
+------------------------------
+7	4	3
+2	5	0
+8	6	1
+total h = 17 g  = 1
+
+-------------------------------
+
+7	4	3
+0	2	5
+8	6	1
+total h = 14 g  = 1
+
+-----------------------------
+
+7	4	3
+2	6	5
+8	0	1
+total h = 18 g  = 1
+
+
+****************************
+
+Puzzle
+	List<Taquin> taquins
+	<!-- int		G; -->
+
+	<!-- int		getH(); -->
+	<!-- int		F() { G + this.getH()} -->
+
+Taquin
+	Coordonnees actualCoordonne;
+	Coordonnees finalCoordonnee;
+
+	int			getH();
+
+
+Coordonnee
+	int	x;
+	int	y;;
+
+Resolver:
+	List<Puzzle>	opened // original State To put
+	List<Puzzle>	closed
+
+	bool		resolve()
+	void		init() {
+		Pour chaque Taquin initialisation de depart
+	}
+
+main ()
+{
+	Puzzle puzzle = parseFile();
+
+	if (puzzle == Null)
+		print('error in file')
+
+	Resolver resolver = new Resolver(Puzzle);
+	resolver.init()
+	if (resolver.resolve())
+		print('le probleme est resolu')
+	else
+		print(le puzzle est insolvable)
+
+}
