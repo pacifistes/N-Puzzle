@@ -1,4 +1,4 @@
-# N-Puzzle
+7# N-Puzzle
 
 Realiser un solver de N-Puzzle (Taquin)
 
@@ -113,8 +113,13 @@ Step 1
 1	2	4
 total h = 16 g = 0
 
+
 Object:
 
+size 3
+	coordonnee :
+
+Puzzle (Position)
 
 ***********************
 
@@ -124,8 +129,6 @@ Step 2
 2	4	5
 8	6	1
 
-2	3	0
-2	1	1
 
 total h = g = 1
 
