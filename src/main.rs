@@ -1,6 +1,8 @@
 mod resolver;
+mod parser;
 
 use resolver::puzzle::{Coordonnee, Puzzle, Resolver, Taquin, Manathan};
+use parser::puzzle::*;
 // use Puzzle::puzzle::*;
 
 
