@@ -1,59 +1,13 @@
 use std::i32;
+use crate::class::{puzzle::{Puzzle, Taquin}, coordonnee::*};
+use crate::heuristic::manathan::Manathan;
 
-#[derive(Debug, Clone)]
-pub struct Coordonnee {
-    pub x: u32,
-    pub y: u32,
-}
-
-#[derive(Debug, Clone)]
-pub struct Taquin {
-    pub actual_coordonnee: Coordonnee,
-    pub original_coordonnee: Coordonnee,
-    pub manathan: Manathan,
-}
-
-#[derive(Debug, Clone)]
-pub struct Puzzle {
-    taquins: Vec<Taquin>,
-}
 
 #[derive(Debug)]
 pub struct Resolver {
     opened: Vec<Puzzle>,
     closed: Vec<Puzzle>,
     // success: bool,
-}
-
-#[derive(Debug, Clone)]
-pub struct Manathan {}
-
-
-impl Manathan {
-    pub fn h(&self, a: &Coordonnee, b: &Coordonnee) -> u32 {
-        ((a.x as i32 - b.x as i32).abs() + (a.y as i32 - b.y as i32).abs()) as u32
-    }
-}
-
-impl Taquin {
-    fn h(&self) -> u32 {
-        self.manathan.h(&self.actual_coordonnee, &self.original_coordonnee)
-    }
-}
-
-
-impl Puzzle {
-    pub fn new(taquins: Vec<Taquin>) -> Puzzle {
-        Puzzle { taquins }
-    }
-
-    fn h(&self) -> u32 {
-        let mut total_h: u32 = 0;
-        for taquin in self.taquins.iter() {
-            total_h += taquin.h();
-        }
-        total_h
-    }
 }
 
 impl Resolver {
@@ -121,11 +75,3 @@ impl Resolver {
         }])]
     }
 }
-
-/*
-    Taquin
-
-    Puzzle
-
-    Resolver
-*/
