@@ -1,8 +1,10 @@
-use crate::class::{puzzle::{Puzzle, Taquin}, coordonnee::*};
+use crate::class::{
+    coordonnee::*,
+    puzzle::{Puzzle, Taquin},
+};
 
 #[derive(Debug, Clone)]
 pub struct Manathan {}
-
 
 impl Manathan {
     pub fn h(&self, a: &Coordonnee, b: &Coordonnee) -> u32 {

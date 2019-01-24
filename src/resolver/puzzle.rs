@@ -1,7 +1,9 @@
-use std::i32;
-use crate::class::{puzzle::{Puzzle, Taquin}, coordonnee::*};
+use crate::class::{
+    coordonnee::*,
+    puzzle::{Puzzle, Taquin},
+};
 use crate::heuristic::manathan::Manathan;
-
+use std::i32;
 
 #[derive(Debug)]
 pub struct Resolver {
@@ -29,8 +31,7 @@ impl Resolver {
             let state: Puzzle = self.select_according_to_astar_strategy_in().clone();
             if (self.is_final(&state)) {
                 success = true;
-            }
-            else {
+            } else {
                 // dbg!(&self.opened[0].taquins[0]);
                 // self.opened[0].taquins[0].actual_coordonnee.x = 1250;
                 // dbg!(&self.opened[0].taquins[0]);
@@ -40,24 +41,24 @@ impl Resolver {
                 // dbg!(&self);
                 for puzzle in self.expand(&state) {
                     dbg!(&puzzle);
-        //             if (puzzle is not in opened and not in closed) {
-        //                 //add to open
-        //                 // predecessor(s) <- e
-        //                 // red g(s) <- g(e) + C(e-->s) // C(e-->s) == 1
-        //             }
-        //             else {
-        //                 If g(s) + h(s) > g(e) + C(e-->s) + h(s)
-        //                     // i.e f value >'potentially new' f value
-        //                     g(s) <- g(e) + C(e-->s)
-        //                     predecessor(s) <- e // Tu stock la reference du puzzle d'ou tu viend
-        //                     If s is in closed
-        //                     	closed <- closed - s
-        //                     	opened <- opened + s
+                    //             if (puzzle is not in opened and not in closed) {
+                    //                 //add to open
+                    //                 // predecessor(s) <- e
+                    //                 // red g(s) <- g(e) + C(e-->s) // C(e-->s) == 1
+                    //             }
+                    //             else {
+                    //                 If g(s) + h(s) > g(e) + C(e-->s) + h(s)
+                    //                     // i.e f value >'potentially new' f value
+                    //                     g(s) <- g(e) + C(e-->s)
+                    //                     predecessor(s) <- e // Tu stock la reference du puzzle d'ou tu viend
+                    //                     If s is in closed
+                    //                     	closed <- closed - s
+                    //                     	opened <- opened + s
                     // }
                 }
             }
-        //     // dbg!(&state.taquins[0]);
-        //     // dbg!(&state.taquins[0]);
+            //     // dbg!(&state.taquins[0]);
+            //     // dbg!(&state.taquins[0]);
             break;
         }
         success
@@ -71,7 +72,7 @@ impl Resolver {
         vec![Puzzle::new(vec![Taquin {
             actual_coordonnee: Coordonnee { x: 0, y: 0 },
             original_coordonnee: Coordonnee { x: 0, y: 2 },
-            manathan: Manathan{},
+            manathan: Manathan {},
         }])]
     }
 }

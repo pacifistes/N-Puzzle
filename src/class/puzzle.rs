@@ -3,7 +3,6 @@
 use super::coordonnee::*;
 use crate::heuristic::manathan::Manathan;
 
-
 #[derive(Debug, Clone)]
 pub struct Taquin {
     pub actual_coordonnee: Coordonnee,
@@ -18,7 +17,8 @@ pub struct Puzzle {
 
 impl Taquin {
     fn h(&self) -> u32 {
-        self.manathan.h(&self.actual_coordonnee, &self.original_coordonnee)
+        self.manathan
+            .h(&self.actual_coordonnee, &self.original_coordonnee)
     }
 }
 

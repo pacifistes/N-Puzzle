@@ -3,14 +3,16 @@ mod heuristic;
 mod parser;
 mod resolver;
 
-use class::{puzzle::{Puzzle, Taquin}, coordonnee::*};
+use class::{
+    coordonnee::*,
+    puzzle::{Puzzle, Taquin},
+};
 use heuristic::*;
 use parser::puzzle::*;
 use resolver::puzzle::Resolver;
 use std::env;
 
 // use Puzzle::puzzle::*;
-
 
 // 7	4	3
 // 2	0	5
@@ -66,7 +68,6 @@ use std::env;
 //     Puzzle::new(taquins)
 // }
 
-
 // fn init_puzzle() -> Puzzle {
 //     let mut taquins: Vec<u32> = vec![7,4,3,2,0,5,8,6,1];
 //     Puzzle::new(taquins)
@@ -87,9 +88,9 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if (args.len() == 2) {
-        // let puzzle:Puzzle = parser::
-    }
-    else {
+        let puzzle: Puzzle = parser::puzzle::parse_puzzle_file(&args[1]).unwrap();
+        // dbg!(puzzle);
+    } else {
         println!("cargo run --release");
     }
 }
