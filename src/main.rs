@@ -1,15 +1,19 @@
-mod class;
-mod heuristic;
-mod parser;
+// mod class;
+// mod heuristic;
+// mod parser;
+// mod resolver;
 mod resolver;
 
-use class::{
-    coordonnee::*,
-    puzzle::{Puzzle, Square},
-};
-use heuristic::*;
-use parser::puzzle::*;
-use resolver::puzzle::Resolver;
+// use class::{
+//     puzzle::{Puzzle, Square},
+// };
+// use heuristic::*;
+// use parser::puzzle::*;
+// use resolver::puzzle::Resolver;
+use resolver::puzzle::*;
+use resolver::parser::parse;
+// use resolver::resolver::Resolver;
+use resolver::generate::generate_random_puzzle;
 use std::env;
 
 // use Puzzle::puzzle::*;
@@ -87,10 +91,19 @@ use std::env;
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    if (args.len() == 2) {
-        let puzzle: Puzzle = parser::puzzle::parse_puzzle_file(&args[1]).unwrap();
-        // dbg!(puzzle);
-    } else {
-        println!("cargo run --release");
-    }
+    let puzzle: Puzzle = match args.len() {
+        2 =>  {
+            match parse(&args[1]) {
+                Ok(puzzle) => puzzle,
+                Err(err) => {
+                    println!("Error: {}", err);
+                    return
+                }
+            }
+        }
+        _ => {
+            generate_random_puzzle()
+        }
+    };
+	dbg!(&puzzle);
 }

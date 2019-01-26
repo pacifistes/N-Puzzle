@@ -5,3 +5,4 @@ authors = ["pacifistes <bbrunell@student.42.fr>"]
 edition = "2018"
 
 [dependencies]
+rand = "0.6.4"
