@@ -1,4 +1,4 @@
-pub mod puzzle;
-pub mod parser;
-pub mod resolver;
 pub mod generate;
+pub mod parser;
+pub mod puzzle;
+pub mod resolver;

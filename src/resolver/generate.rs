@@ -1,6 +1,6 @@
 use crate::resolver::puzzle::*;
-use rand::thread_rng;
 use rand::seq::SliceRandom;
+use rand::thread_rng;
 use std::vec::Vec;
 
 pub fn generate_sorted_puzzle(size: &u32) -> Vec<u32> {
@@ -18,17 +18,21 @@ pub fn generate_sorted_puzzle(size: &u32) -> Vec<u32> {
         if nbr_movement == movement_need {
             is_horizontal = !is_horizontal;
             match is_horizontal {
-                true => {is_increment = !is_increment;},
-                false => {movement_need -= 1;}
+                true => {
+                    is_increment = !is_increment;
+                }
+                false => {
+                    movement_need -= 1;
+                }
             }
             nbr_movement = 0;
         }
         match is_horizontal {
             true => {
-                x = if is_increment {x + 1} else {x - 1};
-            },
+                x = if is_increment { x + 1 } else { x - 1 };
+            }
             false => {
-                y = if is_increment {y + 1} else {y - 1};
+                y = if is_increment { y + 1 } else { y - 1 };
             }
         }
     }
@@ -36,8 +40,7 @@ pub fn generate_sorted_puzzle(size: &u32) -> Vec<u32> {
 }
 
 pub fn generate_random_puzzle() -> Puzzle {
-
-    let size : u32 = 4;
+    let size: u32 = 4;
     let mut start_state: Vec<u32> = generate_sorted_puzzle(&size);
     let mut rng = thread_rng();
 

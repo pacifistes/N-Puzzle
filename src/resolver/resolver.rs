@@ -1,5 +1,4 @@
 #[derive(Debug)]
 pub struct Resolver {
-	x:u32,
+    x: u32,
 }
-

@@ -10,8 +10,8 @@ mod resolver;
 // use heuristic::*;
 // use parser::puzzle::*;
 // use resolver::puzzle::Resolver;
-use resolver::puzzle::*;
 use resolver::parser::parse;
+use resolver::puzzle::*;
 // use resolver::resolver::Resolver;
 use resolver::generate::generate_random_puzzle;
 use std::env;
@@ -90,20 +90,15 @@ use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-
     let puzzle: Puzzle = match args.len() {
-        2 =>  {
-            match parse(&args[1]) {
-                Ok(puzzle) => puzzle,
-                Err(err) => {
-                    println!("Error: {}", err);
-                    return
-                }
+        2 => match parse(&args[1]) {
+            Ok(puzzle) => puzzle,
+            Err(err) => {
+                println!("Error: {}", err);
+                return;
             }
-        }
-        _ => {
-            generate_random_puzzle()
-        }
+        },
+        _ => generate_random_puzzle(),
     };
-	dbg!(&puzzle);
+    dbg!(&puzzle);
 }
