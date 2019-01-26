@@ -5,7 +5,7 @@ mod resolver;
 
 use class::{
     coordonnee::*,
-    puzzle::{Puzzle, Taquin},
+    puzzle::{Puzzle, Square},
 };
 use heuristic::*;
 use parser::puzzle::*;
@@ -18,59 +18,59 @@ use std::env;
 // 2	0	5
 // 8	6	1
 // fn init_puzzle() -> Puzzle {
-//     let taquins: Vec<Taquin> = vec![
-//         Taquin {
+//     let Squares: Vec<Square> = vec![
+//         Square {
 //             actual_coordonnee: Coordonnee { x: 0, y: 0 },
 //             original_coordonnee: Coordonnee { x: 0, y: 2 },
 // 			manathan: Manathan {},
 //         },
-//         Taquin {
+//         Square {
 //             actual_coordonnee: Coordonnee { x: 1, y: 0 },
 //             original_coordonnee: Coordonnee { x: 2, y: 1 },
 // 			manathan: Manathan {},
 //         },
-//         Taquin {
+//         Square {
 //             actual_coordonnee: Coordonnee { x: 2, y: 0 },
 //             original_coordonnee: Coordonnee { x: 2, y: 0 },
 // 			manathan: Manathan {},
 //         },
-//         Taquin {
+//         Square {
 //             actual_coordonnee: Coordonnee { x: 0, y: 1 },
 //             original_coordonnee: Coordonnee { x: 1, y: 0 },
 // 			manathan: Manathan {},
 //         },
-//         Taquin {
+//         Square {
 //             actual_coordonnee: Coordonnee { x: 1, y: 1 },
 //             original_coordonnee: Coordonnee { x: 1, y: 1 },
 // 			manathan: Manathan {},
 //         },
-//         Taquin {
+//         Square {
 //             actual_coordonnee: Coordonnee { x: 2, y: 1 },
 //             original_coordonnee: Coordonnee { x: 2, y: 2 },
 // 			manathan: Manathan {},
 //         },
-//         Taquin {
+//         Square {
 //             actual_coordonnee: Coordonnee { x: 0, y: 2 },
 //             original_coordonnee: Coordonnee { x: 0, y: 1 },
 // 			manathan: Manathan {},
 //         },
-//         Taquin {
+//         Square {
 //             actual_coordonnee: Coordonnee { x: 1, y: 2 },
 //             original_coordonnee: Coordonnee { x: 1, y: 2 },
 // 			manathan: Manathan {},
 //         },
-//         Taquin {
+//         Square {
 //             actual_coordonnee: Coordonnee { x: 2, y: 2 },
 //             original_coordonnee: Coordonnee { x: 0, y: 0 },
 // 			manathan: Manathan {},
 //         },
 //     ];
-//     Puzzle::new(taquins)
+//     Puzzle::new(Squares)
 // }
 
 // fn init_puzzle() -> Puzzle {
-//     let mut taquins: Vec<u32> = vec![7,4,3,2,0,5,8,6,1];
-//     Puzzle::new(taquins)
+//     let mut Squares: Vec<u32> = vec![7,4,3,2,0,5,8,6,1];
+//     Puzzle::new(Squares)
 // }
 
 // fn main() {

@@ -1,6 +1,6 @@
 use crate::class::{
     coordonnee::*,
-    puzzle::{Puzzle, Taquin},
+    puzzle::{Puzzle, Square},
 };
 use crate::heuristic::manathan::Manathan;
 use std::i32;
@@ -32,9 +32,9 @@ impl Resolver {
             if (self.is_final(&state)) {
                 success = true;
             } else {
-                // dbg!(&self.opened[0].taquins[0]);
-                // self.opened[0].taquins[0].actual_coordonnee.x = 1250;
-                // dbg!(&self.opened[0].taquins[0]);
+                // dbg!(&self.opened[0].Squares[0]);
+                // self.opened[0].Squares[0].actual_coordonnee.x = 1250;
+                // dbg!(&self.opened[0].Squares[0]);
                 // let puzzle = self.opened.remove(0);
 
                 self.closed.push(self.opened.remove(0));
@@ -57,8 +57,8 @@ impl Resolver {
                     // }
                 }
             }
-            //     // dbg!(&state.taquins[0]);
-            //     // dbg!(&state.taquins[0]);
+            //     // dbg!(&state.Squares[0]);
+            //     // dbg!(&state.Squares[0]);
             break;
         }
         success
@@ -69,7 +69,7 @@ impl Resolver {
     }
 
     fn expand(&self, puzzle: &Puzzle) -> Vec<Puzzle> {
-        vec![Puzzle::new(vec![Taquin {
+        vec![Puzzle::new(vec![Square {
             actual_coordonnee: Coordonnee { x: 0, y: 0 },
             original_coordonnee: Coordonnee { x: 0, y: 2 },
             manathan: Manathan {},

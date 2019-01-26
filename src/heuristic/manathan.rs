@@ -1,6 +1,6 @@
 use crate::class::{
     coordonnee::*,
-    puzzle::{Puzzle, Taquin},
+    puzzle::{Puzzle, Square},
 };
 
 #[derive(Debug, Clone)]

@@ -1,11 +1,11 @@
 7# N-Puzzle
 
-Realiser un solver de N-Puzzle (Taquin)
+Realiser un solver de N-Puzzle (Square)
 
 
 Algorithmes : A*
-snail Taquin
-Taquin from 1 to N
+snail Square
+Square from 1 to N
 
 
 Heuristique : must be minimum 3 heuristique
@@ -102,7 +102,6 @@ TODO
 		exit
 
 
-
 7	4	3
 2	0	5
 8	6	1
@@ -156,13 +155,13 @@ total h = 18 g  = 1
 ****************************
 
 Puzzle
-	List<Taquin> taquins
+	List<Square> Squares
 	<!-- int		G; -->
 
 	<!-- int		getH(); -->
 	<!-- int		F() { G + this.getH()} -->
 
-Taquin
+Square
 	Coordonnees actualCoordonne;
 	Coordonnees finalCoordonnee;
 
@@ -179,7 +178,7 @@ Resolver:
 
 	bool		resolve()
 	void		init() {
-		Pour chaque Taquin initialisation de depart
+		Pour chaque Square initialisation de depart
 	}
 
 main ()
@@ -197,3 +196,57 @@ main ()
 		print(le puzzle est insolvable)
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+7	4	3
+2	0	5
+8	6	1
+[7,4,3,2,0,5,8,6,1] Pour 0  [ pos = 4 | x = 4 % size = 1 | y = 4 / size = 1]
+					Pour 1  [ pos = 8 | x = 8 % size = 2 | y = 8 / size = 2]
+					Pour 2
+					Pour 3
+					Pour 4  [pos = 1 | x = 1 % size = 1 | y = 1 / size = 0]
+					Pour 5  [pos = 5 | x = 5 % size = 2 | y = 5 / size = 1]
+					Pour 6
+					Pour 7
+					Pour 8
+
+1	2	3
+8	0	4
+7	6	5
+[1,2,3,8,0,4,7,6,5] Pour 0  [ pos = 4 | x = 4 % size = 1 | y = 4 / size = 1]
+					Pour 1  [ pos = 0 | x = 0 % size = 0 | y = 0 / size = 0]
+					Pour 2
+					Pour 3
+					Pour 4  [pos = 5 | x = 5 % size = 2 | y = 5 / size = 1]
+					Pour 5
+					Pour 6
+					Pour 7
+					Pour 8
+
+Puzzle () {
+	G : u32
+	h : u32
+	vect positionActual
+	h(vecGoal)
+}
+
+Resolver () {
+	vect Goal[] original
+
+	list.opened = where f = min and g = max
+}
+
+
+
