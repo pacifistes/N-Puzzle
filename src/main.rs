@@ -9,7 +9,7 @@ use std::env;
 
 fn run(puzzle: Puzzle) {
     let size = puzzle.get_size();
-    let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(&size), size);
+    let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(&size), size, 0);
     match puzzle.is_solvable(&goal) {
         true => {
             println!("the puzzle is solvable");

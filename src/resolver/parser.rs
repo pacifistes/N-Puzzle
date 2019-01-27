@@ -72,5 +72,5 @@ pub fn parse(filename: &String) -> Result<Puzzle, io::Error> {
     if start_state.len() as u32 != size * size {
         return Err(Error::new(ErrorKind::InvalidData, "Missing some lines"));
     }
-    Ok(Puzzle::new(start_state, size))
+    Ok(Puzzle::new(start_state, size, 0))
 }

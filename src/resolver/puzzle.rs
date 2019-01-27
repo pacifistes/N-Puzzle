@@ -8,9 +8,9 @@ pub struct Puzzle {
 }
 
 impl Puzzle {
-    pub fn new(state: Vec<u32>, size: u32) -> Puzzle {
+    pub fn new(state: Vec<u32>, size: u32, g:u32) -> Puzzle {
         Puzzle {
-            g: 0,
+            g,
             h: 0,
             size,
             state,
@@ -46,7 +46,7 @@ impl Puzzle {
             }
             nbr_permut += permute;
         }
-        if (self.size % 2 == 0) {
+        if self.size % 2 == 0 {
             nbr_permut += self.state.iter().position(|&r| r == 0).unwrap() as u32;
         }
         nbr_permut
@@ -61,28 +61,77 @@ impl Puzzle {
 }
 
 impl Puzzle {
-    pub fn move_left(&self) -> Option<Puzzle> {
-        None
+    pub fn get_x(&self, value:u32) -> u32 {
+        value % self.size
     }
 
-    pub fn move_top(&self) -> Option<Puzzle> {
-        None
+    pub fn get_y(&self, value:u32) -> u32 {
+        value / self.size
+    }
+}
+
+impl Puzzle {
+    pub fn move_left(&self, x:u32, y:u32) -> Option<Puzzle> {
+        match x == 0 {
+            true => None,
+            false => {
+                let mut new_state:Vec<u32> = self.state.clone();
+                let old_pos: usize = (x + y * self.size) as usize;
+                let new_pos: usize = (x - 1 + y * self.size) as usize;
+                new_state.swap(old_pos, new_pos);
+                Some(Puzzle::new(new_state, self.size, self.g + 1))
+            }
+        }
     }
 
-    pub fn move_right(&self) -> Option<Puzzle> {
-        None
+    pub fn move_top(&self, x:u32, y:u32) -> Option<Puzzle> {
+        match y == 0 {
+           true => None,
+            false => {
+                let mut new_state:Vec<u32> = self.state.clone();
+                let old_pos: usize = (x + y * self.size) as usize;
+                let new_pos: usize = (x + (y - 1) * self.size) as usize;
+                new_state.swap(old_pos, new_pos);
+                Some(Puzzle::new(new_state, self.size, self.g + 1))
+            }
+        }
     }
 
-    pub fn move_bot(&self) -> Option<Puzzle> {
-        None
+    pub fn move_right(&self, x:u32, y:u32) -> Option<Puzzle> {
+        match x == self.size - 1 {
+            true => None,
+            false => {
+                let mut new_state:Vec<u32> = self.state.clone();
+                let old_pos: usize = (x + y * self.size) as usize;
+                let new_pos: usize = (x + 1 + y * self.size) as usize;
+                new_state.swap(old_pos, new_pos);
+                Some(Puzzle::new(new_state, self.size, self.g + 1))
+            }
+        }
+    }
+
+    pub fn move_bot(&self, x:u32, y:u32) -> Option<Puzzle> {
+        match y == self.size - 1 {
+            true => None,
+            false => {
+                let mut new_state:Vec<u32> = self.state.clone();
+                let old_pos: usize = (x + y * self.size) as usize;
+                let new_pos: usize = (x + (y + 1) * self.size) as usize;
+                new_state.swap(old_pos, new_pos);
+                Some(Puzzle::new(new_state, self.size, self.g + 1))
+            }
+        }
     }
 
     pub fn expand(&self) -> Vec<Puzzle> {
+        let blank_position:u32 = self.state.iter().position(|&r| r == 0).unwrap() as u32;
+        let x:u32 = self.get_x(blank_position);
+        let y:u32 = self.get_y(blank_position);
         let expand_states: Vec<Option<Puzzle>> = vec![
-            self.move_left(),
-            self.move_top(),
-            self.move_right(),
-            self.move_bot(),
+            self.move_left(x, y),
+            self.move_top(x, y),
+            self.move_right(x, y),
+            self.move_bot(x, y),
         ];
 
         expand_states.into_iter().filter_map(|x| x).collect()

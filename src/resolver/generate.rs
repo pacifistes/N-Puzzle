@@ -46,5 +46,5 @@ pub fn generate_random_puzzle() -> Puzzle {
 
     start_state.shuffle(&mut rng);
     dbg!(&start_state);
-    Puzzle::new(start_state, size)
+    Puzzle::new(start_state, size, 0)
 }
