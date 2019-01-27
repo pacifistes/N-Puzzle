@@ -87,12 +87,26 @@ if __name__ == "__main__":
 
 	s = args.size
 
-	puzzle = make_puzzle(s, solvable=solv, iterations=args.iterations)
 
-	w = len(str(s*s))
-	print "# This puzzle is %s" % ("solvable" if solv else "unsolvable")
-	print "%d" % s
-	for y in range(s):
-		for x in range(s):
-			print "%s" % (str(puzzle[x + y*s]).rjust(w)),
-		print
+	f = open("testfile.txt","w")
+	for size in range(2, 11):
+		f.write("//Solvable and size = {}\n".format(size))
+		f.write("let size: u32 = {};\nlet goal: Puzzle = Puzzle::new(generate_sorted_puzzle(&size), size, 0);\nlet start_state: Vec<u32> = generate_sorted_puzzle(&size);\n".format(size))
+		for i in range(20):
+			puzzle = make_puzzle(size, solvable=True, iterations=args.iterations)
+			f.write("let vector: Vec<u32> = vec![{}];\nlet puzzle: Puzzle = Puzzle::new(vector, size, 0);\n".format(",".join([str(value) for value in puzzle])))
+			f.write("assert_eq!(true, puzzle.is_solvable(&goal));\n")
+	for size in range(2, 11):
+		f.write("//Unolvable and size = {}\n".format(size))
+		f.write("let size: u32 = {};\nlet goal: Puzzle = Puzzle::new(generate_sorted_puzzle(&size), size, 0);\nlet start_state: Vec<u32> = generate_sorted_puzzle(&size);\n".format(size))
+		for i in range(20):
+			puzzle = make_puzzle(size, solvable=False, iterations=args.iterations)
+			f.write("let vector: Vec<u32> = vec![{}];\nlet puzzle: Puzzle = Puzzle::new(vector, size, 0);\n".format(",".join([str(value) for value in puzzle])))
+			f.write("assert_eq!(false, puzzle.is_solvable(&goal));\n")
+		
+
+	# f.write()
+	# for y in range(s):
+	# 	for x in range(s):
+	# 		print "%s" % (str(puzzle[x + y*s]).rjust(w)),
+	# 	print

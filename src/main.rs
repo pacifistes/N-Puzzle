@@ -1,4 +1,5 @@
 mod resolver;
+mod tests;
 
 use resolver::generate::generate_random_puzzle;
 use resolver::generate::generate_sorted_puzzle;
