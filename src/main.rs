@@ -1,17 +1,23 @@
 mod resolver;
 
+use resolver::generate::generate_random_puzzle;
+use resolver::generate::generate_sorted_puzzle;
 use resolver::parser::parse;
 use resolver::puzzle::*;
 use resolver::resolver::*;
-use resolver::generate::generate_random_puzzle;
-use resolver::generate::generate_sorted_puzzle;
 use std::env;
 
-fn resolve(puzzle: Puzzle) {
+fn run(puzzle: Puzzle) {
     let size = puzzle.get_size();
     let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(&size), size);
-    let mut resolver: Resolver = Resolver::new(puzzle, goal);
-    dbg!(&resolver);
+    match puzzle.is_solvable(&goal) {
+        true => {
+            println!("the puzzle is solvable");
+            let mut resolver: Resolver = Resolver::new(puzzle, goal);
+            resolver.resolve()
+        }
+        false => println!("the puzzle is unsolvable"),
+    }
 }
 
 fn main() {
@@ -26,8 +32,5 @@ fn main() {
         },
         _ => generate_random_puzzle(),
     };
-    match puzzle.is_solvable() {
-        true => resolve(puzzle),
-        false => println!("the puzzle is unsolvable")
-    }
+    run(puzzle);
 }
