@@ -16,4 +16,18 @@ impl Puzzle {
             state,
         }
     }
+
+    pub fn get_size(&self) -> u32 {
+        self.size
+    }
+
+    pub fn is_solvable(&self) -> bool {
+        true
+    }
+}
+
+impl PartialEq for Puzzle {
+    fn eq(&self, other: &Puzzle) -> bool {
+        self.state == other.state
+    }
 }
