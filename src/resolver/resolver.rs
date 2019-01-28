@@ -20,36 +20,40 @@ impl Resolver {
         *state == self.goal
     }
 
-    pub fn resolve(&mut self) {}
-    // pub fn resolve(&mut self) -> bool {
-    //     let mut success: bool = false;
-    //     while (!self.opened.is_empty() && success == false) {
-    //         // let state: Puzzle = self.select_according_to_astar_strategy_in().clone();
-    //         if (self.is_final(&state)) {
-    //             success = true;
-    //         }
-    //         // else {
-    //         //     self.closed.push(self.opened.remove(0));
-    //         //     for puzzle in self.expand(&state) {
-    //         //         match ()
-
-    //         //                 if (puzzle is not in opened and not in closed) {
-    //         //                     //add to open
-    //         //                     // predecessor(s) <- e
-    //         //                     // red g(s) <- g(e) + C(e-->s) // C(e-->s) == 1
-    //         //                 }
-    //         //                 else {
-    //         //                     If g(s) + h(s) > g(e) + C(e-->s) + h(s)
-    //         //                         // i.e f value >'potentially new' f value
-    //         //                         g(s) <- g(e) + C(e-->s)
-    //         //                         predecessor(s) <- e // Tu stock la reference du puzzle d'ou tu viend
-    //         //                         If s is in closed
-    //         //                         	closed <- closed - s
-    //         //                         	opened <- opened + s
-    //         //     }
-    //         //     }
-    //         // }
-    //     }
-    //     success
-    // }
+    // pub fn resolve(&mut self) {}
+    pub fn resolve(&mut self) -> Option<Puzzle> {
+        let mut success: bool = false;
+        while !self.opened.is_empty() && success == false {
+            let state: Puzzle = self.opened.iter().max().unwrap().clone();
+            if self.is_final(&state) {
+                success = true;
+                return Some(state);
+            }
+            else {
+                self.closed.push(self.opened.remove(0));
+                for mut new_state in state.expand() {
+                    match !self.opened.contains(&new_state) && !self.closed.contains(&new_state) {
+                        true => {
+                            // predecessor(s) <- e
+                            new_state.g = state.g + 1;
+                            self.opened.push(new_state);
+                        },
+                        false => {
+                            // If g(s) + h(s) > g(e) + C(e-->s) + h(s)
+                            //     // i.e f value >'potentially new' f value
+                            if new_state.f() > state.f() {
+                                new_state.g = state.g + 1;
+                                //     predecessor(s) <- e // Tu stock la reference du puzzle d'ou tu viend
+                                if self.closed.contains(&new_state) {
+                                        //         closed <- closed - s
+                                        //         opened <- opened + s
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
 }

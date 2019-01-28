@@ -15,7 +15,7 @@ fn run(puzzle: Puzzle) {
         true => {
             println!("the puzzle is solvable");
             let mut resolver: Resolver = Resolver::new(puzzle, goal);
-            resolver.resolve()
+            dbg!(resolver.resolve());
         }
         false => println!("the puzzle is unsolvable"),
     }

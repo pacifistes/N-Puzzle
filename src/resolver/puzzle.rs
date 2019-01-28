@@ -1,7 +1,9 @@
-#[derive(Debug, Clone)]
+use std::cmp::Ordering;
+
+#[derive(Debug, Clone, Eq)]
 pub struct Puzzle {
-    g: usize,
-    h: usize,
+    pub g: usize,
+    h_each_square: &fn(&self, ),
     size: usize,
     state: Vec<usize>,
 }
@@ -26,6 +28,10 @@ impl Puzzle {
 
     pub fn get_y(&self, value: usize) -> usize {
         value / self.size
+    }
+
+    pub fn f(&self) -> usize {
+        self.g + self.h();
     }
 }
 
@@ -116,7 +122,7 @@ impl Puzzle {
     }
 
     pub fn expand(&self) -> Vec<Puzzle> {
-        let blank_position: usize = self.state.iter().position(|&r| r == 0).unwrap() as usize;
+        let blank_position: usize = self.state.get_index_of_value(0) as usize;
         let x: usize = self.get_x(blank_position);
         let y: usize = self.get_y(blank_position);
         let expand_states: Vec<Option<Puzzle>> = vec![
@@ -130,8 +136,21 @@ impl Puzzle {
     }
 }
 
+
+impl Ord for Puzzle {
+    fn cmp(&self, other: &Puzzle) -> Ordering {
+        self.h.cmp(&other.h)
+    }
+}
+
 impl PartialEq for Puzzle {
     fn eq(&self, other: &Puzzle) -> bool {
         self.state == other.state
+    }
+}
+
+impl PartialOrd for Puzzle {
+    fn partial_cmp(&self, other: &Puzzle) -> Option<Ordering> {
+        self.h.partial_cmp(&other.h)
     }
 }
