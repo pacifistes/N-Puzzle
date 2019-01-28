@@ -33,14 +33,15 @@ impl Puzzle {
 // Problem soluble si la parite de la permutation est identique a la parite de la case vide
 impl Puzzle {
     pub fn manathan(&self, pos: &u32, pos2: &u32) -> usize {
-        ((self.get_x(pos) as i32 - self.get_x(pos2) as i32).abs() - (self.get_y(pos) as i32- self.get_y(pos2)as i32).abs()) as usize
+        println!("{}|{}|{}|{}", self.get_x(pos), self.get_x(pos2), self.get_y(pos), self.get_y(pos2));
+        ((self.get_x(pos) as i32 - self.get_x(pos2) as i32).abs() + (self.get_y(pos) as i32 - self.get_y(pos2)as i32).abs()) as usize
     }
 
     pub fn is_solvable(&self, goal: &Puzzle) -> bool {
         let mut nbr_permute: usize = 0;
         let mut state_permute: Vec<u32> = self.state.clone();
         let lenght: usize = self.state.len();
-        let mut test: usize = 0;
+        let mut test: usize = self.manathan(&(goal.state.iter().position(|&r| r == 0).unwrap() as u32), &(self.state.iter().position(|&r| r == 0).unwrap() as u32));
 
         for i in 0..lenght {
             let mut value = goal.state[i];
@@ -48,9 +49,6 @@ impl Puzzle {
             // state_permute.remove(actual_index);
             // state_permute.insert(i, value);
 //            nbr_permute += (actual_index as i32 - i as i32).abs() as usize;
-            if (value == 0 || self.state[actual_index] == 0) {
-                test = self.manathan(&(i as u32), &(actual_index as u32));
-            }
             if (actual_index != i) {
                 state_permute.swap(i, actual_index);
                 nbr_permute += 1 as usize;
