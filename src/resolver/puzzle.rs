@@ -21,23 +21,26 @@ impl Puzzle {
         self.size
     }
 
-    pub fn get_x(&self, value: u32) -> u32 {
+    pub fn get_x(&self, value: &u32) -> u32 {
         value % self.size
     }
 
-    pub fn get_y(&self, value: u32) -> u32 {
+    pub fn get_y(&self, value: &u32) -> u32 {
         value / self.size
     }
 }
 
 // Problem soluble si la parite de la permutation est identique a la parite de la case vide
 impl Puzzle {
+    pub fn manathan(&self, pos: &u32, pos2: &u32) -> usize {
+        ((self.get_x(pos) as i32 - self.get_x(pos2) as i32).abs() - (self.get_y(pos) as i32- self.get_y(pos2)as i32).abs()) as usize
+    }
+
     pub fn is_solvable(&self, goal: &Puzzle) -> bool {
         let mut nbr_permute: usize = 0;
         let mut state_permute: Vec<u32> = self.state.clone();
         let lenght: usize = self.state.len();
-        // let mut test: usize = (self.state.iter().position(|&r| r == 0).unwrap() as i32 - goal.state.iter().position(|&r| r == 0).unwrap() as i32).abs() as usize;
-        let mut test: usize = self.state.iter().position(|&r| r == 0).unwrap() as usize;
+        let mut test: usize = 0;
 
         for i in 0..lenght {
             let mut value = goal.state[i];
@@ -45,6 +48,9 @@ impl Puzzle {
             // state_permute.remove(actual_index);
             // state_permute.insert(i, value);
 //            nbr_permute += (actual_index as i32 - i as i32).abs() as usize;
+            if (value == 0 || self.state[actual_index] == 0) {
+                test = self.manathan(&(i as u32), &(actual_index as u32));
+            }
             if (actual_index != i) {
                 state_permute.swap(i, actual_index);
                 nbr_permute += 1 as usize;
@@ -150,8 +156,8 @@ impl Puzzle {
 
     pub fn expand(&self) -> Vec<Puzzle> {
         let blank_position: u32 = self.state.iter().position(|&r| r == 0).unwrap() as u32;
-        let x: u32 = self.get_x(blank_position);
-        let y: u32 = self.get_y(blank_position);
+        let x: u32 = self.get_x(&blank_position);
+        let y: u32 = self.get_y(&blank_position);
         let expand_states: Vec<Option<Puzzle>> = vec![
             self.move_left(x, y),
             self.move_top(x, y),
