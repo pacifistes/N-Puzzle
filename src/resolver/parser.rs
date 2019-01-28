@@ -4,8 +4,8 @@ use std::io;
 use std::io::{BufRead, BufReader};
 use std::io::{Error, ErrorKind};
 
-fn get_size(line: &String) -> Result<u32, io::Error> {
-    match line.parse::<u32>() {
+fn get_size(line: &str) -> Result<usize, io::Error> {
+    match line.parse::<usize>() {
         Ok(num) => Ok(num),
         Err(_) => Err(Error::new(
             ErrorKind::InvalidInput,
@@ -15,16 +15,14 @@ fn get_size(line: &String) -> Result<u32, io::Error> {
 }
 
 fn add_to_state(
-    mut start_state: Vec<u32>,
-    line: &String,
-    size: &u32,
-) -> Result<Vec<u32>, io::Error> {
+    mut start_state: Vec<usize>,
+    line: &str,
+    size: usize,
+) -> Result<Vec<usize>, io::Error> {
     match line
         .split_whitespace()
-        .collect::<Vec<&str>>()
-        .into_iter()
-        .map(|s| s.parse::<u32>())
-        .collect::<Result<Vec<u32>, _>>()
+        .map(|s| s.parse::<usize>())
+        .collect::<Result<Vec<usize>, _>>()
     {
         Ok(numbers) => {
             for number in numbers {
@@ -54,8 +52,8 @@ fn add_to_state(
 
 pub fn parse(filename: &String) -> Result<Puzzle, io::Error> {
     let file = File::open(filename)?;
-    let mut size: u32 = 0;
-    let mut start_state: Vec<u32> = Vec::new();
+    let mut size: usize = 0;
+    let mut start_state: Vec<usize> = Vec::new();
 
     for line in BufReader::new(file).lines() {
         let line = line.unwrap().split('#').collect::<Vec<_>>()[0]
@@ -65,11 +63,11 @@ pub fn parse(filename: &String) -> Result<Puzzle, io::Error> {
             true => (),
             false => match size == 0 {
                 true => size = get_size(&line)?,
-                false => start_state = add_to_state(start_state, &line, &size)?,
+                false => start_state = add_to_state(start_state, &line, size)?,
             },
         }
     }
-    if start_state.len() as u32 != size * size {
+    if start_state.len() != size * size {
         return Err(Error::new(ErrorKind::InvalidData, "Missing some lines"));
     }
     Ok(Puzzle::new(start_state, size, 0))

@@ -1,14 +1,13 @@
 #[derive(Debug, Clone)]
 pub struct Puzzle {
-    g: u32,
-    h: u32,
-    size: u32,
-    pub state: Vec<u32>,
-    // vect positionActual
+    g: usize,
+    h: usize,
+    size: usize,
+    state: Vec<usize>,
 }
 
 impl Puzzle {
-    pub fn new(state: Vec<u32>, size: u32, g: u32) -> Puzzle {
+    pub fn new(state: Vec<usize>, size: usize, g: usize) -> Puzzle {
         Puzzle {
             g,
             h: 0,
@@ -17,39 +16,35 @@ impl Puzzle {
         }
     }
 
-    pub fn get_size(&self) -> u32 {
+    pub fn get_size(&self) -> usize {
         self.size
     }
 
-    pub fn get_x(&self, value: &u32) -> u32 {
+    pub fn get_x(&self, value: usize) -> usize {
         value % self.size
     }
 
-    pub fn get_y(&self, value: &u32) -> u32 {
+    pub fn get_y(&self, value: usize) -> usize {
         value / self.size
     }
 }
 
-// Problem soluble si la parite de la permutation est identique a la parite de la case vide
 impl Puzzle {
-    pub fn manathan(&self, pos: &u32, pos2: &u32) -> usize {
-        println!("{}|{}|{}|{}", self.get_x(pos), self.get_x(pos2), self.get_y(pos), self.get_y(pos2));
-        ((self.get_x(pos) as i32 - self.get_x(pos2) as i32).abs() + (self.get_y(pos) as i32 - self.get_y(pos2)as i32).abs()) as usize
+    pub fn manathan(&self, actual_pos: usize, goal_pos: usize) -> usize {
+        ((self.get_x(actual_pos) as isize - self.get_x(goal_pos) as isize).abs()
+            + (self.get_y(actual_pos) as isize - self.get_y(goal_pos) as isize).abs())
+            as usize
     }
 
     pub fn is_solvable(&self, goal: &Puzzle) -> bool {
         let mut nbr_permute: usize = 0;
-        let mut state_permute: Vec<u32> = self.state.clone();
-        let lenght: usize = self.state.len();
-        let mut test: usize = self.manathan(&(goal.state.iter().position(|&r| r == 0).unwrap() as u32), &(self.state.iter().position(|&r| r == 0).unwrap() as u32));
+        let mut state_permute: Puzzle = self.clone();
+        let test: usize = self.manathan(goal.get_index_of_value(0), self.get_index_of_value(0));
 
-        for i in 0..lenght {
-            let mut value = goal.state[i];
-            let actual_index: usize = state_permute.iter().position(|&r| r == value).unwrap() as usize;
-            // state_permute.remove(actual_index);
-            // state_permute.insert(i, value);
-//            nbr_permute += (actual_index as i32 - i as i32).abs() as usize;
-            if (actual_index != i) {
+        for i in 0..self.state.len() {
+            let value = goal.state[i];
+            let actual_index: usize = state_permute.get_index_of_value(value);
+            if actual_index != i {
                 state_permute.swap(i, actual_index);
                 nbr_permute += 1 as usize;
             }
@@ -57,54 +52,22 @@ impl Puzzle {
         println!("nbr_permute = {} | {}", nbr_permute, test);
         nbr_permute % 2 == test % 2
     }
+
+    pub fn swap(&mut self, old_pos: usize, new_pos: usize) {
+        self.state.swap(old_pos, new_pos);
+    }
+
+    pub fn get_index_of_value(&self, value: usize) -> usize {
+        self.state.iter().position(|&r| r == value).unwrap()
+    }
 }
 
-
-// impl Puzzle {
-//     pub fn inversion(&self) -> u32 {
-//         let mut nbr_permut: u32 = 0;
-//         let mut state_permute: Vec<u32> = self.state.clone();
-//         let mut tmp: u32 = 0;
-//         //let index = self.state.iter().position(|&r| r == 0).unwrap();
-//         for i in 0..self.state.len() {
-//             let mut value = self.state[i];
-//             //        println!("value{}", &value);
-//             let index: i32 = state_permute.iter().position(|&r| r == value).unwrap() as i32;
-//             if (value == 0) {
-//                 value = self.state.len() as u32;
-//             }
-//             let permute: u32 = (index - value as i32 + 1).abs() as u32;
-//             // println!("{:?}", &state_permute);
-//             // println!("index {}, value{}", &index, &value);
-//             // println!("the {} give us {} permutation", &value, &permute);
-//             state_permute.remove(index as usize);
-//             if (value == self.state.len() as u32) {
-//                 state_permute.insert((value - 1) as usize, tmp);
-//             } else {
-//                 state_permute.insert((value - 1) as usize, value);
-//             }
-//             nbr_permut += permute;
-//         }
-//         if self.size % 2 == 0 {
-//             nbr_permut += self.state.iter().position(|&r| r == 0).unwrap() as u32;
-//         }
-//         nbr_permut
-//     }
-
-//     pub fn is_solvable(&self, goal: &Puzzle) -> bool {
-//         let mut start_inversion: u32 = self.inversion();
-//         let mut goal_inversion: u32 = goal.inversion();
-
-//         start_inversion % 2 == goal_inversion % 2
-//     }
-// }
-
 impl Puzzle {
-    pub fn move_left(&self, x: u32, y: u32) -> Option<Puzzle> {
+    pub fn move_left(&self, x: usize, y: usize) -> Option<Puzzle> {
         match x == 0 {
             true => None,
             false => {
-                let mut new_state: Vec<u32> = self.state.clone();
+                let mut new_state: Vec<usize> = self.state.clone();
                 let old_pos: usize = (x + y * self.size) as usize;
                 let new_pos: usize = (x - 1 + y * self.size) as usize;
                 new_state.swap(old_pos, new_pos);
@@ -113,11 +76,11 @@ impl Puzzle {
         }
     }
 
-    pub fn move_top(&self, x: u32, y: u32) -> Option<Puzzle> {
+    pub fn move_top(&self, x: usize, y: usize) -> Option<Puzzle> {
         match y == 0 {
             true => None,
             false => {
-                let mut new_state: Vec<u32> = self.state.clone();
+                let mut new_state: Vec<usize> = self.state.clone();
                 let old_pos: usize = (x + y * self.size) as usize;
                 let new_pos: usize = (x + (y - 1) * self.size) as usize;
                 new_state.swap(old_pos, new_pos);
@@ -126,11 +89,11 @@ impl Puzzle {
         }
     }
 
-    pub fn move_right(&self, x: u32, y: u32) -> Option<Puzzle> {
+    pub fn move_right(&self, x: usize, y: usize) -> Option<Puzzle> {
         match x == self.size - 1 {
             true => None,
             false => {
-                let mut new_state: Vec<u32> = self.state.clone();
+                let mut new_state: Vec<usize> = self.state.clone();
                 let old_pos: usize = (x + y * self.size) as usize;
                 let new_pos: usize = (x + 1 + y * self.size) as usize;
                 new_state.swap(old_pos, new_pos);
@@ -139,11 +102,11 @@ impl Puzzle {
         }
     }
 
-    pub fn move_bot(&self, x: u32, y: u32) -> Option<Puzzle> {
+    pub fn move_bot(&self, x: usize, y: usize) -> Option<Puzzle> {
         match y == self.size - 1 {
             true => None,
             false => {
-                let mut new_state: Vec<u32> = self.state.clone();
+                let mut new_state: Vec<usize> = self.state.clone();
                 let old_pos: usize = (x + y * self.size) as usize;
                 let new_pos: usize = (x + (y + 1) * self.size) as usize;
                 new_state.swap(old_pos, new_pos);
@@ -153,9 +116,9 @@ impl Puzzle {
     }
 
     pub fn expand(&self) -> Vec<Puzzle> {
-        let blank_position: u32 = self.state.iter().position(|&r| r == 0).unwrap() as u32;
-        let x: u32 = self.get_x(&blank_position);
-        let y: u32 = self.get_y(&blank_position);
+        let blank_position: usize = self.state.iter().position(|&r| r == 0).unwrap() as usize;
+        let x: usize = self.get_x(blank_position);
+        let y: usize = self.get_y(blank_position);
         let expand_states: Vec<Option<Puzzle>> = vec![
             self.move_left(x, y),
             self.move_top(x, y),
