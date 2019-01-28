@@ -36,6 +36,9 @@ impl Puzzle {
         let mut nbr_permute: usize = 0;
         let mut state_permute: Vec<u32> = self.state.clone();
         let lenght: usize = self.state.len();
+        // let mut test: usize = (self.state.iter().position(|&r| r == 0).unwrap() as i32 - goal.state.iter().position(|&r| r == 0).unwrap() as i32).abs() as usize;
+        let mut test: usize = self.state.iter().position(|&r| r == 0).unwrap() as usize;
+
         for i in 0..lenght {
             let mut value = goal.state[i];
             let actual_index: usize = state_permute.iter().position(|&r| r == value).unwrap() as usize;
@@ -47,7 +50,8 @@ impl Puzzle {
                 nbr_permute += 1 as usize;
             }
         }
-        nbr_permute % 2 == self.state.iter().position(|&r| r == 0).unwrap() % 2
+        println!("nbr_permute = {} | {}", nbr_permute, test);
+        nbr_permute % 2 == test % 2
     }
 }
 
