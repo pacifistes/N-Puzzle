@@ -5,6 +5,7 @@ use resolver::generate::generate_random_puzzle;
 use resolver::generate::generate_sorted_puzzle;
 use resolver::parser::parse;
 use resolver::puzzle::*;
+use resolver::heuristic::*;
 use resolver::resolver::*;
 use std::env;
 
@@ -14,7 +15,7 @@ fn run(puzzle: Puzzle) {
     match puzzle.is_solvable(&goal) {
         true => {
             println!("the puzzle is solvable");
-            let mut resolver: Resolver = Resolver::new(puzzle, goal);
+            let mut resolver: Resolver = Resolver::new(puzzle, goal, Heuristic::Manathan);
             dbg!(resolver.resolve());
         }
         false => println!("the puzzle is unsolvable"),

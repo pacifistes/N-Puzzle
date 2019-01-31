@@ -1,20 +1,20 @@
-use std::cmp::Ordering;
+use crate::resolver::heuristic::*;
 
-#[derive(Debug, Clone, Eq)]
+#[derive(Debug, Clone)]
 pub struct Puzzle {
     pub g: usize,
-    h_each_square: &fn(&self, ),
     size: usize,
     state: Vec<usize>,
+    pub predecessor: usize
 }
 
 impl Puzzle {
     pub fn new(state: Vec<usize>, size: usize, g: usize) -> Puzzle {
         Puzzle {
             g,
-            h: 0,
             size,
             state,
+            predecessor : 0
         }
     }
 
@@ -29,23 +29,14 @@ impl Puzzle {
     pub fn get_y(&self, value: usize) -> usize {
         value / self.size
     }
-
-    pub fn f(&self) -> usize {
-        self.g + self.h();
-    }
 }
 
 impl Puzzle {
-    pub fn manathan(&self, actual_pos: usize, goal_pos: usize) -> usize {
-        ((self.get_x(actual_pos) as isize - self.get_x(goal_pos) as isize).abs()
-            + (self.get_y(actual_pos) as isize - self.get_y(goal_pos) as isize).abs())
-            as usize
-    }
 
     pub fn is_solvable(&self, goal: &Puzzle) -> bool {
         let mut nbr_permute: usize = 0;
         let mut state_permute: Puzzle = self.clone();
-        let test: usize = self.manathan(goal.get_index_of_value(0), self.get_index_of_value(0));
+        let distance_empty_box: usize = manathan(goal.get_index_of_value(0), self.get_index_of_value(0));
 
         for i in 0..self.state.len() {
             let value = goal.state[i];
@@ -55,8 +46,7 @@ impl Puzzle {
                 nbr_permute += 1 as usize;
             }
         }
-        println!("nbr_permute = {} | {}", nbr_permute, test);
-        nbr_permute % 2 == test % 2
+        nbr_permute % 2 == distance_empty_box % 2
     }
 
     pub fn swap(&mut self, old_pos: usize, new_pos: usize) {
@@ -69,15 +59,17 @@ impl Puzzle {
 }
 
 impl Puzzle {
+    pub fn apply_move(&self, old_pos: usize, new_pos: usize) -> Puzzle {
+        let mut new_state: Vec<usize> = self.state.clone();
+        new_state.swap(old_pos, new_pos);
+        Puzzle::new(new_state, self.size, self.g + 1)
+    }
+
     pub fn move_left(&self, x: usize, y: usize) -> Option<Puzzle> {
         match x == 0 {
             true => None,
             false => {
-                let mut new_state: Vec<usize> = self.state.clone();
-                let old_pos: usize = (x + y * self.size) as usize;
-                let new_pos: usize = (x - 1 + y * self.size) as usize;
-                new_state.swap(old_pos, new_pos);
-                Some(Puzzle::new(new_state, self.size, self.g + 1))
+                Some(self.apply_move(x + y * self.size, x - 1 + y * self.size))
             }
         }
     }
@@ -86,11 +78,7 @@ impl Puzzle {
         match y == 0 {
             true => None,
             false => {
-                let mut new_state: Vec<usize> = self.state.clone();
-                let old_pos: usize = (x + y * self.size) as usize;
-                let new_pos: usize = (x + (y - 1) * self.size) as usize;
-                new_state.swap(old_pos, new_pos);
-                Some(Puzzle::new(new_state, self.size, self.g + 1))
+                Some(self.apply_move(x + y * self.size, x + (y - 1) * self.size))
             }
         }
     }
@@ -99,11 +87,7 @@ impl Puzzle {
         match x == self.size - 1 {
             true => None,
             false => {
-                let mut new_state: Vec<usize> = self.state.clone();
-                let old_pos: usize = (x + y * self.size) as usize;
-                let new_pos: usize = (x + 1 + y * self.size) as usize;
-                new_state.swap(old_pos, new_pos);
-                Some(Puzzle::new(new_state, self.size, self.g + 1))
+                Some(self.apply_move(x + y * self.size, x + 1 + y * self.size))
             }
         }
     }
@@ -112,17 +96,13 @@ impl Puzzle {
         match y == self.size - 1 {
             true => None,
             false => {
-                let mut new_state: Vec<usize> = self.state.clone();
-                let old_pos: usize = (x + y * self.size) as usize;
-                let new_pos: usize = (x + (y + 1) * self.size) as usize;
-                new_state.swap(old_pos, new_pos);
-                Some(Puzzle::new(new_state, self.size, self.g + 1))
+                Some(self.apply_move(x + y * self.size, x + (y + 1) * self.size))
             }
         }
     }
 
     pub fn expand(&self) -> Vec<Puzzle> {
-        let blank_position: usize = self.state.get_index_of_value(0) as usize;
+        let blank_position: usize = self.get_index_of_value(0) as usize;
         let x: usize = self.get_x(blank_position);
         let y: usize = self.get_y(blank_position);
         let expand_states: Vec<Option<Puzzle>> = vec![
@@ -131,17 +111,29 @@ impl Puzzle {
             self.move_right(x, y),
             self.move_bot(x, y),
         ];
-
         expand_states.into_iter().filter_map(|x| x).collect()
     }
-}
 
+    pub fn f(&self, goal: &Puzzle, heuristic: &fn(usize, usize) -> usize) -> usize {
+        let mut h = 0;
 
-impl Ord for Puzzle {
-    fn cmp(&self, other: &Puzzle) -> Ordering {
-        self.h.cmp(&other.h)
+        for i in 0..self.state.len() {
+            let actual_index = self.get_index_of_value(i);
+            let goal_index = goal.get_index_of_value(i);
+            let dist_x = distance(self.get_x(actual_index), goal.get_x(goal_index));
+            let dist_y = distance(self.get_y(actual_index), goal.get_y(goal_index));
+            h += heuristic(dist_x, dist_y);
+        }
+        h + self.g
     }
 }
+
+
+// impl Ord for Puzzle {
+//     fn cmp(&self, other: &Puzzle) -> Ordering {
+//         // self.h.cmp(&other.h)
+//     }
+// }
 
 impl PartialEq for Puzzle {
     fn eq(&self, other: &Puzzle) -> bool {
@@ -149,8 +141,9 @@ impl PartialEq for Puzzle {
     }
 }
 
-impl PartialOrd for Puzzle {
-    fn partial_cmp(&self, other: &Puzzle) -> Option<Ordering> {
-        self.h.partial_cmp(&other.h)
-    }
-}
+// impl PartialOrd for Puzzle {
+//     fn partial_cmp(&self, other: &Puzzle) -> Option<Ordering> {
+//         self.h.partial_cmp(&other.h)
+//     }
+// }
+
