@@ -1,7 +1,6 @@
 use crate::resolver::heuristic::*;
 use crate::resolver::puzzle::*;
 
-
 #[derive(Debug)]
 pub struct Resolver {
     opened: Vec<Puzzle>,
@@ -16,7 +15,7 @@ impl Resolver {
             Heuristic::Manathan => manathan,
             Heuristic::Chebyshev => chebyshev,
         };
-        start_state.init_h(&goal, &heuristic);
+        start_state.init_h(&goal, heuristic);
         Resolver {
             opened: vec![start_state],
             closed: Vec::new(),
@@ -30,18 +29,16 @@ impl Resolver {
     }
 
     pub fn resolve(&mut self) -> Option<Puzzle> {
-        let mut success: bool = false;
         let mut len_closelist: usize = 0;
-        while !self.opened.is_empty() && success == false {
+        while !self.opened.is_empty() {
             let (index, selected_state): (usize, Puzzle) = self.max_f();
             if self.is_final(&selected_state) {
-                success = true;
                 return Some(selected_state);
             } else {
                 self.closed.push(self.opened.remove(index));
                 let index_predecessor: usize = len_closelist;
                 for mut new_state in selected_state.expand() {
-                    new_state.init_h(&self.goal, &self.heuristic);
+                    new_state.init_h(&self.goal, self.heuristic);
                     if !self.opened.contains(&new_state) && !self.closed.contains(&new_state) {
                         new_state.predecessor = index_predecessor;
                         new_state.g = selected_state.g + 1;

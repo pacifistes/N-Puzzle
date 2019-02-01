@@ -17,7 +17,7 @@ impl Puzzle {
             size,
             state,
             predecessor: 0,
-            h:0
+            h: 0,
         }
     }
 
@@ -116,7 +116,7 @@ impl Puzzle {
         self.g + self.h
     }
 
-    pub fn init_h(&mut self, goal: &Puzzle, heuristic: &fn(usize, usize) -> usize) {
+    pub fn init_h(&mut self, goal: &Puzzle, heuristic: fn(usize, usize) -> usize) {
         let mut h = 0;
 
         for i in 0..self.state.len() {

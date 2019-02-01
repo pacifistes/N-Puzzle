@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod test {
     use crate::resolver::generate::generate_sorted_puzzle;
-    use crate::resolver::puzzle::*;
-    use std::time::Instant;
     use crate::resolver::parser::parse;
+    use crate::resolver::puzzle::*;
     use crate::run;
+    use std::time::Instant;
 
     #[test]
     fn test_bench() {
@@ -14,14 +14,17 @@ mod test {
         // debug format:
         println!("{:?}", elapsed);
         // or format as milliseconds:
-        println!("Elapsed: {} ms", (elapsed.as_secs() * 1_000) + (elapsed.subsec_nanos() / 1_000_000) as u64);
+        println!(
+            "Elapsed: {} ms",
+            (elapsed.as_secs() * 1_000) + (elapsed.subsec_nanos() / 1_000_000) as u64
+        );
     }
 
     #[test]
     fn bench_parser() {
         let start = Instant::now();
 
-         let puzzle: Puzzle = match parse(&"test".to_string()) {
+        let puzzle: Puzzle = match parse(&"test".to_string()) {
             Ok(puzzle) => puzzle,
             Err(err) => {
                 println!("Error: {}", err);
@@ -42,7 +45,7 @@ mod test {
 
     #[test]
     fn bench_run() {
-        let vector: Vec<usize> = vec![5, 6, 7, 2, 0, 4,3,8,1];
+        let vector: Vec<usize> = vec![5, 6, 7, 2, 0, 4, 3, 8, 1];
         let puzzle: Puzzle = Puzzle::new(vector, 3, 0);
 
         let start = Instant::now();
@@ -52,7 +55,5 @@ mod test {
     }
 
     #[test]
-    fn bench_collections() {
-
-    }
+    fn bench_collections() {}
 }

@@ -36,10 +36,9 @@ fn main() {
         _ => generate_random_puzzle(),
     };
     run(puzzle);
-	// criterion_group!(benches, criterion_benchmark);
-	// criterion_main!(benches);
+    // criterion_group!(benches, criterion_benchmark);
+    // criterion_main!(benches);
 }
-
 
 // use criterion::Criterion;
 

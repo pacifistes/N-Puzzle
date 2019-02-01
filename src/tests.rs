@@ -1,2 +1,2 @@
-pub mod puzzle;
 pub mod bench;
+pub mod puzzle;

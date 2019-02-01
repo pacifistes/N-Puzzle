@@ -14,6 +14,7 @@ fn get_size(line: &str) -> Result<usize, io::Error> {
     }
 }
 
+#[warn(clippy::match_bool)]
 fn add_to_state(
     mut start_state: Vec<usize>,
     line: &str,
@@ -50,7 +51,7 @@ fn add_to_state(
     Ok(start_state)
 }
 
-pub fn parse(filename: &String) -> Result<Puzzle, io::Error> {
+pub fn parse(filename: &str) -> Result<Puzzle, io::Error> {
     let file = File::open(filename)?;
     let mut size: usize = 0;
     let mut start_state: Vec<usize> = Vec::new();

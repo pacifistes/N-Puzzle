@@ -1,5 +1,6 @@
 use std::cmp::min;
 
+#[warn(dead_code)]
 pub enum Heuristic {
     Manathan,
     Chebyshev,
