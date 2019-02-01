@@ -1,6 +1,7 @@
 use crate::resolver::heuristic::*;
+use std::cmp::Ordering;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq)]
 pub struct Puzzle {
     pub g: usize,
     size: usize,
@@ -129,8 +130,20 @@ impl Puzzle {
     }
 }
 
+impl Ord for Puzzle {
+    fn cmp(&self, other: &Puzzle) -> Ordering {
+        self.f().cmp(&other.f())
+    }
+}
+
 impl PartialEq for Puzzle {
     fn eq(&self, other: &Puzzle) -> bool {
         self.state == other.state
+    }
+}
+
+impl PartialOrd for Puzzle {
+    fn partial_cmp(&self, other: &Puzzle) -> Option<Ordering> {
+        self.f().partial_cmp(&other.f())
     }
 }

@@ -278,7 +278,7 @@ Resolver () {
 // impl Resolver {
 //     pub fn new(puzzle: Puzzle) -> Resolver {
 //         Resolver {
-//             opened: Vec![puzzle],
+//             opened: vec![puzzle],
 //             closed: Vec::new(),
 //             // success: false,
 //         }
@@ -332,7 +332,7 @@ Resolver () {
 //     }
 
 //     fn expand(&self, puzzle: &Puzzle) -> Vec<Puzzle> {
-//         Vec![Puzzle::new(Vec![Square {
+//         vec![Puzzle::new(vec![Square {
 //             actual_coordonnee: Coordonnee { x: 0, y: 0 },
 //             original_coordonnee: Coordonnee { x: 0, y: 2 },
 //             manathan: Manathan {},
