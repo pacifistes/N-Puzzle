@@ -34,7 +34,7 @@ pub fn generate_sorted_puzzle(size: usize) -> Vec<usize> {
 }
 
 pub fn generate_random_puzzle() -> Puzzle {
-    let size: usize = 4;
+    let size: usize = 3;
     let mut start_state: Vec<usize> = generate_sorted_puzzle(size);
     let mut rng = thread_rng();
 

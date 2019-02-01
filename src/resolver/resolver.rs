@@ -1,5 +1,6 @@
-use crate::resolver::puzzle::*;
 use crate::resolver::heuristic::*;
+use crate::resolver::puzzle::*;
+
 
 #[derive(Debug)]
 pub struct Resolver {
@@ -10,11 +11,12 @@ pub struct Resolver {
 }
 
 impl Resolver {
-    pub fn new(start_state: Puzzle, goal: Puzzle, heuristic: Heuristic) -> Resolver {
+    pub fn new(mut start_state: Puzzle, goal: Puzzle, heuristic: Heuristic) -> Resolver {
         let heuristic = match heuristic {
             Heuristic::Manathan => manathan,
             Heuristic::Chebyshev => chebyshev,
         };
+        start_state.init_h(&goal, &heuristic);
         Resolver {
             opened: vec![start_state],
             closed: Vec::new(),
@@ -29,55 +31,43 @@ impl Resolver {
 
     pub fn resolve(&mut self) -> Option<Puzzle> {
         let mut success: bool = false;
+        let mut len_closelist: usize = 0;
         while !self.opened.is_empty() && success == false {
             let (index, selected_state): (usize, Puzzle) = self.max_f();
             if self.is_final(&selected_state) {
                 success = true;
                 return Some(selected_state);
-            }
-            else {
+            } else {
                 self.closed.push(self.opened.remove(index));
-                let index_predecessor: usize = self.closed.len();
+                let index_predecessor: usize = len_closelist;
                 for mut new_state in selected_state.expand() {
+                    new_state.init_h(&self.goal, &self.heuristic);
                     if !self.opened.contains(&new_state) && !self.closed.contains(&new_state) {
-                            new_state.predecessor = index_predecessor;
-                            new_state.g = selected_state.g + 1;
-                            self.opened.push(new_state);
+                        new_state.predecessor = index_predecessor;
+                        new_state.g = selected_state.g + 1;
+                        self.opened.push(new_state);
                     }
                 }
+                len_closelist += 1;
             }
         }
         None
     }
-
-    // pub fn plop(&self, new_state: Puzzle, index_predecessor: usize) {
-    //     (index_old_state, old_state) : (usize, Puzzle)
-    //     if (old_state.f() > new_state.f())
-    //         new_state.g =
-    //     // If g(s) + h(s) > g(e) + C(e-->s) + h(s)
-    //     //     // i.e f value >'potentially new' f value
-    //     // if new_state.f() > state.f() {
-    //         // new_state.g = state.g + 1;
-    //         //     predecessor(s) <- e // Tu stock la reference du puzzle d'ou tu viend
-    //     if self.closed.contains(&new_state) {
-    //         self.closed.remove(index_old_state));
-    //         self.push(new_state);
-    // }
 
     pub fn max_f(&self) -> (usize, Puzzle) {
         let mut final_index: usize = 0;
         let mut final_f: usize = 0;
 
         for (index, puzzle) in self.opened.iter().enumerate() {
-            let actual_f = puzzle.f(&self.goal, &self.heuristic);
+            let actual_f = puzzle.f();
             match index == 0 || actual_f <= final_f {
                 true => {
                     final_f = actual_f;
                     final_index = index;
-                },
+                }
                 false => (),
             }
         }
-        (final_index , self.opened[final_index].clone())
+        (final_index, self.opened[final_index].clone())
     }
 }

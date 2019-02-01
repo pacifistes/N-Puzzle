@@ -238,14 +238,14 @@ main ()
 Puzzle () {
 	G : u32
 	h : u32
-	vect positionActual
-	h(vecGoal)
+	Vect positionActual
+	h(VecGoal)
 }
 
 Resolver () {
-	vect Goal[] original
-	vect<Puzzle> open
-	vect<Puzzle> close
+	Vect Goal[] original
+	Vect<Puzzle> open
+	Vect<Puzzle> close
 
 }
 
@@ -278,7 +278,7 @@ Resolver () {
 // impl Resolver {
 //     pub fn new(puzzle: Puzzle) -> Resolver {
 //         Resolver {
-//             opened: vec![puzzle],
+//             opened: Vec![puzzle],
 //             closed: Vec::new(),
 //             // success: false,
 //         }
@@ -332,7 +332,7 @@ Resolver () {
 //     }
 
 //     fn expand(&self, puzzle: &Puzzle) -> Vec<Puzzle> {
-//         vec![Puzzle::new(vec![Square {
+//         Vec![Puzzle::new(Vec![Square {
 //             actual_coordonnee: Coordonnee { x: 0, y: 0 },
 //             original_coordonnee: Coordonnee { x: 0, y: 2 },
 //             manathan: Manathan {},
@@ -359,7 +359,7 @@ pub struct Square {
 pub struct Puzzle {
     // G : u32
     // h : u32
-    // vect positionActual
+    // Vect positionActual
 }
 
 impl Square {

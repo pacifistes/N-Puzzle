@@ -5,7 +5,8 @@ pub struct Puzzle {
     pub g: usize,
     size: usize,
     state: Vec<usize>,
-    pub predecessor: usize
+    pub predecessor: usize,
+    h: usize,
 }
 
 impl Puzzle {
@@ -14,7 +15,8 @@ impl Puzzle {
             g,
             size,
             state,
-            predecessor : 0
+            predecessor: 0,
+            h:0
         }
     }
 
@@ -32,11 +34,11 @@ impl Puzzle {
 }
 
 impl Puzzle {
-
     pub fn is_solvable(&self, goal: &Puzzle) -> bool {
         let mut nbr_permute: usize = 0;
         let mut state_permute: Puzzle = self.clone();
-        let distance_empty_box: usize = manathan(goal.get_index_of_value(0), self.get_index_of_value(0));
+        let distance_empty_box: usize =
+            manathan(goal.get_index_of_value(0), self.get_index_of_value(0));
 
         for i in 0..self.state.len() {
             let value = goal.state[i];
@@ -58,6 +60,9 @@ impl Puzzle {
     }
 }
 
+/*
+**
+*/
 impl Puzzle {
     pub fn apply_move(&self, old_pos: usize, new_pos: usize) -> Puzzle {
         let mut new_state: Vec<usize> = self.state.clone();
@@ -68,36 +73,28 @@ impl Puzzle {
     pub fn move_left(&self, x: usize, y: usize) -> Option<Puzzle> {
         match x == 0 {
             true => None,
-            false => {
-                Some(self.apply_move(x + y * self.size, x - 1 + y * self.size))
-            }
+            false => Some(self.apply_move(x + y * self.size, x - 1 + y * self.size)),
         }
     }
 
     pub fn move_top(&self, x: usize, y: usize) -> Option<Puzzle> {
         match y == 0 {
             true => None,
-            false => {
-                Some(self.apply_move(x + y * self.size, x + (y - 1) * self.size))
-            }
+            false => Some(self.apply_move(x + y * self.size, x + (y - 1) * self.size)),
         }
     }
 
     pub fn move_right(&self, x: usize, y: usize) -> Option<Puzzle> {
         match x == self.size - 1 {
             true => None,
-            false => {
-                Some(self.apply_move(x + y * self.size, x + 1 + y * self.size))
-            }
+            false => Some(self.apply_move(x + y * self.size, x + 1 + y * self.size)),
         }
     }
 
     pub fn move_bot(&self, x: usize, y: usize) -> Option<Puzzle> {
         match y == self.size - 1 {
             true => None,
-            false => {
-                Some(self.apply_move(x + y * self.size, x + (y + 1) * self.size))
-            }
+            false => Some(self.apply_move(x + y * self.size, x + (y + 1) * self.size)),
         }
     }
 
@@ -114,7 +111,11 @@ impl Puzzle {
         expand_states.into_iter().filter_map(|x| x).collect()
     }
 
-    pub fn f(&self, goal: &Puzzle, heuristic: &fn(usize, usize) -> usize) -> usize {
+    pub fn f(&self) -> usize {
+        self.g + self.h
+    }
+
+    pub fn init_h(&mut self, goal: &Puzzle, heuristic: &fn(usize, usize) -> usize) {
         let mut h = 0;
 
         for i in 0..self.state.len() {
@@ -124,26 +125,12 @@ impl Puzzle {
             let dist_y = distance(self.get_y(actual_index), goal.get_y(goal_index));
             h += heuristic(dist_x, dist_y);
         }
-        h + self.g
+        self.h = h;
     }
 }
-
-
-// impl Ord for Puzzle {
-//     fn cmp(&self, other: &Puzzle) -> Ordering {
-//         // self.h.cmp(&other.h)
-//     }
-// }
 
 impl PartialEq for Puzzle {
     fn eq(&self, other: &Puzzle) -> bool {
         self.state == other.state
     }
 }
-
-// impl PartialOrd for Puzzle {
-//     fn partial_cmp(&self, other: &Puzzle) -> Option<Ordering> {
-//         self.h.partial_cmp(&other.h)
-//     }
-// }
-

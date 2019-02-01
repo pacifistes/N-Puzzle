@@ -3,15 +3,16 @@ mod tests;
 
 use resolver::generate::generate_random_puzzle;
 use resolver::generate::generate_sorted_puzzle;
+use resolver::heuristic::*;
 use resolver::parser::parse;
 use resolver::puzzle::*;
-use resolver::heuristic::*;
 use resolver::resolver::*;
 use std::env;
 
 fn run(puzzle: Puzzle) {
     let size = puzzle.get_size();
     let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+
     match puzzle.is_solvable(&goal) {
         true => {
             println!("the puzzle is solvable");
@@ -35,4 +36,21 @@ fn main() {
         _ => generate_random_puzzle(),
     };
     run(puzzle);
+	// criterion_group!(benches, criterion_benchmark);
+	// criterion_main!(benches);
 }
+
+
+// use criterion::Criterion;
+
+// fn fibonacci(n: u64) -> u64 {
+//     match n {
+//         0 => 1,
+//         1 => 1,
+//         n => fibonacci(n-1) + fibonacci(n-2),
+//     }
+// }
+
+// fn criterion_benchmark(c: &mut Criterion) {
+//     c.bench_function("fib 20", |b| b.iter(|| fibonacci(20)));
+// }

@@ -19,11 +19,11 @@ def make_puzzle(s, solvable, iterations):
 		swi = random.choice(poss)
 		p[idx] = p[swi]
 		p[swi] = 0
-	
+
 	p = make_goal(s)
 	for i in range(iterations):
 		swap_empty(p)
-	
+
 	if not solvable:
 		if p[0] == 0 or p[1] == 0:
 			p[-1], p[-2] = p[-2], p[-1]
@@ -94,16 +94,16 @@ if __name__ == "__main__":
 		f.write("let size: u32 = {};\nlet goal: Puzzle = Puzzle::new(generate_sorted_puzzle(&size), size, 0);\nlet start_state: Vec<u32> = generate_sorted_puzzle(&size);\n".format(size))
 		for i in range(20):
 			puzzle = make_puzzle(size, solvable=True, iterations=args.iterations)
-			f.write("let vector: Vec<u32> = vec![{}];\nlet puzzle: Puzzle = Puzzle::new(vector, size, 0);\n".format(",".join([str(value) for value in puzzle])))
+			f.write("let Vector: Vec<u32> = Vec![{}];\nlet puzzle: Puzzle = Puzzle::new(Vector, size, 0);\n".format(",".join([str(value) for value in puzzle])))
 			f.write("assert_eq!(true, puzzle.is_solvable(&goal));\n")
 	for size in range(2, 11):
 		f.write("//Unolvable and size = {}\n".format(size))
 		f.write("let size: u32 = {};\nlet goal: Puzzle = Puzzle::new(generate_sorted_puzzle(&size), size, 0);\nlet start_state: Vec<u32> = generate_sorted_puzzle(&size);\n".format(size))
 		for i in range(20):
 			puzzle = make_puzzle(size, solvable=False, iterations=args.iterations)
-			f.write("let vector: Vec<u32> = vec![{}];\nlet puzzle: Puzzle = Puzzle::new(vector, size, 0);\n".format(",".join([str(value) for value in puzzle])))
+			f.write("let Vector: Vec<u32> = Vec![{}];\nlet puzzle: Puzzle = Puzzle::new(Vector, size, 0);\n".format(",".join([str(value) for value in puzzle])))
 			f.write("assert_eq!(false, puzzle.is_solvable(&goal));\n")
-		
+
 
 	# f.write()
 	# for y in range(s):
