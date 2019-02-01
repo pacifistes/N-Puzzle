@@ -1,3 +1,7 @@
+pub fn add_two(a: i32) -> i32 {
+    a + 2
+}
+
 #[cfg(test)]
 mod test {
     use crate::resolver::generate::generate_sorted_puzzle;
@@ -54,6 +58,10 @@ mod test {
         println!("{:?}", elapsed);
     }
 
-    #[test]
-    fn bench_collections() {}
+    // #[test]
+    // fn bench_collections() {
+    //     let vector: Vec<usize> = vec![5, 6, 7, 2, 0, 8, 3, 8, 1];
+    //     let value: usize = vector.iter().max_by(|x, y| x.cmp(y)).unwrap();
+    //     assert_eq!(value, 8);
+    // }
 }
