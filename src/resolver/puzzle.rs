@@ -1,7 +1,7 @@
 use crate::resolver::heuristic::*;
 use std::cmp::Ordering;
 
-#[derive(Debug, Clone, Eq)]
+#[derive(Debug, Clone, Eq, Hash)]
 pub struct Puzzle {
     pub g: usize,
     size: usize,
@@ -38,8 +38,11 @@ impl Puzzle {
     pub fn is_solvable(&self, goal: &Puzzle) -> bool {
         let mut nbr_permute: usize = 0;
         let mut state_permute: Puzzle = self.clone();
-        let distance_empty_box: usize =
-            manathan(goal.get_index_of_value(0), self.get_index_of_value(0));
+        let actual_index = self.get_index_of_value(0);
+        let goal_index = goal.get_index_of_value(0);
+        let dist_x = distance(self.get_x(actual_index), goal.get_x(goal_index));
+        let dist_y = distance(self.get_y(actual_index), goal.get_y(goal_index));
+        let distance_empty_box: usize = manathan(dist_x, dist_y);
 
         for i in 0..self.state.len() {
             let value = goal.state[i];
@@ -58,6 +61,16 @@ impl Puzzle {
 
     pub fn get_index_of_value(&self, value: usize) -> usize {
         self.state.iter().position(|&r| r == value).unwrap()
+    }
+
+    pub fn print(&self) {
+        for y in 0..self.size {
+            for x in 0..self.size {
+                print!("{}\t", self.state[x + y * self.size]);
+            }
+            println!("");
+        }
+        println!("g = {}, h = {}, f = {}", self.g, self.h, self.g + self.h);
     }
 }
 
