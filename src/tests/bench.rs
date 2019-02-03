@@ -149,6 +149,9 @@ mod test {
         dbg!(binary_heap.pop().unwrap().clone());
         println!("***********************************************");
         // dbg!(binary_heap.get(&puzzle).is_some());
+
+
+		// dbg!(BTreeSet::from(binary_heap.into_vec()))
     }
 
     #[test]

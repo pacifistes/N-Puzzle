@@ -34,10 +34,10 @@
 
         pub fn resolve(&mut self) -> Option<Puzzle> {
             let mut len_closelist: usize = 0;
-			let start = Instant::now();
+			// let start = Instant::now();
 
-			let remove = Instant::now();
-			let mut remo = remove.elapsed();
+			// let remove = Instant::now();
+			// let mut remo = remove.elapsed();
             while !self.opened.is_empty() {
 
                 let selected_state: Puzzle = self.opened.pop().unwrap();
@@ -47,12 +47,12 @@
                     let index_predecessor: usize = len_closelist;
 					for mut new_state in selected_state.expand() {
                         new_state.init_h(&self.goal, self.heuristic);
-						let remove = Instant::now();
+						// let remove = Instant::now();
                         if self.opened.iter().position(|r| r == &new_state).is_none() && !self.closed.contains(&new_state) {
                             new_state.predecessor = index_predecessor;
                             self.opened.push(new_state);
                         }
-						remo = remo + remove.elapsed();
+						// remo = remo + remove.elapsed();
                     }
                     len_closelist += 1;
                     self.closed.insert(selected_state);
