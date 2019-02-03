@@ -130,18 +130,20 @@ impl Puzzle {
         self.g + self.h
     }
 
+	pub fn get_h_of_value(&self, value: usize, goal: &Puzzle, heuristic: fn(usize, usize) -> usize) -> usize {
+		let actual_index = self.get_index_of_value(value);
+		let goal_index = goal.get_index_of_value(value);
+		let dist_x = distance(self.get_x(actual_index), goal.get_x(goal_index));
+		let dist_y = distance(self.get_y(actual_index), goal.get_y(goal_index));
+		heuristic(dist_x, dist_y)
+	}
 
     pub fn init_h(&mut self, goal: &Puzzle, heuristic: fn(usize, usize) -> usize) {
-        let mut h = 0;
-
-        for i in 0..self.state.len() {
-            let actual_index = self.get_index_of_value(i);
-            let goal_index = goal.get_index_of_value(i);
-            let dist_x = distance(self.get_x(actual_index), goal.get_x(goal_index));
-            let dist_y = distance(self.get_y(actual_index), goal.get_y(goal_index));
-            h += heuristic(dist_x, dist_y);
+		let mut h: usize = 0;
+		for i in 0..self.state.len() {
+            h += self.get_h_of_value(i, goal, heuristic);
         }
-        self.h = h;
+		self.h = h;
     }
 }
 
