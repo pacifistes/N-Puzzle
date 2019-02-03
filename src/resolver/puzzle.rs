@@ -1,13 +1,14 @@
 use crate::resolver::heuristic::*;
 use std::cmp::Ordering;
+use std::hash::{Hash, Hasher};
 
-#[derive(Debug, Clone, Eq, Hash)]
+#[derive(Debug, Clone, Eq)]
 pub struct Puzzle {
     pub g: usize,
     size: usize,
-    state: Vec<usize>,
+    pub state: Vec<usize>,
     pub predecessor: usize,
-    h: usize,
+    pub h: usize,
 }
 
 impl Puzzle {
@@ -129,6 +130,7 @@ impl Puzzle {
         self.g + self.h
     }
 
+
     pub fn init_h(&mut self, goal: &Puzzle, heuristic: fn(usize, usize) -> usize) {
         let mut h = 0;
 
@@ -145,18 +147,27 @@ impl Puzzle {
 
 impl Ord for Puzzle {
     fn cmp(&self, other: &Puzzle) -> Ordering {
-        self.f().cmp(&other.f())
+		// print!("cmp|");
+        self.state.cmp(&other.state)
     }
 }
 
 impl PartialEq for Puzzle {
     fn eq(&self, other: &Puzzle) -> bool {
+		// print!("eq|");
         self.state == other.state
     }
 }
 
 impl PartialOrd for Puzzle {
     fn partial_cmp(&self, other: &Puzzle) -> Option<Ordering> {
+		// print!("partial_cmp|");
         self.f().partial_cmp(&other.f())
+    }
+}
+
+impl Hash for Puzzle {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.state.hash(state);
     }
 }

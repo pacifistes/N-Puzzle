@@ -94,14 +94,14 @@ if __name__ == "__main__":
 		f.write("let size: u32 = {};\nlet goal: Puzzle = Puzzle::new(generate_sorted_puzzle(&size), size, 0);\nlet start_state: Vec<u32> = generate_sorted_puzzle(&size);\n".format(size))
 		for i in range(20):
 			puzzle = make_puzzle(size, solvable=True, iterations=args.iterations)
-			f.write("let Vector: Vec<u32> = vec![{}];\nlet puzzle: Puzzle = Puzzle::new(Vector, size, 0);\n".format(",".join([str(value) for value in puzzle])))
+			f.write("let Vector: Vec<u32> = vec![{}];\nlet puzzle: Puzzle = Puzzle::new(vector, size, 0, 0);\n".format(",".join([str(value) for value in puzzle])))
 			f.write("assert_eq!(true, puzzle.is_solvable(&goal));\n")
 	for size in range(2, 11):
 		f.write("//Unolvable and size = {}\n".format(size))
 		f.write("let size: u32 = {};\nlet goal: Puzzle = Puzzle::new(generate_sorted_puzzle(&size), size, 0);\nlet start_state: Vec<u32> = generate_sorted_puzzle(&size);\n".format(size))
 		for i in range(20):
 			puzzle = make_puzzle(size, solvable=False, iterations=args.iterations)
-			f.write("let Vector: Vec<u32> = vec![{}];\nlet puzzle: Puzzle = Puzzle::new(Vector, size, 0);\n".format(",".join([str(value) for value in puzzle])))
+			f.write("let Vector: Vec<u32> = vec![{}];\nlet puzzle: Puzzle = Puzzle::new(vector, size, 0, 0);\n".format(",".join([str(value) for value in puzzle])))
 			f.write("assert_eq!(false, puzzle.is_solvable(&goal));\n")
 
 

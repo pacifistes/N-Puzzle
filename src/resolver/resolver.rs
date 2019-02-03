@@ -82,75 +82,206 @@
 //HashMap
 /*
 {
-    // use crate::resolver::heuristic::*;
-    // use crate::resolver::puzzle::*;
-    // use std::collections::HashMap;
-    // use std::time::Instant;
+    use crate::resolver::heuristic::*;
+    use crate::resolver::puzzle::*;
+    use std::collections::HashMap;
+    use std::time::Instant;
 
 
-    // #[derive(Debug)]
-    // pub struct Resolver {
-    //     opened: HashMap<Puzzle, usize>,
-    //     closed: Vec<Puzzle>,
-    //     goal: Puzzle,
-    //     heuristic: fn(usize, usize) -> usize,
-    // }
+    #[derive(Debug)]
+    pub struct Resolver {
+        opened: HashMap<Puzzle, usize>,
+        closed: Vec<Puzzle>,
+        goal: Puzzle,
+        heuristic: fn(usize, usize) -> usize,
+    }
 
-    // impl Resolver {
-    //     pub fn new(mut start_state: Puzzle, goal: Puzzle, heuristic: Heuristic) -> Resolver {
-    //         let heuristic = match heuristic {
-    //             Heuristic::Manathan => manathan,
-    //             Heuristic::Chebyshev => chebyshev,
-    //         };
-    //         start_state.init_h(&goal, heuristic);
-    //         let mut opened: HashMap<Puzzle, usize> = HashMap::new();
-    //         let f:usize = start_state.f();
-    //         opened.insert(start_state, f);
-    //         Resolver {
-    //             opened,
-    //             closed: Vec::new(),
-    //             goal,
-    //             heuristic,
-    //         }
-    //     }
+    impl Resolver {
+        pub fn new(mut start_state: Puzzle, goal: Puzzle, heuristic: Heuristic) -> Resolver {
+            let heuristic = match heuristic {
+                Heuristic::Manathan => manathan,
+                Heuristic::Chebyshev => chebyshev,
+            };
+            start_state.init_h(&goal, heuristic);
+            let mut opened: HashMap<Puzzle, usize> = HashMap::new();
+            let f:usize = start_state.f();
+            opened.insert(start_state, f);
+            Resolver {
+                opened,
+                closed: Vec::new(),
+                goal,
+                heuristic,
+            }
+        }
 
-    //     pub fn is_final(&self, state: &Puzzle) -> bool {
-    //         *state == self.goal
-    //     }
+        pub fn is_final(&self, state: &Puzzle) -> bool {
+            *state == self.goal
+        }
 
-    //     pub fn resolve(&mut self) -> Option<Puzzle> {
-    //         let mut len_closelist: usize = 0;
-    //         while !self.opened.is_empty() {
-    //             let start = Instant::now();
-    //             let selected_state: Puzzle = self.opened.iter().min().unwrap().0.clone();
-    //             self.opened.remove(&selected_state);
-    //             if self.is_final(&selected_state) {
-    //                 return Some(selected_state);
-    //             } else {
-    //                 let elapsed = start.elapsed();
-    //                 println!("Time find f : {:?}", elapsed);
-    //                 let index_predecessor: usize = len_closelist;
-    //                 for mut new_state in selected_state.expand() {
-    //                     new_state.init_h(&self.goal, self.heuristic);
-    //                     if !self.opened.contains_key(&new_state) && !self.closed.contains(&new_state) {
-    //                         new_state.predecessor = index_predecessor;
-    //                         let f:usize = new_state.f();
-    //                         self.opened.insert(new_state, f);
-    //                     }
-    //                 }
-    //                 self.closed.push(selected_state);
-    //                 len_closelist += 1;
-    //             }
-    //         }
-    //         None
-    //     }
-    // }
+        pub fn resolve(&mut self) -> Option<Puzzle> {
+            let mut len_closelist: usize = 0;
+            while !self.opened.is_empty() {
+                // let start = Instant::now();
+                let selected_state: Puzzle = self.opened.iter().min().unwrap().0.clone();
+                self.opened.remove(&selected_state);
+                if self.is_final(&selected_state) {
+                    return Some(selected_state);
+                } else {
+                    // let elapsed = start.elapsed();
+                    // println!("Time find f : {:?}", elapsed);
+                    let index_predecessor: usize = len_closelist;
+                    for mut new_state in selected_state.expand() {
+                        new_state.init_h(&self.goal, self.heuristic);
+                        if !self.opened.contains_key(&new_state) && !self.closed.contains(&new_state) {
+                            new_state.predecessor = index_predecessor;
+                            let f:usize = new_state.f();
+                            self.opened.insert(new_state, f);
+                        }
+                    }
+                    self.closed.push(selected_state);
+                    len_closelist += 1;
+                }
+            }
+            None
+        }
+    }
 }
 */
 
-//Vector
+//Hahset
+/*
+{
+    use crate::resolver::heuristic::*;
+    use crate::resolver::puzzle::*;
+    use std::collections::HashSet;
+    use std::time::Instant;
+
+
+    #[derive(Debug)]
+    pub struct Resolver {
+        opened: HashSet<Puzzle>,
+        closed: HashSet<Puzzle>,
+        goal: Puzzle,
+        heuristic: fn(usize, usize) -> usize,
+    }
+
+    impl Resolver {
+        pub fn new(mut start_state: Puzzle, goal: Puzzle, heuristic: Heuristic) -> Resolver {
+            let heuristic = match heuristic {
+                Heuristic::Manathan => manathan,
+                Heuristic::Chebyshev => chebyshev,
+            };
+            start_state.init_h(&goal, heuristic);
+            let mut opened: HashSet<Puzzle> = HashSet::new();
+            opened.insert(start_state);
+            Resolver {
+                opened,
+                closed: HashSet::new(),
+                goal,
+                heuristic,
+            }
+        }
+
+        pub fn is_final(&self, state: &Puzzle) -> bool {
+            *state == self.goal
+        }
+
+        pub fn resolve(&mut self) -> Option<Puzzle> {
+            let mut len_closelist: usize = 0;
+            while !self.opened.is_empty() {
+                // let start = Instant::now();
+                let selected_state: Puzzle = self.opened.iter().min().unwrap().clone();
+                self.opened.remove(&selected_state);
+                if self.is_final(&selected_state) {
+                    return Some(selected_state);
+                } else {
+                    // let elapsed = start.elapsed();
+                    // println!("Time find f : {:?}", elapsed);
+                    let index_predecessor: usize = len_closelist;
+                    for mut new_state in selected_state.expand() {
+                        new_state.init_h(&self.goal, self.heuristic);
+                        if self.opened.get(&new_state).is_none() && self.closed.get(&new_state).is_none() {
+                            new_state.predecessor = index_predecessor;
+                            self.opened.insert(new_state);
+                        }
+                    }
+                    self.closed.insert(selected_state);
+                    len_closelist += 1;
+                }
+            }
+            None
+        }
+    }
+}*/
+
+
+//BTreeset
 /*
 {*/
+    use crate::resolver::heuristic::*;
+    use crate::resolver::puzzle::*;
+    use std::collections::HashSet;
+    use std::time::Instant;
+	use std::collections::BTreeSet;
+
+
+    #[derive(Debug)]
+    pub struct Resolver {
+        opened: BTreeSet<Puzzle>,
+        closed: BTreeSet<Puzzle>,
+        goal: Puzzle,
+        heuristic: fn(usize, usize) -> usize,
+    }
+
+    impl Resolver {
+        pub fn new(mut start_state: Puzzle, goal: Puzzle, heuristic: Heuristic) -> Resolver {
+            let heuristic = match heuristic {
+                Heuristic::Manathan => manathan,
+                Heuristic::Chebyshev => chebyshev,
+            };
+            start_state.init_h(&goal, heuristic);
+            let mut opened: BTreeSet<Puzzle> = BTreeSet::new();
+            opened.insert(start_state);
+            Resolver {
+                opened,
+                closed: BTreeSet::new(),
+                goal,
+                heuristic,
+            }
+        }
+
+        pub fn is_final(&self, state: &Puzzle) -> bool {
+            *state == self.goal
+        }
+
+        pub fn resolve(&mut self) -> Option<Puzzle> {
+            let mut len_closelist: usize = 0;
+            while !self.opened.is_empty() {
+                let selected_state: Puzzle = self.opened.iter().min().unwrap().clone();
+                self.opened.remove(&selected_state);
+                if self.is_final(&selected_state) {
+                    return Some(selected_state);
+                } else {
+                    let index_predecessor: usize = len_closelist;
+                    for mut new_state in selected_state.expand() {
+                        new_state.init_h(&self.goal, self.heuristic);
+                        if !self.opened.contains(&new_state) && !self.closed.contains(&new_state) {
+                            new_state.predecessor = index_predecessor;
+                            self.opened.insert(new_state);
+                        }
+                    }
+                    self.closed.insert(selected_state);
+                    len_closelist += 1;
+                }
+            }
+            None
+        }
+    }
+/*}*/
+
+//Vector
+
+/*{
     use crate::resolver::heuristic::*;
     use crate::resolver::puzzle::*;
     use std::time::Instant;
@@ -186,25 +317,25 @@
             let mut len_closelist: usize = 0;
             while !self.opened.is_empty() {
                 let selected_state: Puzzle = self.opened.remove(self.min_f());
-                selected_state.print();
+                // selected_state.print();
                 if self.is_final(&selected_state) {
                     return Some(selected_state);
                 } else {
                     let index_predecessor: usize = len_closelist;
                     for mut new_state in selected_state.expand() {
                         new_state.init_h(&self.goal, self.heuristic);
-                        let start = Instant::now();
+                        // let start = Instant::now();
                         if !self.opened.contains(&new_state) && !self.closed.contains(&new_state) {
                             new_state.predecessor = index_predecessor;
                             self.opened.push(new_state);
                         }
-                        let elapsed = start.elapsed();
-                        println!("Time find f : {:?}", elapsed);
+                        // let elapsed = start.elapsed();
+                        // println!("Time find f : {:?}", elapsed);
                     }
                     len_closelist += 1;
-                    if (len_closelist == 5) {
-                        return None;
-                    }
+                    // if (len_closelist == 5) {
+                        // return None;
+                    // }
                     self.closed.push(selected_state);
                 }
             }
@@ -227,5 +358,4 @@
             final_index
         }
     }
-/*}
-*/
+}*/

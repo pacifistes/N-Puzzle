@@ -12,6 +12,11 @@ mod test {
     use crate::resolver::puzzle::*;
     use crate::run;
     use std::time::Instant;
+    // use std::collections::hash_map::HashMap;
+    use std::collections::HashSet;
+	use std::collections::BTreeSet;
+    use std::collections::BinaryHeap;
+
 
     #[test]
     fn test_bench() {
@@ -63,19 +68,108 @@ mod test {
 
     #[test]
     fn bench_collections() {
+        // let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(3), 3, 0);
+        // let mut vector: Vec<Puzzle> = Vec::new();
+
+
+
+        // for i in 0..5058 {
+        //     let mut start_state: Vec<usize> = generate_sorted_puzzle(3);
+        //     let mut rng = thread_rng();
+        //     start_state.shuffle(&mut rng);
+
+        //     let mut puzzle = Puzzle::new(start_state, 3, (rand::random::<u8>() % 31) as usize);
+        //     puzzle.init_h(&goal, manathan);
+        //     vector.push(puzzle);
+        // }
+        // let puzzle: Puzzle = vector[4055].clone();
+        // let start = Instant::now();
+        // if vector.contains(&puzzle) {
+        //     println!("le puzzle est bien dans le vector");
+        // }
+        // let elapsed = start.elapsed();
+        // println!("time for check in vector = {:?}", elapsed);
+
+        let mut hash_set: HashSet<Puzzle> = HashSet::new();
+        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut puzzle = Puzzle::new(start_state, 3, 0);
+        hash_set.insert(puzzle);
+
+        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut puzzle = Puzzle::new(start_state, 3, 10);
+        hash_set.insert(puzzle);
+
+        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut puzzle = Puzzle::new(start_state, 3, 5);
+        println!("***********************************************");
+
+        dbg!(hash_set.iter().min().unwrap().clone());
+        println!("***********************************************");
+        dbg!(hash_set.contains(&puzzle));
+
+
+
+
+
+
+
+		let mut btree_set: BTreeSet<Puzzle> = BTreeSet::new();
+        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut puzzle = Puzzle::new(start_state, 3, 0);
+        btree_set.insert(puzzle);
+
+        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut puzzle = Puzzle::new(start_state, 3, 10);
+        btree_set.insert(puzzle);
+
+        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut puzzle = Puzzle::new(start_state, 3, 5);
+        println!("***********************************************");
+
+        dbg!(btree_set.iter().min().unwrap().clone());
+        println!("***********************************************");
+        dbg!(btree_set.get(&puzzle).is_some());
+
+
+// // std::BinaryHeap<ReversePartialOrd<T>>
+// 		let mut binary_heap: BinaryHeap<Puzzle> = BinaryHeap::new();
+//         let start_state: Vec<usize> = generate_sorted_puzzle(3);
+//         let mut puzzle = Puzzle::new(start_state, 3, 0);
+//         binary_heap.push(puzzle);
+
+//         let start_state: Vec<usize> = generate_sorted_puzzle(3);
+//         let mut puzzle = Puzzle::new(start_state, 3, 10);
+//         binary_heap.push(puzzle);
+
+//         let start_state: Vec<usize> = generate_sorted_puzzle(3);
+//         let mut puzzle = Puzzle::new(start_state, 3, 5);
+//         println!("***********************************************");
+
+// 		println!("{:?}", binary_heap);
+//         dbg!(binary_heap.pop().unwrap().clone());
+//         println!("***********************************************");
+//         // dbg!(binary_heap.get(&puzzle).is_some());
+    }
+
+    #[test]
+    fn bench_find_position() {
         let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(3), 3, 0);
-        let mut vector: Vec<Puzzle> = Vec::new();
+        let mut start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut rng = thread_rng();
+        start_state.shuffle(&mut rng);
 
+        let mut puzzle = Puzzle::new(start_state, 3, (rand::random::<u8>() % 31) as usize);
+        puzzle.init_h(&goal, manathan);
+        let start = Instant::now();
+        puzzle.get_index_of_value(0);
+        let elapsed = start.elapsed();
+        println!("time for get position with position function =  {:?}", elapsed);
+        let start = Instant::now();
+        puzzle.state.binary_search_by(|probe| probe.cmp(&0));
+        let elapsed = start.elapsed();
+        println!("time for get position with binary search function =  {:?}", elapsed);
 
-
-        for i in 0..5058 {
-            let mut start_state: Vec<usize> = generate_sorted_puzzle(3);
-            let mut rng = thread_rng();
-            start_state.shuffle(&mut rng);
-            
-            let mut puzzle = Puzzle::new(start_state, 3, (rand::random::<u8>() % 31) as usize);
-            puzzle.init_h(&goal, manathan);
-            vector.push(puzzle);
-        }
+		// let vec: Vec<usize> = vec![0,1,1,1,1,5,6];
+		// vec.iter().sum()
     }
 }
