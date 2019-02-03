@@ -79,6 +79,7 @@ impl Puzzle {
 **
 */
 impl Puzzle {
+
     pub fn apply_move(&self, old_pos: usize, new_pos: usize) -> Puzzle {
         let mut new_state: Vec<usize> = self.state.clone();
         new_state.swap(old_pos, new_pos);
@@ -161,10 +162,18 @@ impl PartialEq for Puzzle {
     }
 }
 
+// impl PartialOrd for Puzzle {
+//     fn partial_cmp(&self, other: &Puzzle) -> Option<Ordering> {
+// 		// print!("partial_cmp|");
+//         self.f().partial_cmp(&other.f())
+//     }
+// }
+
+//For binaryHeap
 impl PartialOrd for Puzzle {
     fn partial_cmp(&self, other: &Puzzle) -> Option<Ordering> {
 		// print!("partial_cmp|");
-        self.f().partial_cmp(&other.f())
+        other.f().partial_cmp(&self.f())
     }
 }
 

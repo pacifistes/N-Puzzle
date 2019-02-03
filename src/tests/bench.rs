@@ -131,24 +131,24 @@ mod test {
         dbg!(btree_set.get(&puzzle).is_some());
 
 
-// // std::BinaryHeap<ReversePartialOrd<T>>
-// 		let mut binary_heap: BinaryHeap<Puzzle> = BinaryHeap::new();
-//         let start_state: Vec<usize> = generate_sorted_puzzle(3);
-//         let mut puzzle = Puzzle::new(start_state, 3, 0);
-//         binary_heap.push(puzzle);
+// std::BinaryHeap<ReversePartialOrd<T>>
+		let mut binary_heap: BinaryHeap<Puzzle> = BinaryHeap::new();
+        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut puzzle = Puzzle::new(start_state, 3, 0);
+        binary_heap.push(puzzle);
 
-//         let start_state: Vec<usize> = generate_sorted_puzzle(3);
-//         let mut puzzle = Puzzle::new(start_state, 3, 10);
-//         binary_heap.push(puzzle);
+        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut puzzle = Puzzle::new(start_state, 3, 10);
+        binary_heap.push(puzzle);
 
-//         let start_state: Vec<usize> = generate_sorted_puzzle(3);
-//         let mut puzzle = Puzzle::new(start_state, 3, 5);
-//         println!("***********************************************");
+        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut puzzle = Puzzle::new(start_state, 3, 5);
+        println!("***********************************************");
 
-// 		println!("{:?}", binary_heap);
-//         dbg!(binary_heap.pop().unwrap().clone());
-//         println!("***********************************************");
-//         // dbg!(binary_heap.get(&puzzle).is_some());
+		println!("{:?}", binary_heap);
+        dbg!(binary_heap.pop().unwrap().clone());
+        println!("***********************************************");
+        // dbg!(binary_heap.get(&puzzle).is_some());
     }
 
     #[test]
