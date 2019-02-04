@@ -28,10 +28,6 @@
             }
         }
 
-        pub fn is_final(&self, state: &Puzzle) -> bool {
-            *state == self.goal
-        }
-
         pub fn resolve(&mut self) -> Option<Puzzle> {
             let mut len_closelist: usize = 0;
 			// let start = Instant::now();
@@ -39,16 +35,19 @@
 			// let remove = Instant::now();
 			// let mut remo = remove.elapsed();
             while !self.opened.is_empty() {
-
                 let selected_state: Puzzle = self.opened.pop().unwrap();
-                if self.is_final(&selected_state) {
+                if selected_state == self.goal {
                     return Some(selected_state);
                 } else {
                     let index_predecessor: usize = len_closelist;
 					for mut new_state in selected_state.expand() {
                         new_state.init_h(&self.goal, self.heuristic);
 						// let remove = Instant::now();
-                        if self.opened.iter().position(|r| r == &new_state).is_none() && !self.closed.contains(&new_state) {
+                        if !self.closed.contains(&new_state) && self.opened.iter().position(|r| r == &new_state).is_none() {
+                        // if !self.closed.contains(&new_state) && self.opened.iter().find(|&r| r == &new_state).is_none() {
+                        // if !self.closed.contains(&new_state) && self.opened.iter().rposition(|r| r == &new_state).is_none() {
+                        // if !self.closed.contains(&new_state) && !self.opened.iter().any(|r| r == &new_state) {
+                        // if !self.closed.contains(&new_state) && self.opened.iter().all(|r| r != &new_state) {
                             new_state.predecessor = index_predecessor;
                             self.opened.push(new_state);
                         }
@@ -258,14 +257,14 @@
 
         pub fn resolve(&mut self) -> Option<Puzzle> {
             let mut len_closelist: usize = 0;
-			let start = Instant::now();
+			// let start = Instant::now();
 
-			let remove = Instant::now();
-			let mut remo = remove.elapsed();
+			// let remove = Instant::now();
+			// let mut remo = remove.elapsed();
             while !self.opened.is_empty() {
                 let selected_state: Puzzle = self.opened.iter().min().unwrap().clone();
                 self.opened.remove(&selected_state);
-				let remove = Instant::now();
+                // let remove = Instant::now();
                 if self.is_final(&selected_state) {
                     return Some(selected_state);
                 } else {
@@ -281,9 +280,9 @@
                     self.closed.insert(selected_state);
                     len_closelist += 1;
                 }
-				remo = remo + remove.elapsed();
-				let elapsed = start.elapsed();
-				println!("time : {:?} | {:?}", elapsed, remo);
+				// remo = remo + remove.elapsed();
+				// let elapsed = start.elapsed();
+				// println!("time : {:?} | {:?}", elapsed, remo);
             }
             None
         }
