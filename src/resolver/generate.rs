@@ -4,7 +4,7 @@ use rand::thread_rng;
 use std::vec::Vec;
 
 pub fn generate_sorted_puzzle(size: u8) -> Vec<u8> {
-    let mut sorted: Vec<u8> = vec![0; (size as usize * size as usize)];
+    let mut sorted: Vec<u8> = vec![0; size as usize * size as usize];
     let mut is_horizontal: bool = true;
     let mut is_increment: bool = true;
     let mut nbr_movement: u8 = 0;
