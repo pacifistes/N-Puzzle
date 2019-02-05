@@ -9,8 +9,8 @@ pub fn generate_sorted_puzzle(size: u8) -> Vec<u8> {
     let mut is_increment: bool = true;
     let mut nbr_movement: u8 = 0;
     let mut movement_need: u8 = size;
-    let mut x:usize = 0;
-    let mut y:usize = 0;
+    let mut x: usize = 0;
+    let mut y: usize = 0;
 
     for index in 1..(size * size) {
         sorted[x + y * size as usize] = index as u8;

@@ -6,7 +6,7 @@ use std::io::{Error, ErrorKind};
 
 fn get_size(line: &str) -> Result<u8, io::Error> {
     match line.parse::<u8>() {
-        Ok(num) if num > 1  && num < 17 => Ok(num),
+        Ok(num) if num > 1 && num < 17 => Ok(num),
         _ => Err(Error::new(
             ErrorKind::InvalidInput,
             "The first no-comment line should be the size of the puzzle (between 2 and 10)",
@@ -14,11 +14,7 @@ fn get_size(line: &str) -> Result<u8, io::Error> {
     }
 }
 
-fn add_to_state(
-    mut start_state: Vec<u8>,
-    line: &str,
-    size: u8,
-) -> Result<Vec<u8>, io::Error> {
+fn add_to_state(mut start_state: Vec<u8>, line: &str, size: u8) -> Result<Vec<u8>, io::Error> {
     match line
         .split_whitespace()
         .map(|s| s.parse::<u8>())

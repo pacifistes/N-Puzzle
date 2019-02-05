@@ -1,18 +1,17 @@
 #[cfg(test)]
 mod test {
     use crate::resolver::generate::*;
-    use rand::seq::SliceRandom;
-    use rand::thread_rng;
-    use crate::resolver::parser::parse;
     use crate::resolver::heuristic::*;
+    use crate::resolver::parser::parse;
     use crate::resolver::puzzle::*;
     use crate::run;
+    use rand::seq::SliceRandom;
+    use rand::thread_rng;
     use std::time::Instant;
     // use std::collections::hash_map::HashMap;
-    use std::collections::HashSet;
-	use std::collections::BTreeSet;
+    use std::collections::BTreeSet;
     use std::collections::BinaryHeap;
-
+    use std::collections::HashSet;
 
     #[test]
     fn test_bench() {
@@ -67,15 +66,13 @@ mod test {
         // let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(3), 3, 0);
         // let mut vector: Vec<Puzzle> = Vec::new();
 
-
-
         // for i in 0..5058 {
         //     let mut start_state: Vec<u8> = generate_sorted_puzzle(3);
         //     let mut rng = thread_rng();
         //     start_state.shuffle(&mut rng);
 
         //     let mut puzzle = Puzzle::new(start_state, 3, (rand::random::<u8>() % 31) as usize);
-        //     puzzle.init_h(&goal, manathan);
+        //     puzzle.find_h(&goal, manathan);
         //     vector.push(puzzle);
         // }
         // let puzzle: Puzzle = vector[4055].clone();
@@ -103,13 +100,7 @@ mod test {
         println!("***********************************************");
         dbg!(hash_set.contains(&puzzle));
 
-
-
-
-
-
-
-		let mut btree_set: BTreeSet<Puzzle> = BTreeSet::new();
+        let mut btree_set: BTreeSet<Puzzle> = BTreeSet::new();
         let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 0);
         btree_set.insert(puzzle);
@@ -126,9 +117,8 @@ mod test {
         println!("***********************************************");
         dbg!(btree_set.get(&puzzle).is_some());
 
-
-// std::BinaryHeap<ReversePartialOrd<T>>
-		let mut binary_heap: BinaryHeap<Puzzle> = BinaryHeap::new();
+        // std::BinaryHeap<ReversePartialOrd<T>>
+        let mut binary_heap: BinaryHeap<Puzzle> = BinaryHeap::new();
         let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 0);
         binary_heap.push(puzzle);
@@ -141,13 +131,12 @@ mod test {
         let mut puzzle = Puzzle::new(start_state, 3, 5);
         println!("***********************************************");
 
-		println!("{:?}", binary_heap);
+        println!("{:?}", binary_heap);
         dbg!(binary_heap.pop().unwrap().clone());
         println!("***********************************************");
         // dbg!(binary_heap.get(&puzzle).is_some());
 
-
-		// dbg!(BTreeSet::from(binary_heap.into_vec()))
+        // dbg!(BTreeSet::from(binary_heap.into_vec()))
     }
 
     #[test]
@@ -158,17 +147,23 @@ mod test {
         start_state.shuffle(&mut rng);
 
         let mut puzzle = Puzzle::new(start_state, 3, (rand::random::<u8>() % 31) as usize);
-        puzzle.init_h(&goal, manathan);
+        puzzle.find_h(&goal, manathan);
         let start = Instant::now();
         puzzle.get_index_of_value(0);
         let elapsed = start.elapsed();
-        println!("time for get position with position function =  {:?}", elapsed);
+        println!(
+            "time for get position with position function =  {:?}",
+            elapsed
+        );
         let start = Instant::now();
         puzzle.state.binary_search_by(|probe| probe.cmp(&0));
         let elapsed = start.elapsed();
-        println!("time for get position with binary search function =  {:?}", elapsed);
+        println!(
+            "time for get position with binary search function =  {:?}",
+            elapsed
+        );
 
-		// let vec: Vec<u8> = vec![0,1,1,1,1,5,6];
-		// vec.iter().sum()
+        // let vec: Vec<u8> = vec![0,1,1,1,1,5,6];
+        // vec.iter().sum()
     }
 }
