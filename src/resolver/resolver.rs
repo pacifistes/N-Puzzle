@@ -10,7 +10,7 @@
         opened: BinaryHeap<Puzzle>,
         closed: BTreeSet<Puzzle>,
         goal: Puzzle,
-        heuristic: fn(usize, usize) -> usize,
+        heuristic: fn(u16, u16) -> u16,
     }
 
     impl Resolver {
@@ -60,22 +60,6 @@
 				// println!("time : {:?} | {:?}", elapsed, remo);
             }
             None
-        }
-
-        pub fn min_f(&self) -> usize {
-            let mut final_index: usize = 0;
-            let mut final_f: usize = 0;
-            for (index, puzzle) in self.opened.iter().enumerate() {
-                let actual_f = puzzle.f();
-                match index == 0 || actual_f <= final_f {
-                    true => {
-                        final_f = actual_f;
-                        final_index = index;
-                    }
-                    false => (),
-                }
-            }
-            final_index
         }
     }
 /*}*/

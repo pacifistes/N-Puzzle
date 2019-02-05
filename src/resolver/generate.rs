@@ -3,17 +3,17 @@ use rand::seq::SliceRandom;
 use rand::thread_rng;
 use std::vec::Vec;
 
-pub fn generate_sorted_puzzle(size: usize) -> Vec<usize> {
-    let mut sorted: Vec<usize> = vec![0; (size * size) as usize];
+pub fn generate_sorted_puzzle(size: u8) -> Vec<u8> {
+    let mut sorted: Vec<u8> = vec![0; (size as usize * size as usize)];
     let mut is_horizontal: bool = true;
     let mut is_increment: bool = true;
-    let mut nbr_movement: usize = 0;
-    let mut movement_need: usize = size;
-    let mut x = 0;
-    let mut y = 0;
+    let mut nbr_movement: u8 = 0;
+    let mut movement_need: u8 = size;
+    let mut x:usize = 0;
+    let mut y:usize = 0;
 
     for index in 1..(size * size) {
-        sorted[x + y * size] = index;
+        sorted[x + y * size as usize] = index as u8;
         nbr_movement += 1;
         if nbr_movement == movement_need {
             is_horizontal = !is_horizontal;
@@ -34,8 +34,8 @@ pub fn generate_sorted_puzzle(size: usize) -> Vec<usize> {
 }
 
 pub fn generate_random_puzzle() -> Puzzle {
-    let size: usize = 3;
-    let mut start_state: Vec<usize> = generate_sorted_puzzle(size);
+    let size: u8 = 3;
+    let mut start_state: Vec<u8> = generate_sorted_puzzle(size);
     let mut rng = thread_rng();
 
     start_state.shuffle(&mut rng);

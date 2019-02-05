@@ -57,7 +57,7 @@ mod test {
 
     #[test]
     fn bench_run() {
-        let vector: Vec<usize> = vec![5, 6, 7, 2, 0, 4, 3, 8, 1];
+        let vector: Vec<u8> = vec![5, 6, 7, 2, 0, 4, 3, 8, 1];
         let puzzle: Puzzle = Puzzle::new(vector, 3, 0);
 
         let start = Instant::now();
@@ -74,7 +74,7 @@ mod test {
 
 
         // for i in 0..5058 {
-        //     let mut start_state: Vec<usize> = generate_sorted_puzzle(3);
+        //     let mut start_state: Vec<u8> = generate_sorted_puzzle(3);
         //     let mut rng = thread_rng();
         //     start_state.shuffle(&mut rng);
 
@@ -91,15 +91,15 @@ mod test {
         // println!("time for check in vector = {:?}", elapsed);
 
         let mut hash_set: HashSet<Puzzle> = HashSet::new();
-        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 0);
         hash_set.insert(puzzle);
 
-        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 10);
         hash_set.insert(puzzle);
 
-        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 5);
         println!("***********************************************");
 
@@ -114,15 +114,15 @@ mod test {
 
 
 		let mut btree_set: BTreeSet<Puzzle> = BTreeSet::new();
-        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 0);
         btree_set.insert(puzzle);
 
-        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 10);
         btree_set.insert(puzzle);
 
-        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 5);
         println!("***********************************************");
 
@@ -133,15 +133,15 @@ mod test {
 
 // std::BinaryHeap<ReversePartialOrd<T>>
 		let mut binary_heap: BinaryHeap<Puzzle> = BinaryHeap::new();
-        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 0);
         binary_heap.push(puzzle);
 
-        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 10);
         binary_heap.push(puzzle);
 
-        let start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut puzzle = Puzzle::new(start_state, 3, 5);
         println!("***********************************************");
 
@@ -157,7 +157,7 @@ mod test {
     #[test]
     fn bench_find_position() {
         let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(3), 3, 0);
-        let mut start_state: Vec<usize> = generate_sorted_puzzle(3);
+        let mut start_state: Vec<u8> = generate_sorted_puzzle(3);
         let mut rng = thread_rng();
         start_state.shuffle(&mut rng);
 
@@ -172,7 +172,7 @@ mod test {
         let elapsed = start.elapsed();
         println!("time for get position with binary search function =  {:?}", elapsed);
 
-		// let vec: Vec<usize> = vec![0,1,1,1,1,5,6];
+		// let vec: Vec<u8> = vec![0,1,1,1,1,5,6];
 		// vec.iter().sum()
     }
 }

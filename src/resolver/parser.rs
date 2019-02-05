@@ -4,8 +4,8 @@ use std::io;
 use std::io::{BufRead, BufReader};
 use std::io::{Error, ErrorKind};
 
-fn get_size(line: &str) -> Result<usize, io::Error> {
-    match line.parse::<usize>() {
+fn get_size(line: &str) -> Result<u8, io::Error> {
+    match line.parse::<u8>() {
         Ok(num) => Ok(num),
         Err(_) => Err(Error::new(
             ErrorKind::InvalidInput,
@@ -16,18 +16,18 @@ fn get_size(line: &str) -> Result<usize, io::Error> {
 
 #[warn(clippy::match_bool)]
 fn add_to_state(
-    mut start_state: Vec<usize>,
+    mut start_state: Vec<u8>,
     line: &str,
-    size: usize,
-) -> Result<Vec<usize>, io::Error> {
+    size: u8,
+) -> Result<Vec<u8>, io::Error> {
     match line
         .split_whitespace()
-        .map(|s| s.parse::<usize>())
-        .collect::<Result<Vec<usize>, _>>()
+        .map(|s| s.parse::<u8>())
+        .collect::<Result<Vec<u8>, _>>()
     {
         Ok(numbers) => {
             for number in numbers {
-                match start_state.contains(&number) || number >= size * size {
+                match start_state.contains(&number) || number >= (size * size) as u8 {
                     true => {
                         return Err(Error::new(
                             ErrorKind::InvalidData,
@@ -53,8 +53,8 @@ fn add_to_state(
 
 pub fn parse(filename: &str) -> Result<Puzzle, io::Error> {
     let file = File::open(filename)?;
-    let mut size: usize = 0;
-    let mut start_state: Vec<usize> = Vec::new();
+    let mut size: u8 = 0;
+    let mut start_state: Vec<u8> = Vec::new();
 
     for line in BufReader::new(file).lines() {
         let line = line.unwrap().split('#').collect::<Vec<_>>()[0]
@@ -68,7 +68,7 @@ pub fn parse(filename: &str) -> Result<Puzzle, io::Error> {
             },
         }
     }
-    if start_state.len() != size * size {
+    if start_state.len() != size as usize * size as usize {
         return Err(Error::new(ErrorKind::InvalidData, "Missing some lines"));
     }
     Ok(Puzzle::new(start_state, size, 0))
