@@ -17,13 +17,13 @@ pub struct Resolver {
     all_state: BTreeSet<Puzzle>,
     goal: Puzzle,
     algo: Algo,
-    heuristics: Vec<fn(u16, u16) -> u16>,
+    heuristics: [Option<fn(u16, u16) -> u16>; 6],
 }
 
 impl Resolver {
     pub fn new(mut start_state: Puzzle, goal: Puzzle) -> Resolver {
         let mut all_state: BTreeSet<Puzzle> = BTreeSet::new();
-        let heuristics: Vec<fn(u16, u16) -> u16> = vec![manathan];
+        let heuristics: [Option<fn(u16, u16) -> u16>; 6] = [Some(manathan), None, None, None, None, None];
         start_state.find_h(&goal, &heuristics);
         all_state.insert(start_state.clone());
         Resolver {
@@ -40,14 +40,14 @@ impl Resolver {
 impl Resolver {
     pub fn set_heuristics(&mut self, heuristics : Vec<Heuristic>) {
         for heuristic in heuristics {
-            self.heuristics.insert(match heuristic {
-                    MANATHAN => manathan,
-                    CHEBYSHEV => chebyshev,
-                    EUCLIDIENNE => euclidienne,
-                    OCTILE => octile,
-                    HAMIN => hamming,
-                }
-            )
+            match heuristic {
+                MANATHAN => self.heuristics[0] = Some(manathan),
+                CHEBYSHEV => self.heuristics[1] = Some(chebyshev),
+                EUCLIDIENNE => self.heuristics[2] = Some(euclidienne),
+                OCTILE => self.heuristics[3] = Some(octile),
+                HAMMING => self.heuristics[4] = Some(hamming),
+                LINEAR_CONFLICT => self.heuristics[5] = Some(linear_conflict)
+            };
         }
     }
 

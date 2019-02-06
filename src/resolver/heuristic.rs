@@ -7,6 +7,7 @@ pub enum Heuristic {
     EUCLIDIENNE,
     OCTILE,
     HAMMING,
+    LINEAR_CONFLICT
 }
 
 pub fn distance(start: usize, end: usize) -> u16 {

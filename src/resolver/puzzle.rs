@@ -88,13 +88,8 @@ impl Puzzle {
         heuristic(dist_x, dist_y)
     }
 
-    pub fn find_h(&mut self, goal: &Puzzle, heuristics: &Vec<fn(u16, u16) -> u16>) {
-        // let mut h: u16 = 0;
-        // for i in 1..self.state.len() as u8 {
-        //     h += self.get_h_of_value(i, goal, heuristic);
-        // }
-
-        self.h = heuristics.iter().map(|heuristic| self.state.iter().map(|value| self.get_h_of_value(*value, goal, *heuristic)).sum()).max().unwrap();
+    pub fn find_h(&mut self, goal: &Puzzle, heuristics: &[Option<fn(u16, u16) -> u16>; 6]) {
+        self.h = heuristics.iter().filter(|heuristic| heuristic.is_some()).map(|heuristic| self.state.iter().map(|value| self.get_h_of_value(*value, goal, heuristic.unwrap())).sum()).max().unwrap();
     }
 }
 
