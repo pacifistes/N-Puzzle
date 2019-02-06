@@ -89,7 +89,8 @@ impl Puzzle {
     }
 
     pub fn find_h(&mut self, goal: &Puzzle, heuristics: &[Option<fn(u16, u16) -> u16>; 6]) {
-        self.h = heuristics.iter().filter(|heuristic| heuristic.is_some()).map(|heuristic| self.state.iter().map(|value| self.get_h_of_value(*value, goal, heuristic.unwrap())).sum()).max().unwrap();
+        // self.h = heuristics.iter().filter(|heuristic| heuristic.is_some()).map(|heuristic| self.state.iter().map(|value| self.get_h_of_value(*value, goal, heuristic.unwrap())).sum()).max().unwrap();
+        self.h = heuristics.iter().filter(|heuristic| heuristic.is_some()).map(|heuristic| self.state.iter().map(|value| self.get_h_of_value(*value, goal, heuristic.unwrap())).sum::<u16>()).sum();
     }
 }
 

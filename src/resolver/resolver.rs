@@ -23,7 +23,8 @@ pub struct Resolver {
 impl Resolver {
     pub fn new(mut start_state: Puzzle, goal: Puzzle) -> Resolver {
         let mut all_state: BTreeSet<Puzzle> = BTreeSet::new();
-        let heuristics: [Option<fn(u16, u16) -> u16>; 6] = [Some(manathan), None, None, None, None, None];
+        let heuristics: [Option<fn(u16, u16) -> u16>; 6] = [Some(manathan), None, None, None, Some(hamming), None];
+
         start_state.find_h(&goal, &heuristics);
         all_state.insert(start_state.clone());
         Resolver {
@@ -59,8 +60,12 @@ impl Resolver {
 impl Resolver {
     pub fn find_f(&self, state: &mut Puzzle) {
         match self.algo {
-            Algo::UNIFORM_COST => state.g = 0,
-            _ => state.find_h(&self.goal, &self.heuristics),
+            Algo::UNIFORM_COST => {
+				state.g = 0;
+				state.find_h(&self.goal, &self.heuristics);
+			},// que h
+            Algo::A_STAR => state.find_h(&self.goal, &self.heuristics),
+			_ => ()
         }
     }
 
@@ -87,4 +92,8 @@ impl Resolver {
         }
         None
     }
+
+	// pub fn print(&self) {
+	// 	let mut vector: Vec<Puzzle> = self.closed.in
+	// }
 }
