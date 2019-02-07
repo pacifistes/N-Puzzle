@@ -25,10 +25,9 @@ impl Resolver {
         let mut all_state: BTreeSet<Puzzle> = BTreeSet::new();
         let heuristics: [Option<fn(u16, u16) -> u16>; 6] = [Some(manathan), None, None, None, Some(hamming), None];
 
-        start_state.find_h(&goal, &heuristics);
         all_state.insert(start_state.clone());
         Resolver {
-            opened: BinaryHeap::from(vec![start_state.clone()]),
+            opened: BinaryHeap::from(vec![start_state]),
             closed: BTreeSet::new(),
             all_state,
             goal,
@@ -58,28 +57,22 @@ impl Resolver {
 }
 
 impl Resolver {
-    pub fn find_f(&self, state: &mut Puzzle) {
-        match self.algo {
-            Algo::UNIFORM_COST => {
-				state.g = 0;
-				state.find_h(&self.goal, &self.heuristics);
-			},// que h
-            Algo::A_STAR => state.find_h(&self.goal, &self.heuristics),
-			_ => ()
-        }
-    }
 
     pub fn resolve(&mut self) -> Option<Puzzle> {
         let mut len_closelist: usize = 0;
 
-        while !self.opened.is_empty() {
+		let mut initial_state = self.opened.peek_mut().unwrap();
+		initial_state.find_f(&self.algo, &self.goal, &self.heuristics);
+		drop(initial_state);
+
+	    while !self.opened.is_empty() {
             let selected_state: Puzzle = self.opened.pop().unwrap();
             if selected_state == self.goal {
                 return Some(selected_state);
             } else {
                 let index_predecessor: usize = len_closelist;
                 for mut new_state in selected_state.expand() {
-                    self.find_f(&mut new_state);
+                    new_state.find_f(&self.algo, &self.goal, &self.heuristics);
                     if !self.all_state.contains(&new_state) {
                         new_state.predecessor = index_predecessor;
                         self.all_state.insert(new_state.clone());
