@@ -1,6 +1,6 @@
 use crate::resolver::heuristic::*;
 use crate::resolver::puzzle::*;
-use std::collections::BTreeSet;
+use std::collections::HashSet;
 use std::collections::BinaryHeap;
 
 #[derive(Debug)]
@@ -13,23 +13,24 @@ pub enum Algo {
 #[derive(Debug)]
 pub struct Resolver {
     opened: BinaryHeap<Puzzle>,
-    closed: BTreeSet<Puzzle>,
-    all_state: BTreeSet<Puzzle>,
+    closed: HashSet<Puzzle>,
+    all_state: HashSet<Puzzle>,
     goal: Puzzle,
     algo: Algo,
     heuristics: [Option<fn(u16, u16) -> u16>; 6],
 }
 
 impl Resolver {
+
     pub fn new(mut start_state: Puzzle, goal: Puzzle) -> Resolver {
-        let mut all_state: BTreeSet<Puzzle> = BTreeSet::new();
+        let mut all_state: HashSet<Puzzle> = HashSet::new();
         let heuristics: [Option<fn(u16, u16) -> u16>; 6] =
             [Some(manathan), None, None, None, Some(hamming), None];
 
         all_state.insert(start_state.clone());
         Resolver {
             opened: BinaryHeap::from(vec![start_state]),
-            closed: BTreeSet::new(),
+            closed: HashSet::new(),
             all_state,
             goal,
             algo: Algo::GREEDY,
