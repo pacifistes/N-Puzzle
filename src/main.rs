@@ -16,8 +16,7 @@ fn run(puzzle: Puzzle) {
     match puzzle.is_solvable(&goal) {
         true => {
             println!("the puzzle is solvable");
-            let mut resolver: Resolver =
-                Resolver::new(puzzle, goal);
+            let mut resolver: Resolver = Resolver::new(puzzle, goal);
             dbg!(resolver.resolve());
         }
         false => println!("the puzzle is unsolvable"),

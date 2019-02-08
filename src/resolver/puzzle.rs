@@ -3,7 +3,6 @@ use crate::resolver::resolver::Algo;
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
 
-
 #[derive(Debug, Clone, Eq)]
 pub struct Puzzle {
     pub g: u16,
@@ -11,7 +10,7 @@ pub struct Puzzle {
     pub state: Vec<u8>,
     pub predecessor: usize,
     pub h: u16,
-	pub f: u16,
+    pub f: u16,
 }
 
 impl Puzzle {
@@ -22,7 +21,7 @@ impl Puzzle {
             state,
             predecessor: 0,
             h: 0,
-			f: 0,
+            f: 0,
         }
     }
 }
@@ -68,17 +67,11 @@ impl Puzzle {
 }
 
 impl Puzzle {
-
     pub fn get_index_of_value(&self, value: u8) -> u16 {
         self.state.iter().position(|&r| r == value).unwrap() as u16
     }
 
-    pub fn get_h_of_value(
-        &self,
-        value: u8,
-        goal: &Puzzle,
-        heuristic: fn(u16, u16) -> u16,
-    ) -> u16 {
+    pub fn get_h_of_value(&self, value: u8, goal: &Puzzle, heuristic: fn(u16, u16) -> u16) -> u16 {
         if value == 0 {
             return 0;
         }
@@ -91,20 +84,34 @@ impl Puzzle {
 
     pub fn find_h(&mut self, goal: &Puzzle, heuristics: &[Option<fn(u16, u16) -> u16>; 6]) {
         // self.h = heuristics.iter().filter(|heuristic| heuristic.is_some()).map(|heuristic| self.state.iter().map(|value| self.get_h_of_value(*value, goal, heuristic.unwrap())).sum()).max().unwrap();
-        self.h = heuristics.iter().filter(|heuristic| heuristic.is_some()).map(|heuristic| self.state.iter().map(|value| self.get_h_of_value(*value, goal, heuristic.unwrap())).sum::<u16>()).sum();
+        self.h = heuristics
+            .iter()
+            .filter(|heuristic| heuristic.is_some())
+            .map(|heuristic| {
+                self.state
+                    .iter()
+                    .map(|value| self.get_h_of_value(*value, goal, heuristic.unwrap()))
+                    .sum::<u16>()
+            })
+            .sum();
     }
 
-    pub fn find_f(&mut self, algo: &Algo, goal: &Puzzle, heuristics: &[Option<fn(u16, u16) -> u16>; 6]) {
+    pub fn find_f(
+        &mut self,
+        algo: &Algo,
+        goal: &Puzzle,
+        heuristics: &[Option<fn(u16, u16) -> u16>; 6],
+    ) {
         match algo {
             Algo::GREEDY => {
-				self.find_h(goal, heuristics);
-				self.f = self.h;
-			},// que h
+                self.find_h(goal, heuristics);
+                self.f = self.h;
+            } // que h
             Algo::A_STAR => {
-				self.find_h(goal, heuristics);
-				self.f = self.g + self.h;
-			},
-			_ => ()
+                self.find_h(goal, heuristics);
+                self.f = self.g + self.h;
+            }
+            _ => (),
         }
     }
 }

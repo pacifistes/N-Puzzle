@@ -23,7 +23,8 @@ pub struct Resolver {
 impl Resolver {
     pub fn new(mut start_state: Puzzle, goal: Puzzle) -> Resolver {
         let mut all_state: BTreeSet<Puzzle> = BTreeSet::new();
-        let heuristics: [Option<fn(u16, u16) -> u16>; 6] = [Some(manathan), None, None, None, Some(hamming), None];
+        let heuristics: [Option<fn(u16, u16) -> u16>; 6] =
+            [Some(manathan), None, None, None, Some(hamming), None];
 
         all_state.insert(start_state.clone());
         Resolver {
@@ -31,14 +32,14 @@ impl Resolver {
             closed: BTreeSet::new(),
             all_state,
             goal,
-            algo : Algo::A_STAR,
+            algo: Algo::GREEDY,
             heuristics,
         }
     }
 }
 
 impl Resolver {
-    pub fn set_heuristics(&mut self, heuristics : Vec<Heuristic>) {
+    pub fn set_heuristics(&mut self, heuristics: Vec<Heuristic>) {
         for heuristic in heuristics {
             match heuristic {
                 MANATHAN => self.heuristics[0] = Some(manathan),
@@ -46,7 +47,7 @@ impl Resolver {
                 EUCLIDIENNE => self.heuristics[2] = Some(euclidienne),
                 OCTILE => self.heuristics[3] = Some(octile),
                 HAMMING => self.heuristics[4] = Some(hamming),
-                LINEAR_CONFLICT => self.heuristics[5] = Some(linear_conflict)
+                LINEAR_CONFLICT => self.heuristics[5] = Some(linear_conflict),
             };
         }
     }
@@ -57,15 +58,14 @@ impl Resolver {
 }
 
 impl Resolver {
-
     pub fn resolve(&mut self) -> Option<Puzzle> {
         let mut len_closelist: usize = 0;
 
-		let mut initial_state = self.opened.peek_mut().unwrap();
-		initial_state.find_f(&self.algo, &self.goal, &self.heuristics);
-		drop(initial_state);
+        let mut initial_state = self.opened.peek_mut().unwrap();
+        initial_state.find_f(&self.algo, &self.goal, &self.heuristics);
+        drop(initial_state);
 
-	    while !self.opened.is_empty() {
+        while !self.opened.is_empty() {
             let selected_state: Puzzle = self.opened.pop().unwrap();
             if selected_state == self.goal {
                 return Some(selected_state);
@@ -86,7 +86,7 @@ impl Resolver {
         None
     }
 
-	// pub fn print(&self) {
-	// 	let mut vector: Vec<Puzzle> = self.closed.in
-	// }
+    // pub fn print(&self) {
+    // 	let mut vector: Vec<Puzzle> = self.closed.in
+    // }
 }
