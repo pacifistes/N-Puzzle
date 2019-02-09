@@ -2,7 +2,8 @@ use crate::resolver::heuristic::*;
 use crate::resolver::puzzle::*;
 use std::collections::HashSet;
 use std::collections::BinaryHeap;
-
+use std::rc::Rc;
+use std::cell::RefCell;
 #[derive(Debug)]
 pub enum Algo {
     UNIFORM_COST,
@@ -12,27 +13,41 @@ pub enum Algo {
 
 #[derive(Debug)]
 pub struct Resolver {
-    opened: BinaryHeap<Puzzle>,
-    closed: HashSet<Puzzle>,
-    all_state: HashSet<Puzzle>,
-    goal: Puzzle,
+    opened: BinaryHeap<RefPuzzle>,
+    all_state: HashSet<RefPuzzle>,
+    goal: RefPuzzle,
     algo: Algo,
     heuristics: [Option<fn(u16, u16) -> u16>; 6],
 }
 
+
+// all_State HashSet<Puzzle> {}
+
+// opened BinearHeap<RefCell<Puzzle>>
+
+
+// all_state.push(new_puzzle)
+
+// opened.push(RefCell::new(all_state.get(new_puzzle)))
+
 impl Resolver {
 
     pub fn new(mut start_state: Puzzle, goal: Puzzle) -> Resolver {
-        let mut all_state: HashSet<Puzzle> = HashSet::new();
-        let heuristics: [Option<fn(u16, u16) -> u16>; 6] =
+		let start_state = RefPuzzle::new(start_state);
+
+        let mut all_state: HashSet<RefPuzzle> = HashSet::new();
+
+		let heuristics: [Option<fn(u16, u16) -> u16>; 6] =
             [Some(manathan), None, None, None, Some(hamming), None];
 
-        all_state.insert(start_state.clone());
+
+		all_state.insert(start_state.clone());
+		let mut opened: BinaryHeap<RefPuzzle> = BinaryHeap::new();
+		opened.push(start_state);
         Resolver {
-            opened: BinaryHeap::from(vec![start_state]),
-            closed: HashSet::new(),
+            opened,
             all_state,
-            goal,
+            goal: RefPuzzle::new(goal),
             algo: Algo::GREEDY,
             heuristics,
         }
@@ -60,34 +75,40 @@ impl Resolver {
 
 impl Resolver {
     pub fn resolve(&mut self) -> Option<Puzzle> {
-        let mut len_closelist: usize = 0;
-
-        let mut initial_state = self.opened.peek_mut().unwrap();
-        initial_state.find_f(&self.algo, &self.goal, &self.heuristics);
+        let initial_state = self.opened.peek_mut().unwrap();
+        initial_state.ref_puzzle.borrow_mut().find_f(&self.algo, &self.goal.ref_puzzle.borrow(), &self.heuristics);
         drop(initial_state);
 
         while !self.opened.is_empty() {
-            let selected_state: Puzzle = self.opened.pop().unwrap();
+            let selected_state: RefPuzzle = self.opened.pop().unwrap();
             if selected_state == self.goal {
-                return Some(selected_state);
+				self.goal = selected_state.clone();
+                return Some(selected_state.ref_puzzle.borrow().clone());
             } else {
-                let index_predecessor: usize = len_closelist;
-                for mut new_state in selected_state.expand() {
-                    new_state.find_f(&self.algo, &self.goal, &self.heuristics);
+                for mut new_state in selected_state.ref_puzzle.borrow().expand() {
+                    new_state.ref_puzzle.borrow_mut().find_f(&self.algo, &self.goal.ref_puzzle.borrow(), &self.heuristics);
                     if !self.all_state.contains(&new_state) {
-                        new_state.predecessor = index_predecessor;
-                        self.all_state.insert(new_state.clone());
-                        self.opened.push(new_state);
+                        new_state.ref_puzzle.borrow_mut().predecessor = Some(selected_state.clone());
+                        self.opened.push(new_state.clone());
+                        self.all_state.insert(new_state);
                     }
                 }
-                len_closelist += 1;
-                self.closed.insert(selected_state);
             }
         }
         None
     }
 
-    // pub fn print(&self) {
-    // 	let mut vector: Vec<Puzzle> = self.closed.in
-    // }
+    pub fn print(&self) {
+		let mut vector: Vec<RefPuzzle> = Vec::new();
+		let mut predecessor = Some(self.goal.clone());
+		while (predecessor.is_some()) {
+			match &predecessor {
+				Some(val)	=> vector.push(val.clone()),
+				_		=> {},
+			}
+			predecessor = predecessor.unwrap().ref_puzzle.borrow().predecessor.clone();
+		}
+		vector.reverse();
+		vector.iter().for_each(|x| x.ref_puzzle.borrow().print());
+    }
 }

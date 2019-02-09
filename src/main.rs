@@ -8,6 +8,8 @@ use resolver::parser::parse;
 use resolver::puzzle::*;
 use resolver::resolver::*;
 use std::env;
+use std::time::Instant;
+
 
 fn run(puzzle: Puzzle) {
     let size = puzzle.get_size();
@@ -17,7 +19,13 @@ fn run(puzzle: Puzzle) {
         true => {
             println!("the puzzle is solvable");
             let mut resolver: Resolver = Resolver::new(puzzle, goal);
-            dbg!(resolver.resolve());
+            // dbg!(resolver.resolve());
+			let start = Instant::now();
+			resolver.resolve();
+			let elapsed = start.elapsed();
+			// loop {}
+			resolver.print();
+        	println!("time for resolve {:?}", elapsed);
         }
         false => println!("the puzzle is unsolvable"),
     }
@@ -36,20 +44,4 @@ fn main() {
         _ => generate_random_puzzle(),
     };
     run(puzzle);
-    // criterion_group!(benches, criterion_benchmark);
-    // criterion_main!(benches);
 }
-
-// use criterion::Criterion;
-
-// fn fibonacci(n: u64) -> u64 {
-//     match n {
-//         0 => 1,
-//         1 => 1,
-//         n => fibonacci(n-1) + fibonacci(n-2),
-//     }
-// }
-
-// fn criterion_benchmark(c: &mut Criterion) {
-//     c.bench_function("fib 20", |b| b.iter(|| fibonacci(20)));
-// }

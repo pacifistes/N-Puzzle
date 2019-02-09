@@ -1,5 +1,7 @@
 use crate::resolver::heuristic::*;
 use crate::resolver::resolver::Algo;
+use std::rc::Rc;
+use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
 
@@ -8,7 +10,7 @@ pub struct Puzzle {
     pub g: u16,
     size: u8,
     pub state: Vec<u8>,
-    pub predecessor: usize,
+    pub predecessor: Option<RefPuzzle>,
     pub h: u16,
     pub f: u16,
 }
@@ -19,7 +21,7 @@ impl Puzzle {
             g,
             size,
             state,
-            predecessor: 0,
+            predecessor: None,
             h: 0,
             f: 0,
         }
@@ -117,13 +119,13 @@ impl Puzzle {
 }
 
 impl Puzzle {
-    pub fn apply_move(&self, old_pos: usize, new_pos: usize) -> Puzzle {
+    pub fn apply_move(&self, old_pos: usize, new_pos: usize) -> RefPuzzle {
         let mut new_state: Vec<u8> = self.state.clone();
         new_state.swap(old_pos, new_pos);
-        Puzzle::new(new_state, self.size, self.g + 1)
+        RefPuzzle::new(Puzzle::new(new_state, self.size, self.g + 1))
     }
 
-    pub fn move_left(&self, x: usize, y: usize) -> Option<Puzzle> {
+    pub fn move_left(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         match x == 0 {
             true => None,
             false => {
@@ -132,7 +134,7 @@ impl Puzzle {
         }
     }
 
-    pub fn move_top(&self, x: usize, y: usize) -> Option<Puzzle> {
+    pub fn move_top(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         match y == 0 {
             true => None,
             false => {
@@ -141,7 +143,7 @@ impl Puzzle {
         }
     }
 
-    pub fn move_right(&self, x: usize, y: usize) -> Option<Puzzle> {
+    pub fn move_right(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         match x == (self.size - 1) as usize {
             true => None,
             false => {
@@ -150,7 +152,7 @@ impl Puzzle {
         }
     }
 
-    pub fn move_bot(&self, x: usize, y: usize) -> Option<Puzzle> {
+    pub fn move_bot(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         match y == (self.size - 1) as usize {
             true => None,
             false => {
@@ -159,11 +161,11 @@ impl Puzzle {
         }
     }
 
-    pub fn expand(&self) -> Vec<Puzzle> {
+    pub fn expand(&self) -> Vec<RefPuzzle> {
         let blank_position: u16 = self.get_index_of_value(0);
         let x: usize = self.get_x(blank_position as usize);
         let y: usize = self.get_y(blank_position as usize);
-        let expand_states: Vec<Option<Puzzle>> = vec![
+        let expand_states: Vec<Option<RefPuzzle>> = vec![
             self.move_left(x, y),
             self.move_top(x, y),
             self.move_right(x, y),
@@ -209,5 +211,51 @@ impl PartialOrd for Puzzle {
 impl Hash for Puzzle {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.state.hash(state);
+    }
+}
+
+
+#[derive(Debug, Eq)]
+pub struct RefPuzzle {
+	pub ref_puzzle : Rc<RefCell<Puzzle>>
+}
+
+impl RefPuzzle {
+    pub fn new(state: Puzzle) -> RefPuzzle {
+		RefPuzzle {
+			ref_puzzle : Rc::new(RefCell::new(state))
+		}
+    }
+}
+
+impl Clone for RefPuzzle {
+    fn clone(&self) -> RefPuzzle {
+		RefPuzzle {
+			ref_puzzle:  Rc::clone(&self.ref_puzzle)
+		}
+	}
+}
+
+impl PartialOrd for RefPuzzle {
+    fn partial_cmp(&self, other: &RefPuzzle) -> Option<Ordering> {
+        other.ref_puzzle.borrow().f.partial_cmp(&self.ref_puzzle.borrow().f)
+    }
+}
+
+impl PartialEq for RefPuzzle {
+    fn eq(&self, other: &RefPuzzle) -> bool {
+        self.ref_puzzle.borrow().state == other.ref_puzzle.borrow().state
+    }
+}
+
+impl Ord for RefPuzzle {
+    fn cmp(&self, other: &RefPuzzle) -> Ordering {
+        self.ref_puzzle.borrow().state.cmp(&other.ref_puzzle.borrow().state)
+    }
+}
+
+impl Hash for RefPuzzle {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.ref_puzzle.borrow().state.hash(state);
     }
 }
