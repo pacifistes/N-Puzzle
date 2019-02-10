@@ -1,9 +1,9 @@
 use crate::resolver::heuristic::*;
 use crate::resolver::resolver::Algo;
-use std::rc::Rc;
 use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
+use std::rc::Rc;
 
 #[derive(Debug, Clone, Eq)]
 pub struct Puzzle {
@@ -85,7 +85,6 @@ impl Puzzle {
     }
 
     pub fn find_h(&mut self, goal: &Puzzle, heuristics: &[Option<fn(u16, u16) -> u16>; 6]) {
-        // self.h = heuristics.iter().filter(|heuristic| heuristic.is_some()).map(|heuristic| self.state.iter().map(|value| self.get_h_of_value(*value, goal, heuristic.unwrap())).sum()).max().unwrap();
         self.h = heuristics
             .iter()
             .filter(|heuristic| heuristic.is_some())
@@ -126,39 +125,32 @@ impl Puzzle {
     }
 
     pub fn move_left(&self, x: usize, y: usize) -> Option<RefPuzzle> {
-        match x == 0 {
-            true => None,
-            false => {
-                Some(self.apply_move(x + y * self.size as usize, x - 1 + y * self.size as usize))
-            }
+        if x == 0 {
+			return None;
         }
+		Some(self.apply_move(x + y * self.size as usize, x - 1 + y * self.size as usize))
     }
 
     pub fn move_top(&self, x: usize, y: usize) -> Option<RefPuzzle> {
-        match y == 0 {
-            true => None,
-            false => {
-                Some(self.apply_move(x + y * self.size as usize, x + (y - 1) * self.size as usize))
-            }
+        if y == 0 {
+			return None;
         }
+		Some(self.apply_move(x + y * self.size as usize, x + (y - 1) * self.size as usize))
     }
 
     pub fn move_right(&self, x: usize, y: usize) -> Option<RefPuzzle> {
-        match x == (self.size - 1) as usize {
-            true => None,
-            false => {
-                Some(self.apply_move(x + y * self.size as usize, x + 1 + y * self.size as usize))
-            }
+        if x == (self.size - 1) as usize {
+			return None;
         }
+		Some(self.apply_move(x + y * self.size as usize, x + 1 + y * self.size as usize))
+
     }
 
     pub fn move_bot(&self, x: usize, y: usize) -> Option<RefPuzzle> {
-        match y == (self.size - 1) as usize {
-            true => None,
-            false => {
-                Some(self.apply_move(x + y * self.size as usize, x + (y + 1) * self.size as usize))
-            }
+        if y == (self.size - 1) as usize {
+			return None;
         }
+		Some(self.apply_move(x + y * self.size as usize, x + (y + 1) * self.size as usize))
     }
 
     pub fn expand(&self) -> Vec<RefPuzzle> {
@@ -190,55 +182,40 @@ impl Puzzle {
     }
 }
 
-impl Ord for Puzzle {
-    fn cmp(&self, other: &Puzzle) -> Ordering {
-        self.state.cmp(&other.state)
-    }
-}
-
 impl PartialEq for Puzzle {
     fn eq(&self, other: &Puzzle) -> bool {
         self.state == other.state
     }
 }
 
-impl PartialOrd for Puzzle {
-    fn partial_cmp(&self, other: &Puzzle) -> Option<Ordering> {
-        other.f.partial_cmp(&self.f)
-    }
-}
-
-impl Hash for Puzzle {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        self.state.hash(state);
-    }
-}
-
-
 #[derive(Debug, Eq)]
 pub struct RefPuzzle {
-	pub ref_puzzle : Rc<RefCell<Puzzle>>
+    pub ref_puzzle: Rc<RefCell<Puzzle>>,
 }
 
 impl RefPuzzle {
     pub fn new(state: Puzzle) -> RefPuzzle {
-		RefPuzzle {
-			ref_puzzle : Rc::new(RefCell::new(state))
-		}
+        RefPuzzle {
+            ref_puzzle: Rc::new(RefCell::new(state)),
+        }
     }
 }
 
 impl Clone for RefPuzzle {
     fn clone(&self) -> RefPuzzle {
-		RefPuzzle {
-			ref_puzzle:  Rc::clone(&self.ref_puzzle)
-		}
-	}
+        RefPuzzle {
+            ref_puzzle: Rc::clone(&self.ref_puzzle),
+        }
+    }
 }
 
 impl PartialOrd for RefPuzzle {
     fn partial_cmp(&self, other: &RefPuzzle) -> Option<Ordering> {
-        other.ref_puzzle.borrow().f.partial_cmp(&self.ref_puzzle.borrow().f)
+        other
+            .ref_puzzle
+            .borrow()
+            .f
+            .partial_cmp(&self.ref_puzzle.borrow().f)
     }
 }
 
@@ -250,7 +227,10 @@ impl PartialEq for RefPuzzle {
 
 impl Ord for RefPuzzle {
     fn cmp(&self, other: &RefPuzzle) -> Ordering {
-        self.ref_puzzle.borrow().state.cmp(&other.ref_puzzle.borrow().state)
+        self.ref_puzzle
+            .borrow()
+            .state
+            .cmp(&other.ref_puzzle.borrow().state)
     }
 }
 

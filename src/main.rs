@@ -10,7 +10,6 @@ use resolver::resolver::*;
 use std::env;
 use std::time::Instant;
 
-
 fn run(puzzle: Puzzle) {
     let size = puzzle.get_size();
     let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
@@ -20,12 +19,12 @@ fn run(puzzle: Puzzle) {
             println!("the puzzle is solvable");
             let mut resolver: Resolver = Resolver::new(puzzle, goal);
             // dbg!(resolver.resolve());
-			let start = Instant::now();
-			resolver.resolve();
-			let elapsed = start.elapsed();
-			// loop {}
-			resolver.print();
-        	println!("time for resolve {:?}", elapsed);
+            let start = Instant::now();
+            resolver.resolve();
+            let elapsed = start.elapsed();
+            // loop {}
+            resolver.print();
+            println!("time for resolve {:?}", elapsed);
         }
         false => println!("the puzzle is unsolvable"),
     }

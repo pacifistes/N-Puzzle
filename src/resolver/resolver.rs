@@ -1,9 +1,8 @@
 use crate::resolver::heuristic::*;
 use crate::resolver::puzzle::*;
-use std::collections::HashSet;
 use std::collections::BinaryHeap;
-use std::rc::Rc;
-use std::cell::RefCell;
+use std::collections::HashSet;
+
 #[derive(Debug)]
 pub enum Algo {
     UNIFORM_COST,
@@ -20,30 +19,16 @@ pub struct Resolver {
     heuristics: [Option<fn(u16, u16) -> u16>; 6],
 }
 
-
-// all_State HashSet<Puzzle> {}
-
-// opened BinearHeap<RefCell<Puzzle>>
-
-
-// all_state.push(new_puzzle)
-
-// opened.push(RefCell::new(all_state.get(new_puzzle)))
-
 impl Resolver {
-
-    pub fn new(mut start_state: Puzzle, goal: Puzzle) -> Resolver {
-		let start_state = RefPuzzle::new(start_state);
-
+    pub fn new(start_state: Puzzle, goal: Puzzle) -> Resolver {
+        let start_state = RefPuzzle::new(start_state);
         let mut all_state: HashSet<RefPuzzle> = HashSet::new();
-
-		let heuristics: [Option<fn(u16, u16) -> u16>; 6] =
+        let heuristics: [Option<fn(u16, u16) -> u16>; 6] =
             [Some(manathan), None, None, None, Some(hamming), None];
 
-
-		all_state.insert(start_state.clone());
-		let mut opened: BinaryHeap<RefPuzzle> = BinaryHeap::new();
-		opened.push(start_state);
+        all_state.insert(start_state.clone());
+        let mut opened: BinaryHeap<RefPuzzle> = BinaryHeap::new();
+        opened.push(start_state);
         Resolver {
             opened,
             all_state,
@@ -76,19 +61,28 @@ impl Resolver {
 impl Resolver {
     pub fn resolve(&mut self) -> Option<Puzzle> {
         let initial_state = self.opened.peek_mut().unwrap();
-        initial_state.ref_puzzle.borrow_mut().find_f(&self.algo, &self.goal.ref_puzzle.borrow(), &self.heuristics);
+        initial_state.ref_puzzle.borrow_mut().find_f(
+            &self.algo,
+            &self.goal.ref_puzzle.borrow(),
+            &self.heuristics,
+        );
         drop(initial_state);
 
         while !self.opened.is_empty() {
             let selected_state: RefPuzzle = self.opened.pop().unwrap();
             if selected_state == self.goal {
-				self.goal = selected_state.clone();
+                self.goal = selected_state.clone();
                 return Some(selected_state.ref_puzzle.borrow().clone());
             } else {
-                for mut new_state in selected_state.ref_puzzle.borrow().expand() {
-                    new_state.ref_puzzle.borrow_mut().find_f(&self.algo, &self.goal.ref_puzzle.borrow(), &self.heuristics);
+                for new_state in selected_state.ref_puzzle.borrow().expand() {
+                    new_state.ref_puzzle.borrow_mut().find_f(
+                        &self.algo,
+                        &self.goal.ref_puzzle.borrow(),
+                        &self.heuristics,
+                    );
                     if !self.all_state.contains(&new_state) {
-                        new_state.ref_puzzle.borrow_mut().predecessor = Some(selected_state.clone());
+                        new_state.ref_puzzle.borrow_mut().predecessor =
+                            Some(selected_state.clone());
                         self.opened.push(new_state.clone());
                         self.all_state.insert(new_state);
                     }
@@ -99,16 +93,13 @@ impl Resolver {
     }
 
     pub fn print(&self) {
-		let mut vector: Vec<RefPuzzle> = Vec::new();
-		let mut predecessor = Some(self.goal.clone());
-		while (predecessor.is_some()) {
-			match &predecessor {
-				Some(val)	=> vector.push(val.clone()),
-				_		=> {},
-			}
-			predecessor = predecessor.unwrap().ref_puzzle.borrow().predecessor.clone();
-		}
-		vector.reverse();
-		vector.iter().for_each(|x| x.ref_puzzle.borrow().print());
+        let mut vector: Vec<RefPuzzle> = Vec::new();
+        let mut predecessor = Some(self.goal.clone());
+        while (predecessor.is_some()) {
+            if let Some(val) = &predecessor { vector.push(val.clone()) }
+            predecessor = predecessor.unwrap().ref_puzzle.borrow().predecessor.clone();
+        }
+        vector.reverse();
+        vector.iter().for_each(|x| x.ref_puzzle.borrow().print());
     }
 }

@@ -19,15 +19,15 @@ pub fn manathan(dist_x: u16, dist_y: u16) -> u16 {
 }
 
 pub fn euclidienne(dist_x: u16, dist_y: u16) -> u16 {
-    ((dist_x.pow(2) + dist_y.pow(2)) as f32).sqrt() as u16
+    f32::from(dist_x.pow(2) + dist_y.pow(2)).sqrt() as u16
 }
 
 pub fn chebyshev(dist_x: u16, dist_y: u16) -> u16 {
-    ((dist_x + dist_y) as f32 - min(dist_x, dist_y) as f32) as u16
+    (f32::from(dist_x + dist_y) - f32::from(min(dist_x, dist_y))) as u16
 }
 
 pub fn octile(dist_x: u16, dist_y: u16) -> u16 {
-    ((dist_x + dist_y) as f32 + ((2 as f32).sqrt() - 2.0) * min(dist_x, dist_y) as f32) as u16
+    (f32::from(dist_x + dist_y) + ((2 as f32).sqrt() - 2.0) * f32::from(min(dist_x, dist_y))) as u16
 }
 
 pub fn hamming(dist_x: u16, dist_y: u16) -> u16 {
