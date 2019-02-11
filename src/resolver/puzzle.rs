@@ -4,7 +4,6 @@ use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
 use std::rc::Rc;
-use std::process::exit;
 
 #[derive(Debug, Clone, Eq)]
 pub struct Puzzle {
@@ -23,7 +22,7 @@ impl Puzzle {
             g,
             size,
             state,
-			state_index,
+            state_index,
             predecessor: None,
             h: 0,
             f: 0,
@@ -76,7 +75,13 @@ impl Puzzle {
         self.state.iter().position(|&r| r == value).unwrap() as u8
     }
 
-    pub fn get_h_of_value(&self, value: u8, state_index: &Vec<u8>, goal_index: &Vec<u8>, heuristic: fn(u16, u16) -> u16) -> u16 {
+    pub fn get_h_of_value(
+        &self,
+        value: u8,
+        state_index: &Vec<u8>,
+        goal_index: &Vec<u8>,
+        heuristic: fn(u16, u16) -> u16,
+    ) -> u16 {
         if value == 0 {
             return 0;
         }
@@ -87,21 +92,32 @@ impl Puzzle {
         heuristic(dist_x, dist_y)
     }
 
-    pub fn find_h(&mut self, goal_index: &Vec<u8>, heuristics: &[Option<fn(u16, u16) -> u16>; 5], do_linear_conflict: bool) {
-		self.h = heuristics
+    pub fn find_h(
+        &mut self,
+        goal_index: &Vec<u8>,
+        heuristics: &[Option<fn(u16, u16) -> u16>; 5],
+        do_linear_conflict: bool,
+    ) {
+        self.h = heuristics
             .iter()
             .filter(|heuristic| heuristic.is_some())
             .map(|heuristic| {
                 self.state
                     .iter()
-                    .map(|value| self.get_h_of_value(*value, &self.state_index, &goal_index, heuristic.unwrap()))
+                    .map(|value| {
+                        self.get_h_of_value(
+                            *value,
+                            &self.state_index,
+                            &goal_index,
+                            heuristic.unwrap(),
+                        )
+                    })
                     .sum::<u16>()
             })
             .sum();
-		if do_linear_conflict {
-			();
-			// self.h += linear_conflict(&self.state, &goal.state, self.size);
-		}
+        if do_linear_conflict {
+            self.h += linear_conflict(&self.state_index, goal_index, self.size);
+        }
     }
 
     pub fn find_f(
@@ -109,7 +125,7 @@ impl Puzzle {
         algo: &Algo,
         goal_index: &Vec<u8>,
         heuristics: &[Option<fn(u16, u16) -> u16>; 5],
-		do_linear_conflict: bool,
+        do_linear_conflict: bool,
     ) {
         match algo {
             Algo::GREEDY => {
@@ -128,39 +144,43 @@ impl Puzzle {
 impl Puzzle {
     pub fn apply_move(&self, old_pos: usize, new_pos: usize) -> RefPuzzle {
         let mut new_state: Vec<u8> = self.state.clone();
-		let mut new_state_index: Vec<u8> = self.state_index.clone();
+        let mut new_state_index: Vec<u8> = self.state_index.clone();
         new_state.swap(old_pos, new_pos);
-		new_state_index.swap(new_state[old_pos] as usize, new_state[new_pos] as usize);
-        RefPuzzle::new(Puzzle::new(new_state, new_state_index, self.size, self.g + 1))
+        new_state_index.swap(new_state[old_pos] as usize, new_state[new_pos] as usize);
+        RefPuzzle::new(Puzzle::new(
+            new_state,
+            new_state_index,
+            self.size,
+            self.g + 1,
+        ))
     }
 
     pub fn move_left(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         if x == 0 {
-			return None;
+            return None;
         }
-		Some(self.apply_move(x + y * self.size as usize, x - 1 + y * self.size as usize))
+        Some(self.apply_move(x + y * self.size as usize, x - 1 + y * self.size as usize))
     }
 
     pub fn move_top(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         if y == 0 {
-			return None;
+            return None;
         }
-		Some(self.apply_move(x + y * self.size as usize, x + (y - 1) * self.size as usize))
+        Some(self.apply_move(x + y * self.size as usize, x + (y - 1) * self.size as usize))
     }
 
     pub fn move_right(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         if x == (self.size - 1) as usize {
-			return None;
+            return None;
         }
-		Some(self.apply_move(x + y * self.size as usize, x + 1 + y * self.size as usize))
-
+        Some(self.apply_move(x + y * self.size as usize, x + 1 + y * self.size as usize))
     }
 
     pub fn move_bot(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         if y == (self.size - 1) as usize {
-			return None;
+            return None;
         }
-		Some(self.apply_move(x + y * self.size as usize, x + (y + 1) * self.size as usize))
+        Some(self.apply_move(x + y * self.size as usize, x + (y + 1) * self.size as usize))
     }
 
     pub fn expand(&self) -> Vec<RefPuzzle> {

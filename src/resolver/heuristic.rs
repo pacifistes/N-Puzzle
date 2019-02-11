@@ -37,29 +37,29 @@ pub fn hamming(dist_x: u16, dist_y: u16) -> u16 {
     }
 }
 
-// pub fn linear_conflict(actual_state: &Vec<u8>, goal_state: &Vec<u8>, size: u8) -> u16 {
-	// for value in 0..actual_state.len() {
-	// 	// self.state.iter().position(|&r| r == value).unwrap() as u16
-	// 	let actual_index = actual_state.iter().position(|&r| r == value).unwrap();
-	// 	let goal_index = goal_state.get_index_of_value(value);
-	// 	let actual_coordinates = (actual_index / size, actual_index % size)
-	// 	let goal_coordinates = (goal_index / size, goal_index % size)
-	// 	if (actual_coordinates.0 == goal_coordinates.0) {
-	// 	}
-	// 	if (actual_coordinates.1 == goal_coordinates.1) {
+pub fn linear_conflict(actual_index: &Vec<u8>, goal_index: &Vec<u8>, size: u8) -> u16 {
+    let mut weight = 0;
+	let range: Vec<usize> = (1..size as usize).collect();
+	let all_coordinate: Vec<((u8,u8), (u8,u8))> = range.iter().map(|i| ((actual_index[*i] / size, actual_index[*i] % size), (goal_index[*i] / size, goal_index[*i] % size))).collect();
+	all_coordinate.iter().for_each(|(actual_coordinate, goal_coordinate)| {
+			if actual_coordinate.0 == goal_coordinate.0 {
+					all_coordinate.iter().filter(|(other_coordinate, other_goal_coordinate)|
+					other_coordinate.0 == actual_coordinate.0
+					&& other_coordinate.0 == other_goal_coordinate.0
+					&& other_coordinate.1 > actual_coordinate.1
+					&& other_goal_coordinate.1 < goal_coordinate.1
+					).for_each(|(_,_)| weight += 2);
 
-	// 	}
-	// }
-	// for y in 0..size {
-	// 	for x in 0..size {
-	// 		if value == 0 {
-    //     	    continue;
-    //     	}
-	//         let actual_index = self.get_index_of_value(value) as usize;
-	//         let goal_index = goal.get_index_of_value(value) as usize;
-	//         let dist_x = distance(self.get_x(actual_index), goal.get_x(goal_index));
-	//         let dist_y = distance(self.get_y(actual_index), goal.get_y(goal_index));
-	// 	}
-	// }
-	// 0
-// }
+			}
+			if actual_coordinate.1 == goal_coordinate.1 {
+					all_coordinate.iter().filter(|(other_coordinate, other_goal_coordinate)|
+					other_coordinate.1 == actual_coordinate.1
+					&& other_coordinate.1 == other_goal_coordinate.1
+					&& other_coordinate.0 > actual_coordinate.0
+					&& other_goal_coordinate.0 < goal_coordinate.0
+					).for_each(|(_,_)| weight += 2);
+			}
+		}
+	);
+    weight
+}

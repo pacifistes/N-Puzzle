@@ -1,5 +1,5 @@
-use crate::resolver::puzzle::*;
 use crate::resolver::generate::generate_state_index;
+use crate::resolver::puzzle::*;
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader};
@@ -67,6 +67,6 @@ pub fn parse(filename: &str) -> Result<Puzzle, io::Error> {
     if start_state.len() != size as usize * size as usize {
         return Err(Error::new(ErrorKind::InvalidData, "Missing some lines"));
     }
-	let start_state_index: Vec<u8> = generate_state_index(&start_state);
+    let start_state_index: Vec<u8> = generate_state_index(&start_state);
     Ok(Puzzle::new(start_state, start_state_index, size, 0))
 }

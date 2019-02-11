@@ -17,15 +17,20 @@ pub struct Resolver {
     goal: RefPuzzle,
     algo: Algo,
     heuristics: [Option<fn(u16, u16) -> u16>; 5],
-	do_linear_conflict: bool,
+    do_linear_conflict: bool,
 }
 
 impl Resolver {
     pub fn new(start_state: Puzzle, goal: Puzzle) -> Resolver {
         let start_state = RefPuzzle::new(start_state);
         let mut all_state: HashSet<RefPuzzle> = HashSet::new();
-        let heuristics: [Option<fn(u16, u16) -> u16>; 5] =
-            [Some(manathan), None, None, None, Some(hamming)];
+        let heuristics: [Option<fn(u16, u16) -> u16>; 5] = [
+            Some(manathan),
+            None,
+            None,
+            None,
+            /*Some(hamming)*/ None,
+        ];
 
         all_state.insert(start_state.clone());
         let mut opened: BinaryHeap<RefPuzzle> = BinaryHeap::new();
@@ -34,9 +39,9 @@ impl Resolver {
             opened,
             all_state,
             goal: RefPuzzle::new(goal),
-            algo: Algo::GREEDY,
+            algo: Algo::A_STAR,
             heuristics,
-			do_linear_conflict: false,
+            do_linear_conflict: true,
         }
     }
 }
@@ -67,7 +72,7 @@ impl Resolver {
             &self.algo,
             &self.goal.ref_puzzle.borrow().state_index,
             &self.heuristics,
-			self.do_linear_conflict
+            self.do_linear_conflict,
         );
         drop(initial_state);
 
@@ -82,7 +87,7 @@ impl Resolver {
                         &self.algo,
                         &self.goal.ref_puzzle.borrow().state_index,
                         &self.heuristics,
-						self.do_linear_conflict,
+                        self.do_linear_conflict,
                     );
                     if !self.all_state.contains(&new_state) {
                         new_state.ref_puzzle.borrow_mut().predecessor =
@@ -100,7 +105,9 @@ impl Resolver {
         let mut vector: Vec<RefPuzzle> = Vec::new();
         let mut predecessor = Some(self.goal.clone());
         while (predecessor.is_some()) {
-            if let Some(val) = &predecessor { vector.push(val.clone()) }
+            if let Some(val) = &predecessor {
+                vector.push(val.clone())
+            }
             predecessor = predecessor.unwrap().ref_puzzle.borrow().predecessor.clone();
         }
         vector.reverse();

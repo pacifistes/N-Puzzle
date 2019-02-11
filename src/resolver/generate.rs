@@ -34,8 +34,11 @@ pub fn generate_sorted_puzzle(size: u8) -> Vec<u8> {
 }
 
 pub fn generate_state_index(state: &Vec<u8>) -> Vec<u8> {
-	let range: Vec<u8> = (0..state.len() as u8).collect();
-	range.iter().map(|value| state.iter().position(|&r| r == *value).unwrap() as u8).collect()
+    let range: Vec<u8> = (0..state.len() as u8).collect();
+    range
+        .iter()
+        .map(|value| state.iter().position(|&r| r == *value).unwrap() as u8)
+        .collect()
 }
 
 pub fn generate_random_puzzle() -> Puzzle {
@@ -44,6 +47,6 @@ pub fn generate_random_puzzle() -> Puzzle {
     let mut rng = thread_rng();
 
     start_state.shuffle(&mut rng);
-	let state_index = generate_state_index(&start_state);
+    let state_index = generate_state_index(&start_state);
     Puzzle::new(start_state, state_index, size, 0)
 }
