@@ -3,6 +3,7 @@ mod tests;
 
 use resolver::generate::generate_random_puzzle;
 use resolver::generate::generate_sorted_puzzle;
+use resolver::generate::generate_state_index;
 use resolver::heuristic::*;
 use resolver::parser::parse;
 use resolver::puzzle::*;
@@ -12,7 +13,10 @@ use std::time::Instant;
 
 fn run(puzzle: Puzzle) {
     let size = puzzle.get_size();
-    let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+    let mut goal_state: Vec<u8> = generate_sorted_puzzle(size);
+	let goal_state_index: Vec<u8> = generate_state_index(&goal_state);
+    let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0);
+
 
     match puzzle.is_solvable(&goal) {
         true => {

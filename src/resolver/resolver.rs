@@ -16,15 +16,16 @@ pub struct Resolver {
     all_state: HashSet<RefPuzzle>,
     goal: RefPuzzle,
     algo: Algo,
-    heuristics: [Option<fn(u16, u16) -> u16>; 6],
+    heuristics: [Option<fn(u16, u16) -> u16>; 5],
+	do_linear_conflict: bool,
 }
 
 impl Resolver {
     pub fn new(start_state: Puzzle, goal: Puzzle) -> Resolver {
         let start_state = RefPuzzle::new(start_state);
         let mut all_state: HashSet<RefPuzzle> = HashSet::new();
-        let heuristics: [Option<fn(u16, u16) -> u16>; 6] =
-            [Some(manathan), None, None, None, Some(hamming), None];
+        let heuristics: [Option<fn(u16, u16) -> u16>; 5] =
+            [Some(manathan), None, None, None, Some(hamming)];
 
         all_state.insert(start_state.clone());
         let mut opened: BinaryHeap<RefPuzzle> = BinaryHeap::new();
@@ -35,6 +36,7 @@ impl Resolver {
             goal: RefPuzzle::new(goal),
             algo: Algo::GREEDY,
             heuristics,
+			do_linear_conflict: false,
         }
     }
 }
@@ -48,7 +50,7 @@ impl Resolver {
                 EUCLIDIENNE => self.heuristics[2] = Some(euclidienne),
                 OCTILE => self.heuristics[3] = Some(octile),
                 HAMMING => self.heuristics[4] = Some(hamming),
-                LINEAR_CONFLICT => self.heuristics[5] = Some(linear_conflict),
+                LINEAR_CONFLICT => self.do_linear_conflict = true,
             };
         }
     }
@@ -63,8 +65,9 @@ impl Resolver {
         let initial_state = self.opened.peek_mut().unwrap();
         initial_state.ref_puzzle.borrow_mut().find_f(
             &self.algo,
-            &self.goal.ref_puzzle.borrow(),
+            &self.goal.ref_puzzle.borrow().state_index,
             &self.heuristics,
+			self.do_linear_conflict
         );
         drop(initial_state);
 
@@ -77,8 +80,9 @@ impl Resolver {
                 for new_state in selected_state.ref_puzzle.borrow().expand() {
                     new_state.ref_puzzle.borrow_mut().find_f(
                         &self.algo,
-                        &self.goal.ref_puzzle.borrow(),
+                        &self.goal.ref_puzzle.borrow().state_index,
                         &self.heuristics,
+						self.do_linear_conflict,
                     );
                     if !self.all_state.contains(&new_state) {
                         new_state.ref_puzzle.borrow_mut().predecessor =

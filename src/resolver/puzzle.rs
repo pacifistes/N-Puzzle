@@ -4,23 +4,26 @@ use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
 use std::rc::Rc;
+use std::process::exit;
 
 #[derive(Debug, Clone, Eq)]
 pub struct Puzzle {
     pub g: u16,
     size: u8,
     pub state: Vec<u8>,
+    pub state_index: Vec<u8>,
     pub predecessor: Option<RefPuzzle>,
     pub h: u16,
     pub f: u16,
 }
 
 impl Puzzle {
-    pub fn new(state: Vec<u8>, size: u8, g: u16) -> Puzzle {
+    pub fn new(state: Vec<u8>, state_index: Vec<u8>, size: u8, g: u16) -> Puzzle {
         Puzzle {
             g,
             size,
             state,
+			state_index,
             predecessor: None,
             h: 0,
             f: 0,
@@ -69,50 +72,55 @@ impl Puzzle {
 }
 
 impl Puzzle {
-    pub fn get_index_of_value(&self, value: u8) -> u16 {
-        self.state.iter().position(|&r| r == value).unwrap() as u16
+    pub fn get_index_of_value(&self, value: u8) -> u8 {
+        self.state.iter().position(|&r| r == value).unwrap() as u8
     }
 
-    pub fn get_h_of_value(&self, value: u8, goal: &Puzzle, heuristic: fn(u16, u16) -> u16) -> u16 {
+    pub fn get_h_of_value(&self, value: u8, state_index: &Vec<u8>, goal_index: &Vec<u8>, heuristic: fn(u16, u16) -> u16) -> u16 {
         if value == 0 {
             return 0;
         }
-        let actual_index = self.get_index_of_value(value) as usize;
-        let goal_index = goal.get_index_of_value(value) as usize;
-        let dist_x = distance(self.get_x(actual_index), goal.get_x(goal_index));
-        let dist_y = distance(self.get_y(actual_index), goal.get_y(goal_index));
+        let actual_index: usize = state_index[(value) as usize] as usize;
+        let goal_index: usize = goal_index[(value) as usize] as usize;
+        let dist_x = distance(self.get_x(actual_index), self.get_x(goal_index));
+        let dist_y = distance(self.get_y(actual_index), self.get_y(goal_index));
         heuristic(dist_x, dist_y)
     }
 
-    pub fn find_h(&mut self, goal: &Puzzle, heuristics: &[Option<fn(u16, u16) -> u16>; 6]) {
-        self.h = heuristics
+    pub fn find_h(&mut self, goal_index: &Vec<u8>, heuristics: &[Option<fn(u16, u16) -> u16>; 5], do_linear_conflict: bool) {
+		self.h = heuristics
             .iter()
             .filter(|heuristic| heuristic.is_some())
             .map(|heuristic| {
                 self.state
                     .iter()
-                    .map(|value| self.get_h_of_value(*value, goal, heuristic.unwrap()))
+                    .map(|value| self.get_h_of_value(*value, &self.state_index, &goal_index, heuristic.unwrap()))
                     .sum::<u16>()
             })
             .sum();
+		if do_linear_conflict {
+			();
+			// self.h += linear_conflict(&self.state, &goal.state, self.size);
+		}
     }
 
     pub fn find_f(
         &mut self,
         algo: &Algo,
-        goal: &Puzzle,
-        heuristics: &[Option<fn(u16, u16) -> u16>; 6],
+        goal_index: &Vec<u8>,
+        heuristics: &[Option<fn(u16, u16) -> u16>; 5],
+		do_linear_conflict: bool,
     ) {
         match algo {
             Algo::GREEDY => {
-                self.find_h(goal, heuristics);
+                self.find_h(goal_index, heuristics, do_linear_conflict);
                 self.f = self.h;
             } // que h
             Algo::A_STAR => {
-                self.find_h(goal, heuristics);
+                self.find_h(goal_index, heuristics, do_linear_conflict);
                 self.f = self.g + self.h;
             }
-            _ => (),
+            _ => self.f = self.g,
         }
     }
 }
@@ -120,8 +128,10 @@ impl Puzzle {
 impl Puzzle {
     pub fn apply_move(&self, old_pos: usize, new_pos: usize) -> RefPuzzle {
         let mut new_state: Vec<u8> = self.state.clone();
+		let mut new_state_index: Vec<u8> = self.state_index.clone();
         new_state.swap(old_pos, new_pos);
-        RefPuzzle::new(Puzzle::new(new_state, self.size, self.g + 1))
+		new_state_index.swap(new_state[old_pos] as usize, new_state[new_pos] as usize);
+        RefPuzzle::new(Puzzle::new(new_state, new_state_index, self.size, self.g + 1))
     }
 
     pub fn move_left(&self, x: usize, y: usize) -> Option<RefPuzzle> {
@@ -154,7 +164,7 @@ impl Puzzle {
     }
 
     pub fn expand(&self) -> Vec<RefPuzzle> {
-        let blank_position: u16 = self.get_index_of_value(0);
+        let blank_position: u16 = self.get_index_of_value(0) as u16;
         let x: usize = self.get_x(blank_position as usize);
         let y: usize = self.get_y(blank_position as usize);
         let expand_states: Vec<Option<RefPuzzle>> = vec![

@@ -37,8 +37,29 @@ pub fn hamming(dist_x: u16, dist_y: u16) -> u16 {
     }
 }
 
-pub fn linear_conflict(dist_x: u16, dist_y: u16) -> u16 {
-    0 // modify
-}
+// pub fn linear_conflict(actual_state: &Vec<u8>, goal_state: &Vec<u8>, size: u8) -> u16 {
+	// for value in 0..actual_state.len() {
+	// 	// self.state.iter().position(|&r| r == value).unwrap() as u16
+	// 	let actual_index = actual_state.iter().position(|&r| r == value).unwrap();
+	// 	let goal_index = goal_state.get_index_of_value(value);
+	// 	let actual_coordinates = (actual_index / size, actual_index % size)
+	// 	let goal_coordinates = (goal_index / size, goal_index % size)
+	// 	if (actual_coordinates.0 == goal_coordinates.0) {
+	// 	}
+	// 	if (actual_coordinates.1 == goal_coordinates.1) {
 
-// Dominating (ensemble de plusieur heuristic)
+	// 	}
+	// }
+	// for y in 0..size {
+	// 	for x in 0..size {
+	// 		if value == 0 {
+    //     	    continue;
+    //     	}
+	//         let actual_index = self.get_index_of_value(value) as usize;
+	//         let goal_index = goal.get_index_of_value(value) as usize;
+	//         let dist_x = distance(self.get_x(actual_index), goal.get_x(goal_index));
+	//         let dist_y = distance(self.get_y(actual_index), goal.get_y(goal_index));
+	// 	}
+	// }
+	// 0
+// }
