@@ -1,0 +1,1 @@
+{"rustc":5105358705442676925,"features":"[]","target":11803618492373112341,"profile":5060393583489210841,"path":1036222786711178230,"deps":[["rand v0.6.5","rand",11588277828515979840]],"local":[{"MtimeBased":[[1549985418,0],".fingerprint/npuzzle-e44ca9e1e8ef1802/dep-bin-npuzzle-e44ca9e1e8ef1802"]}],"rustflags":[],"edition":"Edition2018"}

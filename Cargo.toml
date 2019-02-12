@@ -1,8 +1,0 @@
-[package]
-name = "npuzzle"
-version = "0.1.0"
-authors = ["pacifistes <bbrunell@student.42.fr>"]
-edition = "2018"
-
-[dependencies]
-rand = "0.6.5"
