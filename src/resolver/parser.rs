@@ -53,7 +53,7 @@ pub fn parse(filename: &str) -> Result<Puzzle, io::Error> {
     let mut start_state: Vec<u8> = Vec::new();
 
     for line in BufReader::new(file).lines() {
-        let line = line.unwrap().split('#').collect::<Vec<_>>()[0]
+        let line = line?.split('#').collect::<Vec<_>>()[0]
             .trim()
             .to_string();
         match line.is_empty() {

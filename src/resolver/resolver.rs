@@ -2,6 +2,8 @@ use crate::resolver::heuristic::*;
 use crate::resolver::puzzle::*;
 use std::collections::BinaryHeap;
 use std::collections::HashSet;
+use std::time::Instant;
+
 
 #[derive(Debug)]
 pub enum Algo {
@@ -25,9 +27,9 @@ impl Resolver {
         let start_state = RefPuzzle::new(start_state);
         let mut all_state: HashSet<RefPuzzle> = HashSet::new();
         let heuristics: [Option<fn(u16, u16) -> u16>; 5] = [
-            Some(manathan),
-            None,
-            None,
+            /*Some(manathan)*/ None,
+            Some(chebyshev)/*None*/,
+            /*Some(euclidienne)*/ None,
             None,
             /*Some(hamming)*/ None,
         ];
@@ -41,7 +43,7 @@ impl Resolver {
             goal: RefPuzzle::new(goal),
             algo: Algo::A_STAR,
             heuristics,
-            do_linear_conflict: true,
+            do_linear_conflict: false,
         }
     }
 }
@@ -76,13 +78,16 @@ impl Resolver {
         );
         drop(initial_state);
 
+		let start = Instant::now();
+        let mut elapsed = start.elapsed();
         while !self.opened.is_empty() {
             let selected_state: RefPuzzle = self.opened.pop().unwrap();
             if selected_state == self.goal {
                 self.goal = selected_state.clone();
+		        println!("{:?}", elapsed);
                 return Some(selected_state.ref_puzzle.borrow().clone());
             } else {
-                for new_state in selected_state.ref_puzzle.borrow().expand() {
+                selected_state.ref_puzzle.borrow().expand().into_iter().for_each(|new_state| {
                     new_state.ref_puzzle.borrow_mut().find_f(
                         &self.algo,
                         &self.goal.ref_puzzle.borrow().state_index,
@@ -95,7 +100,7 @@ impl Resolver {
                         self.opened.push(new_state.clone());
                         self.all_state.insert(new_state);
                     }
-                }
+                });
             }
         }
         None
