@@ -8,5 +8,5 @@ edition = "2018"
 
 
 [lib]
-name = "double_input"
 crate-type = ["staticlib"]
+path = "src/double_input.rs"
