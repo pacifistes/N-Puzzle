@@ -1,1 +1,0 @@
-{"rustc":5105358705442676925,"features":"[\"aes\", \"avx\", \"avx2\", \"default\", \"sse42\"]","target":4944179213620976468,"profile":5060393583489210841,"path":5438352973250457995,"deps":[["gcc v0.3.55","gcc",12657539336813108035]],"local":[{"Precalculated":"0.3.2"}],"rustflags":[],"edition":"Edition2015"}

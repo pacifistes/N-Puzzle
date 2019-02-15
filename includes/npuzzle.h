@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   npuzzle.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/15 16:25:07 by bbrunell         ###   ########.fr       */
+/*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
+/*   Updated: 2019/02/15 16:24:49 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "npuzzle.h"
+#ifndef NPUZZLE_H
+# define NPUZZLE_H
 
-int main(int ac, char **av) {
-	if (ac == 2)
-	{
-		t_parser parser = parser_new(av[1]);
-		// (void)parser;
-		ft_printf("error = %s", parser.error);
-	}
-	else
-	{
-		//Generate random Puzzle
-	}
-	return (0);
-}
+# include "ft_printf.h"
+
+// typedef struct puzzle t_puzzle;
+
+typedef struct	s_parser {
+	// t_puzzle	puzzle;
+	char		*error;
+}				t_parser;
+
+extern t_parser parser_new(const char *filename);
+// extern void parser_free(t_parser *);
+
+
+#endif

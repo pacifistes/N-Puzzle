@@ -1,9 +1,19 @@
+#![crate_type = "staticlib"]
+
 use crate::resolver::generate::generate_state_index;
 use crate::resolver::puzzle::*;
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader};
 use std::io::{Error, ErrorKind};
+
+use libc::{c_char, uint32_t, uint8_t, size_t};
+use std::ffi::CStr;
+use std::ffi::CString;
+use std::str;
+use std::iter;
+use std::slice;
+use std::convert::From;
 
 fn get_size(line: &str) -> Result<u8, io::Error> {
     match line.parse::<u8>() {
@@ -70,3 +80,5 @@ pub fn parse(filename: &str) -> Result<Puzzle, io::Error> {
     let start_state_index: Vec<u8> = generate_state_index(&start_state);
     Ok(Puzzle::new(start_state, start_state_index, size, 0))
 }
+
+

@@ -6,7 +6,9 @@ edition = "2018"
 
 [dependencies]
 rand = "0.6.5"
+libc = "0.2.48"
 
 [lib]
-name = "double_input"
+name = "rust_lib"
+# path  = "src/resolver/parser.rs"
 crate-type = ["staticlib"]

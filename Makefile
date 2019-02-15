@@ -2,10 +2,10 @@ NAME = npuzzle
 
 SRCSPATH = srcs/
 INCLUDES = includes/
-HEADERS = ft_ssl.h
+HEADERS = npuzzle.h
 LIBFT = libftprintf/
 LIBFTINCL = libftprintf/printf/includes/
-RUST_LIB_NAME = rust_lib2
+RUST_LIB_NAME = rust_lib
 RUST_LIB_PATH = $(addprefix $(RUST_LIB_NAME), /target/release/)
 SRCS = main.c
 SRC = $(addprefix $(SRCSPATH), $(SRCS))
