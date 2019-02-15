@@ -30,11 +30,16 @@ pub extern fn how_many_characters(s: *const c_char) -> u32 {
 }
 
 #[repr(C)]
-pub struct Parser {
-    puzzle: *mut Puzzle,
-    error: *mut c_char,
+pub struct CPuzzle {
+	state: *mut u8,
+	size: u8
 }
 
+#[repr(C)]
+pub struct Parser {
+    puzzle: *mut CPuzzle,
+    error: *mut c_char,
+}
 
 #[no_mangle]
 pub extern fn parser_new(filename: *const c_char) -> Parser {
@@ -44,11 +49,17 @@ pub extern fn parser_new(filename: *const c_char) -> Parser {
     };
     let rust_filename = c_filename.to_str().unwrap();
 	match parse(rust_filename) {
-		Ok(puzzle) => {
+		Ok((tmp_state, size)) => {
 			let c_error = CString::new("no error").unwrap();
-			Parser {
-				puzzle: Box::into_raw(Box::new(puzzle)),
-				error: c_error.into_raw()
+			unsafe {
+				Parser {
+					// puzzle: Box::into_raw(Box::new(puzzle)),
+					puzzle:Box::into_raw(Box::new( CPuzzle  {
+						state: tmp_state.into_boxed_slice().as_mut_ptr(),
+						size,
+					})),
+					error: c_error.into_raw()
+				}
 			}
 		},
 		Err(err) => {

@@ -34,16 +34,16 @@ fn run(puzzle: Puzzle) {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let puzzle: Puzzle = match args.len() {
-        2 => match parse(&args[1]) {
-            Ok(puzzle) => puzzle,
-            Err(err) => {
-                println!("Error: {}", err);
-                return;
-            }
-        },
-        _ => generate_random_puzzle(),
-    };
-    run(puzzle);
+    // let args: Vec<String> = env::args().collect();
+    // let puzzle: Puzzle = match args.len() {
+    //     2 => match parse(&args[1]) {
+    //         Ok(puzzle) => puzzle,
+    //         Err(err) => {
+    //             println!("Error: {}", err);
+    //             return;
+    //         }
+    //     },
+    //     _ => generate_random_puzzle(),
+    // };
+    // run(puzzle);
 }

@@ -2,43 +2,37 @@ NAME = npuzzle
 
 SRCSPATH = srcs/
 INCLUDES = includes/
-HEADERS = npuzzle.h
-LIBFT = libftprintf/
-LIBFTINCL = libftprintf/printf/includes/
+HEADERS = npuzzle.hpp
 RUST_LIB_NAME = rust_lib
 RUST_LIB_PATH = $(addprefix $(RUST_LIB_NAME), /target/release/)
-SRCS = main.c
+SRCS = main.cpp
 SRC = $(addprefix $(SRCSPATH), $(SRCS))
 
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
-WFLAGS = -Wall -Werror -Wextra
+WFLAGS = -std=c++11 -Wall -Werror -Wextra
 
-CC = gcc -g
+CC = clang++ -g
 
 OBJ = $(SRC:.c=.o)
 
 all : $(NAME)
 
 
-libftprintf/libftprintf.a: libftprintf/libft/srcs/ libftprintf/libft/includes/ libftprintf/printf/ libftprintf/libft/includes/ libftprintf/Makefile
-	make -C $(LIBFT) all
-
 %.o: %.c $(HEADER)
-	$(CC) -g -c $(WFLAGS) -I $(LIBFTINCL) -I $(INCLUDES) $< -o $@
+	$(CC) -c $(WFLAGS) -I $(INCLUDES) $< -o $@
 
-$(NAME) : libftprintf/libftprintf.a $(OBJ)
+$(NAME) : $(OBJ)
 	cargo build --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
-	$(CC) -g -o $(NAME) $(OBJ) $(WFLAGS) $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -I $(LIBFTINCL) -I $(INCLUDES) -L $(LIBFT) -lftprintf
-
+	# $(CC) -o $(NAME) $(OBJ) $(WFLAGS) $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -I $(INCLUDES)
+	# $(CC) -o $(NAME) $(OBJ) $(WFLAGS) -I $(INCLUDES) -L./rust_lib/target/release/ -lrust_lib
+	$(CC) -o $(NAME) $(OBJ) $(WFLAGS) -L$(PWD)/rust_lib/target/release/ -lrust_lib -I $(INCLUDES)
 
 clean :
 	rm -rf $(OBJ)
 	rm -rf $(addprefix $(RUST_LIB_NAME), /target)
-	make -C $(LIBFT) clean
 
 fclean : clean
 	rm -rf $(NAME)
-	make -C $(LIBFT) fclean
 
 re : fclean all
 

@@ -731,7 +731,9 @@ extern "C" {
     #[link_name = "\u{1}_generate_random_puzzle"]
     pub fn generate_random_puzzle() -> t_puzzle;
 }
+
 pub type __builtin_va_list = [__va_list_tag; 1usize];
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct __va_list_tag {

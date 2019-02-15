@@ -7,14 +7,6 @@ use std::io;
 use std::io::{BufRead, BufReader};
 use std::io::{Error, ErrorKind};
 
-use libc::{c_char, uint32_t, uint8_t, size_t};
-use std::ffi::CStr;
-use std::ffi::CString;
-use std::str;
-use std::iter;
-use std::slice;
-use std::convert::From;
-
 fn get_size(line: &str) -> Result<u8, io::Error> {
     match line.parse::<u8>() {
         Ok(num) if num > 1 && num < 17 => Ok(num),
@@ -57,7 +49,7 @@ fn add_to_state(mut start_state: Vec<u8>, line: &str, size: u8) -> Result<Vec<u8
     Ok(start_state)
 }
 
-pub fn parse(filename: &str) -> Result<Puzzle, io::Error> {
+pub fn parse(filename: &str) -> Result<(Vec<u8>, u8), io::Error> {
     let file = File::open(filename)?;
     let mut size: u8 = 0;
     let mut start_state: Vec<u8> = Vec::new();
@@ -77,8 +69,8 @@ pub fn parse(filename: &str) -> Result<Puzzle, io::Error> {
     if start_state.len() != size as usize * size as usize {
         return Err(Error::new(ErrorKind::InvalidData, "Missing some lines"));
     }
-    let start_state_index: Vec<u8> = generate_state_index(&start_state);
-    Ok(Puzzle::new(start_state, start_state_index, size, 0))
+    // let start_state_index: Vec<u8> = generate_state_index(&start_state);
+    Ok((start_state, size))
 }
 
 
