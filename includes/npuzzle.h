@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/15 16:24:49 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/02/15 17:46:31 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,15 @@
 
 # include "ft_printf.h"
 
-// typedef struct puzzle t_puzzle;
+typedef struct puzzle t_puzzle;
+
+// typedef struct	s_puzzle {
+// 	t_puzzle	*puzzle;
+// 	char		*error;
+// }				t_parser;
 
 typedef struct	s_parser {
-	// t_puzzle	puzzle;
+	t_puzzle	*puzzle;
 	char		*error;
 }				t_parser;
 

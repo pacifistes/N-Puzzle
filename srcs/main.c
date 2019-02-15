@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/15 16:25:07 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/02/15 17:46:58 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,11 @@ int main(int ac, char **av) {
 	{
 		t_parser parser = parser_new(av[1]);
 		// (void)parser;
-		ft_printf("error = %s", parser.error);
+		if (parser.puzzle == NULL)
+			ft_printf("puzzle is null\n");
+		else
+			ft_printf("puzzle is not null\n");
+		ft_printf("error = %s\n", parser.error);
 	}
 	else
 	{

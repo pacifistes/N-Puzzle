@@ -15,6 +15,7 @@ use std::str;
 use std::iter;
 use std::slice;
 use std::convert::From;
+use std::ptr;
 
 #[no_mangle]
 pub extern fn how_many_characters(s: *const c_char) -> u32 {
@@ -30,9 +31,10 @@ pub extern fn how_many_characters(s: *const c_char) -> u32 {
 
 #[repr(C)]
 pub struct Parser {
-    // puzzle: Puzzle,
+    puzzle: *mut Puzzle,
     error: *mut c_char,
 }
+
 
 #[no_mangle]
 pub extern fn parser_new(filename: *const c_char) -> Parser {
@@ -44,11 +46,17 @@ pub extern fn parser_new(filename: *const c_char) -> Parser {
 	match parse(rust_filename) {
 		Ok(puzzle) => {
 			let c_error = CString::new("no error").unwrap();
-			Parser {error: c_error.into_raw()}
+			Parser {
+				puzzle: Box::into_raw(Box::new(puzzle)),
+				error: c_error.into_raw()
+			}
 		},
 		Err(err) => {
 			let c_error = CString::new(err.to_string()).unwrap();
-			Parser { error: c_error.into_raw()}
+			Parser {
+				puzzle: ptr::null_mut(),
+				error: c_error.into_raw(),
+			}
 		}
 	}
 }
