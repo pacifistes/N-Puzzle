@@ -10,5 +10,4 @@ libc = "0.2.48"
 
 [lib]
 name = "rust_lib"
-# path  = "src/resolver/parser.rs"
 crate-type = ["staticlib"]

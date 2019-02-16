@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/16 16:52:57 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/02/16 17:36:10 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 // typedef struct puzzle t_puzzle;
 
 typedef struct	s_puzzle {
-	int8_t			*state;
-	int8_t			size;
+	uint8_t			*state;
+	uint8_t			size;
 }				t_puzzle;
 
 typedef struct	s_parser {

@@ -9,6 +9,8 @@ rust_lib/target/
 **/*.rs.b
 
 *.o
+*.o.*
 **/*.o
 *.a
+**/*.o.*
 npuzzle

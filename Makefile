@@ -1,17 +1,28 @@
 NAME = npuzzle
 
-SRCSPATH = srcs/
+SRCS_PATH = srcs/
 INCLUDES = includes/
 HEADERS = npuzzle.hpp
+
+SRCS = main.cpp
+RUST_SRCS = generate.rs \
+			heuristic.rs \
+			parser.rs \
+			puzzle.rs \
+			resolver.rs
+
 RUST_LIB_NAME = rust_lib
 RUST_LIB_PATH = $(addprefix $(RUST_LIB_NAME), /target/release/)
-SRCS = main.cpp
-SRC = $(addprefix $(SRCSPATH), $(SRCS))
+RUST_LIB = $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME))))
+RUST_PATH_SRCS = $(addprefix $(RUST_LIB_NAME), /src/resolver/)
+RUST_SRC = $(addprefix $(RUST_PATH_SRCS), $(RUST_SRCS))
 
+SRC = $(addprefix $(SRCS_PATH), $(SRCS))
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
-WFLAGS = -std=c++11 -Wall -Werror -Wextra
 
-CC = clang++ -g
+WFLAGS = -g -std=c++11 -Wall -Werror -Wextra
+
+CC = clang++
 
 OBJ= $(SRC:.cpp=.o)
 
@@ -23,9 +34,10 @@ all : $(NAME)
 	$(CC) $(WFLAGS) -I $(INCLUDES) -c $< -o $@
 
 # $^ ==représente tous ce qui est après le :
-$(NAME) : $(OBJ)
+
+$(NAME) : $(RUST_SRC) $(OBJ)
 	cargo build --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
-	$(CC) $(WFLAGS) -L$(PWD)/rust_lib/target/release/ -lrust_lib -I $(INCLUDES) $^ -o $@
+	$(CC) $(WFLAGS) -I $(INCLUDES) $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) $(SRC) -o $@
 
 clean :
 	rm -rf $(OBJ)
