@@ -13,19 +13,19 @@ WFLAGS = -std=c++11 -Wall -Werror -Wextra
 
 CC = clang++ -g
 
-OBJ = $(SRC:.c=.o)
+OBJ= $(SRC:.cpp=.o)
 
 all : $(NAME)
 
+# $< ==  le nom de la dépendance (le .c)
+# $@ == représente le nom de la règlE
+%.o: %.cpp
+	$(CC) $(WFLAGS) -I $(INCLUDES) -c $< -o $@
 
-%.o: %.c $(HEADER)
-	$(CC) -c $(WFLAGS) -I $(INCLUDES) $< -o $@
-
+# $^ ==représente tous ce qui est après le :
 $(NAME) : $(OBJ)
 	cargo build --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
-	# $(CC) -o $(NAME) $(OBJ) $(WFLAGS) $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -I $(INCLUDES)
-	# $(CC) -o $(NAME) $(OBJ) $(WFLAGS) -I $(INCLUDES) -L./rust_lib/target/release/ -lrust_lib
-	$(CC) -o $(NAME) $(OBJ) $(WFLAGS) -L$(PWD)/rust_lib/target/release/ -lrust_lib -I $(INCLUDES)
+	$(CC) $(WFLAGS) -L$(PWD)/rust_lib/target/release/ -lrust_lib -I $(INCLUDES) $^ -o $@
 
 clean :
 	rm -rf $(OBJ)

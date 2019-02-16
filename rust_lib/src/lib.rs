@@ -77,3 +77,15 @@ pub extern fn parser_new(filename: *const c_char) -> Parser {
 //     if ptr.is_null() { return }
 //     unsafe { Box::from_raw(ptr); }
 // }
+
+#[no_mangle]
+pub extern fn parser_free(parser: Parser) {
+    unsafe {
+        if !parser.error.is_null() {
+	        CString::from_raw(parser.error);
+		}
+		if !parser.puzzle.is_null() {
+			Box::from_raw(parser.puzzle);// TO remove after mayve
+		}
+    };
+}

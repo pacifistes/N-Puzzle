@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/15 21:34:04 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/02/16 16:52:57 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct	s_parser {
 }				t_parser;
 
 extern "C" t_parser parser_new(const char *filename);
-// extern void parser_free(t_parser *);
+extern "C" void parser_free(t_parser parser);
 
 
 #endif
