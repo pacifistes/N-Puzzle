@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/18 17:37:32 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/02/18 19:30:14 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void print_state(char *str, t_vector state)
 	ft_printf("%s\n", str);
 	ft_printf("size = %d\n", state.size);
 	for (int i=0; i < state.size * state.size; i++) {
-		ft_printf(" %d", ((int *)state.values)[i]);
+		ft_printf(" %d", ((int8_t *)state.values)[i]);
 	}
 	ft_printf("\n");
 }
@@ -47,6 +47,7 @@ void do_all(char *filename)
 int main(int ac, char **av) {
 	if (ac == 2) {
 		do_all(av[1]);
+		// while (1);
 	}
 	else
 	{

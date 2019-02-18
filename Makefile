@@ -22,7 +22,7 @@ RUST_SRC = $(addprefix $(RUST_PATH_SRCS), $(RUST_SRCS))
 SRC = $(addprefix $(SRCS_PATH), $(SRCS))
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
 
-WFLAGS = -g -Wall -Werror -Wextra -fsanitize=address
+WFLAGS = -g -Wall -Werror -Wextra
 
 CC = gcc
 
@@ -42,8 +42,7 @@ libftprintf/libftprintf.a: libftprintf/libft/srcs/ libftprintf/libft/includes/ l
 
 $(NAME) : libftprintf/libftprintf.a $(OBJ) $(RUST_SRC)
 	cargo build --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
-	$(CC) $(WFLAGS) -I $(INCLUDES) -I $(LIBFTINCL) -L $(LIBFT) -lftprintf $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -o $(NAME) $(OBJ)
-	# $(CC) -g -o $(NAME) $(OBJ) $(WFLAGS) $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -I $(LIBFTINCL) -I $(INCLUDES) -L $(LIBFT) -lftprintf
+	$(CC) $(WFLAGS) -I $(INCLUDES) -I $(LIBFTINCL) -L $(LIBFT) -lftprintf -framework Security $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -o $(NAME) $(OBJ)
 
 clean:
 	rm -rf $(OBJ)

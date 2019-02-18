@@ -3,8 +3,8 @@
 use crate::resolver::puzzle::*;
 use std::vec::Vec;
 use std::slice;
-use rand::thread_rng;
 use rand::seq::SliceRandom;
+use rand::thread_rng;
 
 pub fn r_generate_sorted_puzzle(size: u8) -> Vec<u8> {
     let mut sorted: Vec<u8> = vec![0; size as usize * size as usize];
@@ -47,9 +47,8 @@ pub fn r_generate_state_index(state: &Vec<u8>) -> Vec<u8> {
 pub fn r_generate_random_puzzle() -> Vec<u8> {
     let size: u8 = 3;
     let mut start_state: Vec<u8> = r_generate_sorted_puzzle(size);
-    // let mut rng = thread_rng();
 
-    // start_state.shuffle(&mut rng); //TODO A FAIRE MARCHER
+    start_state.shuffle(&mut rand::thread_rng());
 	start_state
 }
 

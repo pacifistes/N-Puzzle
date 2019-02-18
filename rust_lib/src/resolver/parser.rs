@@ -1,5 +1,4 @@
 #![crate_type = "staticlib"]
-
 use crate::resolver::generate::r_generate_state_index;
 use crate::resolver::puzzle::*;
 use std::fs::File;
@@ -128,7 +127,7 @@ pub extern fn parser_new(filename: *const c_char) -> Parser {
 pub extern fn parser_free(parser: Parser) {
     unsafe {
         if !parser.error.is_null() {
-	        CString::from_raw(parser.error);
+	        let r_string = CString::from_raw(parser.error);
 		}
 		if !parser.state.is_null() {
 			Box::from_raw(parser.state);// TO remove after mayve
