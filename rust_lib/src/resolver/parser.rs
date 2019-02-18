@@ -1,6 +1,6 @@
 #![crate_type = "staticlib"]
 
-use crate::resolver::generate::generate_state_index;
+use crate::resolver::generate::r_generate_state_index;
 use crate::resolver::puzzle::*;
 use std::fs::File;
 use std::io;
@@ -79,33 +79,17 @@ pub fn parse(filename: &str) -> Result<(Vec<u8>, u8), io::Error> {
     if start_state.len() != size as usize * size as usize {
         return Err(Error::new(ErrorKind::InvalidData, "Missing some lines"));
     }
-    // let start_state_index: Vec<u8> = generate_state_index(&start_state);
+    // let start_state_index: Vec<u8> = r_generate_state_index(&start_state);
     Ok((start_state, size))
 }
 
-#[no_mangle]
-pub extern fn how_many_characters(s: *const c_char) -> u32 {
-    let c_str = unsafe {
-        assert!(!s.is_null());
-
-        CStr::from_ptr(s)
-    };
-
-    let r_str = c_str.to_str().unwrap();
-    r_str.chars().count() as u32
-}
-
-#[repr(C)]
-pub struct CPuzzle {
-	state: *mut u8,
-	size: u8
-}
 
 #[repr(C)]
 pub struct Parser {
-    puzzle: *mut CPuzzle,
+    state: *mut RVector,
     error: *mut c_char,
 }
+
 
 #[no_mangle]
 pub extern fn parser_new(filename: *const c_char) -> Parser {
@@ -114,14 +98,16 @@ pub extern fn parser_new(filename: *const c_char) -> Parser {
         CStr::from_ptr(filename)
     };
     let rust_filename = c_filename.to_str().unwrap();
+
 	match parse(rust_filename) {
-		Ok((tmp_state, size)) => {
+		Ok((mut tmp_state, size)) => {
 			let c_error = CString::new("no error").unwrap();
+			let r_values = tmp_state.as_mut_ptr();
+			std::mem::forget(tmp_state);
 			unsafe {
 				Parser {
-					// puzzle: Box::into_raw(Box::new(puzzle)),
-					puzzle:Box::into_raw(Box::new( CPuzzle  {
-						state: tmp_state.into_boxed_slice().as_mut_ptr(),
+					state:Box::into_raw(Box::new( RVector  {
+						values: r_values,
 						size,
 					})),
 					error: c_error.into_raw()
@@ -131,7 +117,7 @@ pub extern fn parser_new(filename: *const c_char) -> Parser {
 		Err(err) => {
 			let c_error = CString::new(err.to_string()).unwrap();
 			Parser {
-				puzzle: ptr::null_mut(),
+				state: ptr::null_mut(),
 				error: c_error.into_raw(),
 			}
 		}
@@ -144,8 +130,8 @@ pub extern fn parser_free(parser: Parser) {
         if !parser.error.is_null() {
 	        CString::from_raw(parser.error);
 		}
-		if !parser.puzzle.is_null() {
-			Box::from_raw(parser.puzzle);// TO remove after mayve
+		if !parser.state.is_null() {
+			Box::from_raw(parser.state);// TO remove after mayve
 		}
     };
 }

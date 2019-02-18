@@ -1,13 +1,13 @@
 #[cfg(test)]
 mod test {
-    use crate::resolver::generate::generate_sorted_puzzle;
+    use crate::resolver::generate::r_generate_sorted_puzzle;
     use crate::resolver::puzzle::*;
 
     #[test]
     fn function_is_solvable() {
         //Solvable and size = 2
         let size: usize = 2;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![2, 0, 1, 3];
         let puzzle: Puzzle = Puzzle::new(vector, size, 0);
         assert_eq!(true, puzzle.is_solvable(&goal));
@@ -70,7 +70,7 @@ mod test {
         assert_eq!(true, puzzle.is_solvable(&goal));
         //Solvable and size = 3
         let size: usize = 3;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![4, 7, 3, 8, 0, 5, 6, 2, 1];
         let puzzle: Puzzle = Puzzle::new(vector, size, 0);
         assert_eq!(true, puzzle.is_solvable(&goal));
@@ -133,7 +133,7 @@ mod test {
         assert_eq!(true, puzzle.is_solvable(&goal));
         //Solvable and size = 4
         let size: usize = 4;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![10, 7, 6, 11, 13, 12, 4, 3, 1, 14, 8, 2, 9, 5, 0, 15];
         let puzzle: Puzzle = Puzzle::new(vector, size, 0);
         assert_eq!(true, puzzle.is_solvable(&goal));
@@ -196,7 +196,7 @@ mod test {
         assert_eq!(true, puzzle.is_solvable(&goal));
         //Solvable and size = 5
         let size: usize = 5;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             23, 5, 3, 9, 11, 8, 1, 20, 22, 15, 4, 21, 10, 18, 0, 7, 2, 12, 17, 16, 13, 14, 19, 6,
             24,
@@ -319,7 +319,7 @@ mod test {
         assert_eq!(true, puzzle.is_solvable(&goal));
         //Solvable and size = 6
         let size: usize = 6;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             3, 26, 23, 2, 9, 8, 0, 21, 24, 7, 19, 34, 14, 10, 32, 28, 18, 20, 33, 12, 25, 15, 35,
             13, 31, 1, 5, 29, 4, 30, 27, 6, 22, 16, 11, 17,
@@ -442,7 +442,7 @@ mod test {
         assert_eq!(true, puzzle.is_solvable(&goal));
         //Solvable and size = 7
         let size: usize = 7;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             29, 32, 8, 41, 45, 14, 28, 46, 18, 22, 0, 48, 15, 30, 11, 33, 20, 19, 40, 39, 27, 35,
             1, 3, 34, 25, 12, 4, 36, 44, 2, 16, 37, 31, 6, 38, 13, 5, 43, 24, 17, 23, 9, 42, 47,
@@ -585,7 +585,7 @@ mod test {
         assert_eq!(true, puzzle.is_solvable(&goal));
         //Solvable and size = 8
         let size: usize = 8;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             18, 53, 8, 22, 17, 47, 10, 1, 29, 19, 46, 9, 31, 7, 16, 54, 55, 21, 58, 61, 14, 6, 11,
             42, 5, 39, 49, 13, 30, 12, 15, 25, 35, 3, 38, 57, 56, 45, 24, 43, 33, 37, 59, 27, 28,
@@ -728,7 +728,7 @@ mod test {
         assert_eq!(true, puzzle.is_solvable(&goal));
         //Solvable and size = 9
         let size: usize = 9;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             35, 9, 4, 18, 67, 56, 28, 16, 24, 11, 45, 50, 1, 61, 37, 19, 62, 39, 72, 48, 34, 29,
             17, 80, 55, 42, 8, 47, 53, 5, 58, 66, 22, 33, 7, 60, 0, 32, 20, 14, 46, 30, 70, 68, 49,
@@ -891,7 +891,7 @@ mod test {
         assert_eq!(true, puzzle.is_solvable(&goal));
         //Solvable and size = 10
         let size: usize = 10;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             65, 98, 63, 72, 69, 87, 97, 73, 5, 19, 68, 1, 2, 44, 13, 9, 64, 45, 90, 22, 27, 4, 59,
             88, 58, 6, 84, 14, 12, 7, 83, 70, 82, 37, 15, 36, 86, 38, 81, 3, 33, 28, 17, 24, 53,
@@ -1074,7 +1074,7 @@ mod test {
         assert_eq!(true, puzzle.is_solvable(&goal));
         //Unolvable and size = 2
         let size: usize = 2;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![1, 3, 0, 2];
         let puzzle: Puzzle = Puzzle::new(vector, size, 0);
         assert_eq!(false, puzzle.is_solvable(&goal));
@@ -1137,7 +1137,7 @@ mod test {
         assert_eq!(false, puzzle.is_solvable(&goal));
         //Unolvable and size = 3
         let size: usize = 3;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![5, 3, 4, 7, 0, 8, 1, 2, 6];
         let puzzle: Puzzle = Puzzle::new(vector, size, 0);
         assert_eq!(false, puzzle.is_solvable(&goal));
@@ -1200,7 +1200,7 @@ mod test {
         assert_eq!(false, puzzle.is_solvable(&goal));
         //Unolvable and size = 4
         let size: usize = 4;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![10, 7, 5, 8, 12, 9, 4, 13, 6, 14, 3, 2, 15, 11, 0, 1];
         let puzzle: Puzzle = Puzzle::new(vector, size, 0);
         assert_eq!(false, puzzle.is_solvable(&goal));
@@ -1263,7 +1263,7 @@ mod test {
         assert_eq!(false, puzzle.is_solvable(&goal));
         //Unolvable and size = 5
         let size: usize = 5;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             18, 9, 19, 7, 13, 14, 17, 10, 0, 2, 15, 1, 21, 11, 16, 6, 8, 20, 5, 3, 4, 12, 24, 23,
             22,
@@ -1386,7 +1386,7 @@ mod test {
         assert_eq!(false, puzzle.is_solvable(&goal));
         //Unolvable and size = 6
         let size: usize = 6;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             21, 4, 31, 12, 11, 8, 6, 32, 29, 22, 16, 7, 26, 3, 33, 28, 34, 14, 35, 1, 17, 9, 0, 23,
             2, 24, 5, 30, 25, 19, 15, 10, 20, 27, 18, 13,
@@ -1509,7 +1509,7 @@ mod test {
         assert_eq!(false, puzzle.is_solvable(&goal));
         //Unolvable and size = 7
         let size: usize = 7;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             30, 7, 11, 42, 33, 18, 16, 35, 38, 47, 40, 15, 5, 41, 2, 22, 44, 10, 13, 17, 6, 29, 8,
             21, 43, 36, 34, 37, 9, 24, 23, 27, 4, 12, 45, 26, 39, 3, 0, 20, 32, 1, 28, 31, 48, 46,
@@ -1652,7 +1652,7 @@ mod test {
         assert_eq!(false, puzzle.is_solvable(&goal));
         //Unolvable and size = 8
         let size: usize = 8;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             13, 1, 48, 23, 29, 49, 2, 58, 35, 20, 19, 5, 63, 8, 33, 11, 44, 62, 42, 0, 57, 59, 14,
             22, 47, 6, 21, 25, 46, 7, 31, 55, 36, 38, 17, 32, 37, 51, 15, 41, 28, 9, 3, 54, 27, 40,
@@ -1795,7 +1795,7 @@ mod test {
         assert_eq!(false, puzzle.is_solvable(&goal));
         //Unolvable and size = 9
         let size: usize = 9;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             41, 40, 6, 69, 39, 76, 49, 80, 10, 57, 0, 12, 36, 54, 15, 70, 38, 17, 71, 2, 30, 73,
             61, 78, 9, 32, 79, 59, 53, 27, 64, 51, 47, 11, 67, 37, 18, 24, 77, 62, 65, 7, 23, 74,
@@ -1958,7 +1958,7 @@ mod test {
         assert_eq!(false, puzzle.is_solvable(&goal));
         //Unolvable and size = 10
         let size: usize = 10;
-        let goal: Puzzle = Puzzle::new(generate_sorted_puzzle(size), size, 0);
+        let goal: Puzzle = Puzzle::new(r_generate_sorted_puzzle(size), size, 0);
         let vector: Vec<u8> = vec![
             41, 45, 62, 3, 85, 57, 99, 4, 11, 88, 68, 66, 12, 64, 6, 36, 34, 2, 46, 38, 51, 13, 55,
             35, 14, 77, 33, 73, 9, 17, 71, 44, 70, 65, 60, 69, 10, 20, 98, 92, 83, 61, 95, 76, 5,

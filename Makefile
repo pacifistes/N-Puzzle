@@ -1,10 +1,12 @@
 NAME = npuzzle
 
 SRCS_PATH = srcs/
+HEADERS = npuzzle.h
 INCLUDES = includes/
-HEADERS = npuzzle.hpp
+LIBFT = libftprintf/
+LIBFTINCL = libftprintf/printf/includes/
 
-SRCS = main.cpp
+SRCS = main.c
 RUST_SRCS = generate.rs \
 			heuristic.rs \
 			parser.rs \
@@ -20,32 +22,38 @@ RUST_SRC = $(addprefix $(RUST_PATH_SRCS), $(RUST_SRCS))
 SRC = $(addprefix $(SRCS_PATH), $(SRCS))
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
 
-WFLAGS = -g -std=c++11 -Wall -Werror -Wextra
+WFLAGS = -g -Wall -Werror -Wextra -fsanitize=address
 
-CC = clang++
+CC = gcc
 
-OBJ= $(SRC:.cpp=.o)
+OBJ = $(SRC:.c=.o)
 
-all : $(NAME)
+all:$(NAME)
+
+libftprintf/libftprintf.a: libftprintf/libft/srcs/ libftprintf/libft/includes/ libftprintf/printf/ libftprintf/libft/includes/ libftprintf/Makefile
+	make -C $(LIBFT) all
 
 # $< ==  le nom de la dépendance (le .c)
 # $@ == représente le nom de la règlE
-%.o: %.cpp
-	$(CC) $(WFLAGS) -I $(INCLUDES) -c $< -o $@
+%.o: %.c
+	$(CC) -c $(WFLAGS) -I $(INCLUDES)  -I $(LIBFTINCL) $< -o $@
 
 # $^ ==représente tous ce qui est après le :
 
-$(NAME) : $(RUST_SRC) $(OBJ)
+$(NAME) : libftprintf/libftprintf.a $(OBJ) $(RUST_SRC)
 	cargo build --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
-	$(CC) $(WFLAGS) -I $(INCLUDES) $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) $(SRC) -o $@
+	$(CC) $(WFLAGS) -I $(INCLUDES) -I $(LIBFTINCL) -L $(LIBFT) -lftprintf $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -o $(NAME) $(OBJ)
+	# $(CC) -g -o $(NAME) $(OBJ) $(WFLAGS) $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -I $(LIBFTINCL) -I $(INCLUDES) -L $(LIBFT) -lftprintf
 
-clean :
+clean:
 	rm -rf $(OBJ)
-	rm -rf $(addprefix $(RUST_LIB_NAME), /target)
+	cargo clean --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
+	make -C $(LIBFT) clean
 
-fclean : clean
+fclean: clean
 	rm -rf $(NAME)
+	make -C $(LIBFT) fclean
 
-re : fclean all
+re: fclean all
 
 .PHONY: all clean fclean re

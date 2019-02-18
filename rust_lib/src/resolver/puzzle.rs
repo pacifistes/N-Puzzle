@@ -5,6 +5,24 @@ use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
 use std::rc::Rc;
 
+#[repr(C)]
+pub struct RVector {
+	pub values: *mut u8,
+	pub size: u8
+}
+
+// impl From<(*mut u8, u8)> for RVector {
+//     fn from(c_vector: (*mut u8, u8)) -> RVector {
+//         RVector { values: c_vector.0, size: c_vector.1 }
+//     }
+// }
+
+// impl From<RVector> for (*mut u8, u8) {
+//     fn from(r_vector: RVector) -> (*mut u8, u8) {
+//         (r_vector.values, r_vector.size)
+//     }
+// }
+
 #[derive(Debug, Clone, Eq)]
 pub struct Puzzle {
     pub g: u16,

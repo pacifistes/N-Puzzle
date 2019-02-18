@@ -1,9 +1,12 @@
+#![crate_type = "staticlib"]
+// extern crate rand;
 use crate::resolver::puzzle::*;
-use rand::seq::SliceRandom;
-use rand::thread_rng;
 use std::vec::Vec;
+use std::slice;
+use rand::thread_rng;
+use rand::seq::SliceRandom;
 
-pub fn generate_sorted_puzzle(size: u8) -> Vec<u8> {
+pub fn r_generate_sorted_puzzle(size: u8) -> Vec<u8> {
     let mut sorted: Vec<u8> = vec![0; size as usize * size as usize];
     let mut is_horizontal: bool = true;
     let mut is_increment: bool = true;
@@ -33,7 +36,7 @@ pub fn generate_sorted_puzzle(size: u8) -> Vec<u8> {
     sorted
 }
 
-pub fn generate_state_index(state: &Vec<u8>) -> Vec<u8> {
+pub fn r_generate_state_index(state: &Vec<u8>) -> Vec<u8> {
     let range: Vec<u8> = (0..state.len() as u8).collect();
     range
         .iter()
@@ -41,12 +44,46 @@ pub fn generate_state_index(state: &Vec<u8>) -> Vec<u8> {
         .collect()
 }
 
-pub fn generate_random_puzzle() -> Puzzle {
+pub fn r_generate_random_puzzle() -> Vec<u8> {
     let size: u8 = 3;
-    let mut start_state: Vec<u8> = generate_sorted_puzzle(size);
-    let mut rng = thread_rng();
+    let mut start_state: Vec<u8> = r_generate_sorted_puzzle(size);
+    // let mut rng = thread_rng();
 
-    start_state.shuffle(&mut rng);
-    let state_index = generate_state_index(&start_state);
-    Puzzle::new(start_state, state_index, size, 0)
+    // start_state.shuffle(&mut rng); TODO A FAIRE MARCHER
+	start_state
+}
+
+#[no_mangle]
+pub extern fn c_generate_random_puzzle() -> RVector {
+	let mut c_values = r_generate_random_puzzle();
+	let r_values = c_values.as_mut_ptr();
+
+	std::mem::forget(c_values);
+	RVector  {
+		values: r_values,
+		size: 3,
+	}
+}
+
+#[no_mangle]
+pub extern fn c_generate_state_index(c_vector: RVector) -> RVector {
+	let state = unsafe {
+        slice::from_raw_parts(c_vector.values, c_vector.size as usize).to_vec()
+    };
+	RVector {
+		values: r_generate_state_index(&state).into_boxed_slice().as_mut_ptr(),
+		size: c_vector.size
+	}
+}
+
+#[no_mangle]
+pub extern fn c_generate_sorted_puzzle(size: u8) -> RVector {
+	let mut c_values = r_generate_sorted_puzzle(size);
+	let r_values = c_values.as_mut_ptr();
+
+	std::mem::forget(c_values);
+	RVector {
+		values: r_values,
+		size,
+	}
 }

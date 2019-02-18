@@ -1,39 +1,51 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   mainc.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/16 20:01:48 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/02/18 15:40:13 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "npuzzle.hpp"
+#include "npuzzle.h"
+
+void print_state(char *str, t_vector state)
+{
+	ft_printf("%s\n", str);
+	ft_printf("size = %d\n", state.size);
+	for (int i=0; i < state.size * state.size; i++) {
+		ft_printf(" %d", state.values[i]);
+	}
+	ft_printf("\n");
+}
 
 void do_all(char *filename)
 {
+
 	t_parser parser = parser_new(filename);
-	if (parser.puzzle == NULL)
-		std::cout << "puzzle is null" << std::endl;
+	if (parser.state == NULL)
+		ft_printf("puzzle is null\n");
 	else
 	{
-		std::cout << "puzzle is not null" << std::endl;
-		std::cout << "size: " << ((uint)parser.puzzle->size) <<std::endl;
-		std::cout << "puzzle:";
-		for (int i=0; i < parser.puzzle->size * parser.puzzle->size; i++) {
-			std::cout << " " << ((uint)parser.puzzle->state[i]);
-		}
-		std::cout <<std::endl;
+		ft_printf("puzzle is not null\n");
+		ft_printf("size: %d\n", parser.state->size);
+		print_state("puzzle of file", *parser.state);
+
+		t_vector sorted_state = c_generate_sorted_puzzle(4);
+		print_state("sorted puzzle", sorted_state);
+
+		t_vector random_state = c_generate_random_puzzle();
+		print_state("random puzzle", random_state);
 	}
-	std::cout << "error = " << parser.error << std::endl;
+	ft_printf("error = %s\n", parser.error);
 	parser_free(parser);
 }
 
 int main(int ac, char **av) {
-	if (ac == 2)
-	{
+	if (ac == 2) {
 		do_all(av[1]);
 	}
 	else
@@ -42,6 +54,3 @@ int main(int ac, char **av) {
 	}
 	return (0);
 }
-//
-// int x[3] = {1, 2, 3};
-// std::vector<int> v(x, x + sizeof x / sizeof x[0]);
