@@ -3,8 +3,10 @@ use crate::resolver::puzzle::*;
 use std::collections::BinaryHeap;
 use std::collections::HashSet;
 use std::time::Instant;
+use std::ptr;
 
 
+#[repr(C)]
 #[derive(Debug)]
 pub enum Algo {
     UNIFORM_COST,
@@ -46,6 +48,23 @@ impl Resolver {
             do_linear_conflict: false,
         }
     }
+}
+
+#[no_mangle]
+pub extern fn resolver_new() -> *mut Resolver {
+    ptr::null_mut()
+}
+
+#[no_mangle]
+pub extern fn c_set_heuristics() {
+}
+
+#[no_mangle]
+pub extern fn c_set_algo() {
+}
+
+#[no_mangle]
+pub extern fn c_resolve() {
 }
 
 impl Resolver {

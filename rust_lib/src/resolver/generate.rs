@@ -49,7 +49,7 @@ pub fn r_generate_random_puzzle() -> Vec<u8> {
     let mut start_state: Vec<u8> = r_generate_sorted_puzzle(size);
     // let mut rng = thread_rng();
 
-    // start_state.shuffle(&mut rng); TODO A FAIRE MARCHER
+    // start_state.shuffle(&mut rng); //TODO A FAIRE MARCHER
 	start_state
 }
 
@@ -62,17 +62,6 @@ pub extern fn c_generate_random_puzzle() -> RVector {
 	RVector  {
 		values: r_values,
 		size: 3,
-	}
-}
-
-#[no_mangle]
-pub extern fn c_generate_state_index(c_vector: RVector) -> RVector {
-	let state = unsafe {
-        slice::from_raw_parts(c_vector.values, c_vector.size as usize).to_vec()
-    };
-	RVector {
-		values: r_generate_state_index(&state).into_boxed_slice().as_mut_ptr(),
-		size: c_vector.size
 	}
 }
 
