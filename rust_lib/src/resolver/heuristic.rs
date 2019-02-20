@@ -1,7 +1,7 @@
 use std::cmp::min;
 
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Heuristic {
     MANATHAN,
     CHEBYSHEV,

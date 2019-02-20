@@ -1,5 +1,6 @@
 use crate::resolver::heuristic::*;
 use crate::resolver::resolver::Algo;
+use crate::resolver::generate::r_generate_state_index;
 use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
@@ -8,9 +9,49 @@ use std::rc::Rc;
 #[repr(C)]
 pub struct RVector {
 	pub values: *mut u8,
-	pub size: u8
+	pub size: u32,
 }
 
+#[repr(C)]
+#[derive(Debug, Clone, PartialEq, Eq, Copy)]
+pub enum Move {
+    TOP,
+    LEFT,
+    BOT,
+	RIGHT,
+	NONE,
+}
+
+#[no_mangle]
+pub extern fn vector_free(vector: RVector) {
+    if !vector.values.is_null() {
+        unsafe {
+			Box::from_raw(vector.values);
+		}
+    }
+}
+
+#[no_mangle]
+pub extern fn puzzle_new(state: RVector) -> *mut Puzzle {
+	let size = state.size;
+	unsafe {
+	    let mut state: Vec<u8> = Vec::from_raw_parts(state.values, size as usize, size as usize);
+		let state_index: Vec<u8> = r_generate_state_index(&state);
+	    let puzzle: Puzzle = Puzzle::new(state, state_index,  (size as f64).sqrt() as u8, 0, Move::NONE);
+		Box::into_raw(Box::new(puzzle))
+	}
+}
+
+#[no_mangle]
+pub extern fn c_is_solvable(puzzle: *mut Puzzle, goal: *mut Puzzle) -> i8 {
+	let puzzle = unsafe {
+        (&mut *puzzle).clone()
+    };
+	let goal = unsafe {
+        (&mut *goal)
+    };
+	puzzle.r_is_solvable(&goal) as i8
+}
 // impl From<(*mut u8, u8)> for RVector {
 //     fn from(c_vector: (*mut u8, u8)) -> RVector {
 //         RVector { values: c_vector.0, size: c_vector.1 }
@@ -30,18 +71,20 @@ pub struct Puzzle {
     pub state: Vec<u8>,
     pub state_index: Vec<u8>,
     pub predecessor: Option<RefPuzzle>,
+	pub movement: Move,
     pub h: u16,
     pub f: u16,
 }
 
 impl Puzzle {
-    pub fn new(state: Vec<u8>, state_index: Vec<u8>, size: u8, g: u16) -> Puzzle {
+    pub fn new(state: Vec<u8>, state_index: Vec<u8>, size: u8, g: u16, movement: Move) -> Puzzle {
         Puzzle {
             g,
             size,
             state,
             state_index,
             predecessor: None,
+			movement,
             h: 0,
             f: 0,
         }
@@ -67,7 +110,7 @@ impl Puzzle {
         self.state.swap(old_pos, new_pos);
     }
 
-    pub fn is_solvable(&self, goal: &Puzzle) -> bool {
+    pub fn r_is_solvable(&self, goal: &Puzzle) -> bool {
         let mut nbr_permute: usize = 0;
         let mut state_permute: Puzzle = self.clone();
         let actual_index = self.get_index_of_value(0) as usize;
@@ -160,7 +203,7 @@ impl Puzzle {
 }
 
 impl Puzzle {
-    pub fn apply_move(&self, old_pos: usize, new_pos: usize) -> RefPuzzle {
+    pub fn apply_move(&self, old_pos: usize, new_pos: usize, movement: Move) -> RefPuzzle {
         let mut new_state: Vec<u8> = self.state.clone();
         let mut new_state_index: Vec<u8> = self.state_index.clone();
         new_state.swap(old_pos, new_pos);
@@ -170,6 +213,7 @@ impl Puzzle {
             new_state_index,
             self.size,
             self.g + 1,
+			movement
         ))
     }
 
@@ -177,28 +221,28 @@ impl Puzzle {
         if x == 0 {
             return None;
         }
-        Some(self.apply_move(x + y * self.size as usize, x - 1 + y * self.size as usize))
+        Some(self.apply_move(x + y * self.size as usize, x - 1 + y * self.size as usize, Move::LEFT))
     }
 
     pub fn move_top(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         if y == 0 {
             return None;
         }
-        Some(self.apply_move(x + y * self.size as usize, x + (y - 1) * self.size as usize))
+        Some(self.apply_move(x + y * self.size as usize, x + (y - 1) * self.size as usize, Move::TOP))
     }
 
     pub fn move_right(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         if x == (self.size - 1) as usize {
             return None;
         }
-        Some(self.apply_move(x + y * self.size as usize, x + 1 + y * self.size as usize))
+        Some(self.apply_move(x + y * self.size as usize, x + 1 + y * self.size as usize, Move::RIGHT))
     }
 
     pub fn move_bot(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         if y == (self.size - 1) as usize {
             return None;
         }
-        Some(self.apply_move(x + y * self.size as usize, x + (y + 1) * self.size as usize))
+        Some(self.apply_move(x + y * self.size as usize, x + (y + 1) * self.size as usize, Move::BOT))
     }
 
     pub fn expand(&self) -> Vec<RefPuzzle> {
@@ -286,4 +330,10 @@ impl Hash for RefPuzzle {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.ref_puzzle.borrow().state.hash(state);
     }
+}
+
+#[no_mangle]
+pub extern fn puzzle_free(puzzle: *mut Puzzle) {
+    if puzzle.is_null() { return }
+    unsafe { Box::from_raw(puzzle); }
 }

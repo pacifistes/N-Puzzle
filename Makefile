@@ -22,7 +22,7 @@ RUST_SRC = $(addprefix $(RUST_PATH_SRCS), $(RUST_SRCS))
 SRC = $(addprefix $(SRCS_PATH), $(SRCS))
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
 
-WFLAGS = -g -Wall -Werror -Wextra
+WFLAGS = -g -Wall -Werror -Wextra #-fsanitize=address
 
 CC = gcc
 
@@ -35,7 +35,7 @@ libftprintf/libftprintf.a: libftprintf/libft/srcs/ libftprintf/libft/includes/ l
 
 # $< ==  le nom de la dépendance (le .c)
 # $@ == représente le nom de la règlE
-%.o: %.c
+%.o: %.c $(HEADER) Makefile
 	$(CC) -c $(WFLAGS) -I $(INCLUDES)  -I $(LIBFTINCL) $< -o $@
 
 # $^ ==représente tous ce qui est après le :

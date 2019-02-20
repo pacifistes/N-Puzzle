@@ -101,12 +101,13 @@ pub extern fn parser_new(filename: *const c_char) -> Parser {
 	match parse(rust_filename) {
 		Ok((mut tmp_state, size)) => {
 			let c_error = CString::new("no error").unwrap();
-			let r_values = tmp_state.as_mut_ptr();
+			let c_values = tmp_state.as_mut_ptr();
+			let size: u32 = tmp_state.len() as u32;
 			std::mem::forget(tmp_state);
 			unsafe {
 				Parser {
 					state:Box::into_raw(Box::new( RVector  {
-						values: r_values,
+						values: c_values,
 						size,
 					})),
 					error: c_error.into_raw()
@@ -130,7 +131,10 @@ pub extern fn parser_free(parser: Parser) {
 	        let r_string = CString::from_raw(parser.error);
 		}
 		if !parser.state.is_null() {
-			Box::from_raw(parser.state);// TO remove after mayve
+			// if !(*parser.state).values.is_null() {
+			// 	Box::from_raw((*parser.state).values);
+			// }
+			Box::from_raw(parser.state);
 		}
     };
 }
