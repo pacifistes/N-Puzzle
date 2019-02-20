@@ -1,6 +1,6 @@
+use crate::resolver::generate::r_generate_state_index;
 use crate::resolver::heuristic::*;
 use crate::resolver::resolver::Algo;
-use crate::resolver::generate::r_generate_state_index;
 use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
@@ -8,8 +8,8 @@ use std::rc::Rc;
 
 #[repr(C)]
 pub struct RVector {
-	pub values: *mut u8,
-	pub size: u32,
+    pub values: *mut u8,
+    pub size: u32,
 }
 
 #[repr(C)]
@@ -18,51 +18,42 @@ pub enum Move {
     TOP,
     LEFT,
     BOT,
-	RIGHT,
-	NONE,
+    RIGHT,
+    NONE,
 }
 
 #[no_mangle]
-pub extern fn vector_free(vector: RVector) {
+pub extern "C" fn vector_free(vector: RVector) {
     if !vector.values.is_null() {
         unsafe {
-			Box::from_raw(vector.values);
-		}
+            Box::from_raw(vector.values);
+        }
     }
 }
 
 #[no_mangle]
-pub extern fn puzzle_new(state: RVector) -> *mut Puzzle {
-	let size = state.size;
-	unsafe {
-	    let mut state: Vec<u8> = Vec::from_raw_parts(state.values, size as usize, size as usize);
-		let state_index: Vec<u8> = r_generate_state_index(&state);
-	    let puzzle: Puzzle = Puzzle::new(state, state_index,  (size as f64).sqrt() as u8, 0, Move::NONE);
-		Box::into_raw(Box::new(puzzle))
-	}
+pub extern "C" fn puzzle_new(state: RVector) -> *mut Puzzle {
+    let size = state.size;
+    unsafe {
+        let state: Vec<u8> = Vec::from_raw_parts(state.values, size as usize, size as usize);
+        let state_index: Vec<u8> = r_generate_state_index(&state);
+        let puzzle: Puzzle = Puzzle::new(
+            state,
+            state_index,
+            (f64::from(size)).sqrt() as u8,
+            0,
+            Move::NONE,
+        );
+        Box::into_raw(Box::new(puzzle))
+    }
 }
 
 #[no_mangle]
-pub extern fn c_is_solvable(puzzle: *mut Puzzle, goal: *mut Puzzle) -> i8 {
-	let puzzle = unsafe {
-        (&mut *puzzle).clone()
-    };
-	let goal = unsafe {
-        (&mut *goal)
-    };
-	puzzle.r_is_solvable(&goal) as i8
+pub extern "C" fn c_is_solvable(puzzle: *mut Puzzle, goal: *mut Puzzle) -> i8 {
+    let puzzle = unsafe { (&mut *puzzle).clone() };
+    let goal = unsafe { (&mut *goal) };
+    puzzle.r_is_solvable(&goal) as i8
 }
-// impl From<(*mut u8, u8)> for RVector {
-//     fn from(c_vector: (*mut u8, u8)) -> RVector {
-//         RVector { values: c_vector.0, size: c_vector.1 }
-//     }
-// }
-
-// impl From<RVector> for (*mut u8, u8) {
-//     fn from(r_vector: RVector) -> (*mut u8, u8) {
-//         (r_vector.values, r_vector.size)
-//     }
-// }
 
 #[derive(Debug, Clone, Eq)]
 pub struct Puzzle {
@@ -71,7 +62,7 @@ pub struct Puzzle {
     pub state: Vec<u8>,
     pub state_index: Vec<u8>,
     pub predecessor: Option<RefPuzzle>,
-	pub movement: Move,
+    pub movement: Move,
     pub h: u16,
     pub f: u16,
 }
@@ -84,7 +75,7 @@ impl Puzzle {
             state,
             state_index,
             predecessor: None,
-			movement,
+            movement,
             h: 0,
             f: 0,
         }
@@ -139,8 +130,8 @@ impl Puzzle {
     pub fn get_h_of_value(
         &self,
         value: u8,
-        state_index: &Vec<u8>,
-        goal_index: &Vec<u8>,
+        state_index: &[u8],
+        goal_index: &[u8],
         heuristic: fn(u16, u16) -> u16,
     ) -> u16 {
         if value == 0 {
@@ -155,7 +146,7 @@ impl Puzzle {
 
     pub fn find_h(
         &mut self,
-        goal_index: &Vec<u8>,
+        goal_index: &[u8],
         heuristics: &[Option<fn(u16, u16) -> u16>; 5],
         do_linear_conflict: bool,
     ) {
@@ -184,16 +175,16 @@ impl Puzzle {
     pub fn find_f(
         &mut self,
         algo: &Algo,
-        goal_index: &Vec<u8>,
+        goal_index: &[u8],
         heuristics: &[Option<fn(u16, u16) -> u16>; 5],
         do_linear_conflict: bool,
     ) {
         match algo {
-            Algo::GREEDY => {
+            Algo::Greedy => {
                 self.find_h(goal_index, heuristics, do_linear_conflict);
                 self.f = self.h;
             } // que h
-            Algo::A_STAR => {
+            Algo::AStar => {
                 self.find_h(goal_index, heuristics, do_linear_conflict);
                 self.f = self.g + self.h;
             }
@@ -213,7 +204,7 @@ impl Puzzle {
             new_state_index,
             self.size,
             self.g + 1,
-			movement
+            movement,
         ))
     }
 
@@ -221,32 +212,48 @@ impl Puzzle {
         if x == 0 {
             return None;
         }
-        Some(self.apply_move(x + y * self.size as usize, x - 1 + y * self.size as usize, Move::LEFT))
+        Some(self.apply_move(
+            x + y * self.size as usize,
+            x - 1 + y * self.size as usize,
+            Move::LEFT,
+        ))
     }
 
     pub fn move_top(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         if y == 0 {
             return None;
         }
-        Some(self.apply_move(x + y * self.size as usize, x + (y - 1) * self.size as usize, Move::TOP))
+        Some(self.apply_move(
+            x + y * self.size as usize,
+            x + (y - 1) * self.size as usize,
+            Move::TOP,
+        ))
     }
 
     pub fn move_right(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         if x == (self.size - 1) as usize {
             return None;
         }
-        Some(self.apply_move(x + y * self.size as usize, x + 1 + y * self.size as usize, Move::RIGHT))
+        Some(self.apply_move(
+            x + y * self.size as usize,
+            x + 1 + y * self.size as usize,
+            Move::RIGHT,
+        ))
     }
 
     pub fn move_bot(&self, x: usize, y: usize) -> Option<RefPuzzle> {
         if y == (self.size - 1) as usize {
             return None;
         }
-        Some(self.apply_move(x + y * self.size as usize, x + (y + 1) * self.size as usize, Move::BOT))
+        Some(self.apply_move(
+            x + y * self.size as usize,
+            x + (y + 1) * self.size as usize,
+            Move::BOT,
+        ))
     }
 
     pub fn expand(&self) -> Vec<RefPuzzle> {
-        let blank_position: u16 = self.get_index_of_value(0) as u16;
+        let blank_position: u16 = u16::from(self.get_index_of_value(0));
         let x: usize = self.get_x(blank_position as usize);
         let y: usize = self.get_y(blank_position as usize);
         let expand_states: Vec<Option<RefPuzzle>> = vec![
@@ -256,21 +263,6 @@ impl Puzzle {
             self.move_bot(x, y),
         ];
         expand_states.into_iter().filter_map(|x| x).collect()
-    }
-}
-
-impl Puzzle {
-    pub fn print(&self) {
-        for y in 0..self.size {
-            for x in 0..self.size {
-                print!(
-                    "{}\t",
-                    self.state[x as usize + y as usize * self.size as usize]
-                );
-            }
-            println!("");
-        }
-        println!("g = {}, h = {}, f = {}", self.g, self.h, self.g + self.h);
     }
 }
 
@@ -333,7 +325,11 @@ impl Hash for RefPuzzle {
 }
 
 #[no_mangle]
-pub extern fn puzzle_free(puzzle: *mut Puzzle) {
-    if puzzle.is_null() { return }
-    unsafe { Box::from_raw(puzzle); }
+pub extern "C" fn puzzle_free(puzzle: *mut Puzzle) {
+    if puzzle.is_null() {
+        return;
+    }
+    unsafe {
+        Box::from_raw(puzzle);
+    }
 }

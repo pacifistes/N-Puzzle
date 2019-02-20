@@ -1,10 +1,6 @@
-#![crate_type = "staticlib"]
-// extern crate rand;
 use crate::resolver::puzzle::*;
-use std::vec::Vec;
-use std::slice;
 use rand::seq::SliceRandom;
-use rand::thread_rng;
+use std::vec::Vec;
 
 pub fn r_generate_sorted_state(size: u8) -> Vec<u8> {
     let mut sorted: Vec<u8> = vec![0; size as usize * size as usize];
@@ -36,7 +32,7 @@ pub fn r_generate_sorted_state(size: u8) -> Vec<u8> {
     sorted
 }
 
-pub fn r_generate_state_index(state: &Vec<u8>) -> Vec<u8> {
+pub fn r_generate_state_index(state: &[u8]) -> Vec<u8> {
     let range: Vec<u8> = (0..state.len() as u8).collect();
     range
         .iter()
@@ -49,31 +45,31 @@ pub fn r_generate_random_state() -> Vec<u8> {
     let mut start_state: Vec<u8> = r_generate_sorted_state(size);
 
     start_state.shuffle(&mut rand::thread_rng());
-	start_state
+    start_state
 }
 
 #[no_mangle]
-pub extern fn c_generate_random_state() -> RVector {
-	let mut r_values = r_generate_random_state();
-	let size = r_values.len() as u32;
-	let c_values = r_values.as_mut_ptr();
+pub extern "C" fn c_generate_random_state() -> RVector {
+    let mut r_values = r_generate_random_state();
+    let size = r_values.len() as u32;
+    let c_values = r_values.as_mut_ptr();
 
-	std::mem::forget(r_values);
-	RVector  {
-		values: c_values,
-		size,
-	}
+    std::mem::forget(r_values);
+    RVector {
+        values: c_values,
+        size,
+    }
 }
 
 #[no_mangle]
-pub extern fn c_generate_sorted_state(size: u32) -> RVector {
-	let mut r_values = r_generate_sorted_state(size as u8);
-	let size = r_values.len() as u32;
-	let c_values = r_values.as_mut_ptr();
+pub extern "C" fn c_generate_sorted_state(size: u32) -> RVector {
+    let mut r_values = r_generate_sorted_state(size as u8);
+    let size = r_values.len() as u32;
+    let c_values = r_values.as_mut_ptr();
 
-	std::mem::forget(r_values);
-	RVector {
-		values: c_values,
-		size,
-	}
+    std::mem::forget(r_values);
+    RVector {
+        values: c_values,
+        size,
+    }
 }

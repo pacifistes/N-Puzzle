@@ -3,12 +3,12 @@ use std::cmp::min;
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub enum Heuristic {
-    MANATHAN,
-    CHEBYSHEV,
-    EUCLIDIENNE,
-    OCTILE,
-    HAMMING,
-    LINEAR_CONFLICT,
+    Manathan,
+    Chebyshev,
+    Euclidienne,
+    Octile,
+    Hamming,
+    LinearConflict,
 }
 
 pub fn distance(start: usize, end: usize) -> u16 {
@@ -38,7 +38,8 @@ pub fn hamming(dist_x: u16, dist_y: u16) -> u16 {
     }
 }
 
-pub fn linear_conflict(actual_index: &Vec<u8>, goal_index: &Vec<u8>, size: u8) -> u16 {
+#[rustfmt::skip]
+pub fn linear_conflict(actual_index: &[u8], goal_index: &[u8], size: u8) -> u16 {
     let mut weight = 0;
 	let range: Vec<usize> = (1..size as usize).collect();
 	let all_coordinate: Vec<((u8,u8), (u8,u8))> = range.iter().map(|i| ((actual_index[*i] / size, actual_index[*i] % size), (goal_index[*i] / size, goal_index[*i] % size))).collect();

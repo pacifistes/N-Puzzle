@@ -1,20 +1,13 @@
-#![crate_type = "staticlib"]
-use crate::resolver::generate::r_generate_state_index;
 use crate::resolver::puzzle::*;
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader};
 use std::io::{Error, ErrorKind};
-
-// For Binding
-use libc::{c_char, uint32_t, uint8_t, size_t};
+use libc::c_char;
 use std::ffi::CStr;
 use std::ffi::CString;
-use std::str;
-use std::iter;
-use std::slice;
-use std::convert::From;
 use std::ptr;
+use std::str;
 
 fn get_size(line: &str) -> Result<u8, io::Error> {
     match line.parse::<u8>() {
@@ -64,9 +57,7 @@ pub fn parse(filename: &str) -> Result<(Vec<u8>, u8), io::Error> {
     let mut start_state: Vec<u8> = Vec::new();
 
     for line in BufReader::new(file).lines() {
-        let line = line?.split('#').collect::<Vec<_>>()[0]
-            .trim()
-            .to_string();
+        let line = line?.split('#').collect::<Vec<_>>()[0].trim().to_string();
         match line.is_empty() {
             true => (),
             false => match size == 0 {
@@ -82,59 +73,54 @@ pub fn parse(filename: &str) -> Result<(Vec<u8>, u8), io::Error> {
     Ok((start_state, size))
 }
 
-
 #[repr(C)]
 pub struct Parser {
     state: *mut RVector,
     error: *mut c_char,
 }
 
-
 #[no_mangle]
-pub extern fn parser_new(filename: *const c_char) -> Parser {
-	let c_filename = unsafe {
+pub extern "C" fn parser_new(filename: *const c_char) -> Parser {
+    let c_filename = unsafe {
         assert!(!filename.is_null());
         CStr::from_ptr(filename)
     };
     let rust_filename = c_filename.to_str().unwrap();
 
-	match parse(rust_filename) {
-		Ok((mut tmp_state, size)) => {
-			let c_error = CString::new("no error").unwrap();
-			let c_values = tmp_state.as_mut_ptr();
-			let size: u32 = tmp_state.len() as u32;
-			std::mem::forget(tmp_state);
-			unsafe {
-				Parser {
-					state:Box::into_raw(Box::new( RVector  {
-						values: c_values,
-						size,
-					})),
-					error: c_error.into_raw()
-				}
-			}
-		},
-		Err(err) => {
-			let c_error = CString::new(err.to_string()).unwrap();
+    match parse(rust_filename) {
+        Ok((mut tmp_state, size)) => {
+            let c_error = CString::new("no error").unwrap();
+            let c_values = tmp_state.as_mut_ptr();
+            std::mem::forget(tmp_state);
 			Parser {
-				state: ptr::null_mut(),
+				state: Box::into_raw(Box::new(RVector {
+					values: c_values,
+					size: u32::from(size * size),
+				})),
 				error: c_error.into_raw(),
 			}
-		}
-	}
+        }
+        Err(err) => {
+            let c_error = CString::new(err.to_string()).unwrap();
+            Parser {
+                state: ptr::null_mut(),
+                error: c_error.into_raw(),
+            }
+        }
+    }
 }
 
 #[no_mangle]
-pub extern fn parser_free(parser: Parser) {
+pub extern "C" fn parser_free(parser: Parser) {
     unsafe {
         if !parser.error.is_null() {
-	        let r_string = CString::from_raw(parser.error);
-		}
-		if !parser.state.is_null() {
-			// if !(*parser.state).values.is_null() {
-			// 	Box::from_raw((*parser.state).values);
-			// }
-			Box::from_raw(parser.state);
-		}
+            CString::from_raw(parser.error);
+        }
+        if !parser.state.is_null() {
+            // if !(*parser.state).values.is_null() {
+            // 	Box::from_raw((*parser.state).values);
+            // }
+            Box::from_raw(parser.state);
+        }
     };
 }

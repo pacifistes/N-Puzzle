@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/20 17:25:16 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/02/20 18:33:04 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ typedef struct	s_vector {
 
 
 typedef enum e_algo {
-    UNIFORM_COST,
-    A_STAR,
-    GREEDY,
+    UniformCost,
+    AStar,
+    Greedy,
 }			t_algo;
 
 typedef enum e_move {
@@ -37,12 +37,12 @@ typedef enum e_move {
 }			t_move;
 
 typedef enum e_heuristic {
-	MANATHAN,
-    CHEBYSHEV,
-    EUCLIDIENNE,
-    OCTILE,
-    HAMMING,
-    LINEAR_CONFLICT,
+	manathan,
+    chebyshev,
+    euclidienne,
+    octile,
+    hamming,
+    linear_conflict,
 }			t_heuristic;
 
 typedef struct	s_parser {

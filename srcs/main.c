@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/20 17:44:11 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/02/20 18:33:04 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,10 @@ void run(t_vector state) {
 		resolver_t *resolver = resolver_new(puzzle, goal);
 		ft_printf("the puzzle solvable\n");
 
-		t_heuristic heuristics[] = {MANATHAN, HAMMING};
+		t_heuristic heuristics[] = {manathan, hamming};
 		size_t size = sizeof heuristics / sizeof *heuristics;
 		c_set_heuristics(resolver, heuristics, size);
-		t_algo algo = GREEDY;
+		t_algo algo = Greedy;
 		c_set_algo(resolver, algo);
 		t_resolver_info info = c_resolve(resolver);
 
