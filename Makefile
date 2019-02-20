@@ -53,7 +53,7 @@ $(NAME) : libftprintf/libftprintf.a $(OBJ) $(RUST_RESOLVER_SRC) $(RUST_BINDING_S
 
 
 test:
-	cargo test --verbose --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml) -- --nocapture
+	cargo test --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml) -- --nocapture
 
 clean:
 	rm -rf $(OBJ)
