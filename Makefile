@@ -51,6 +51,10 @@ $(NAME) : libftprintf/libftprintf.a $(OBJ) $(RUST_RESOLVER_SRC) $(RUST_BINDING_S
 	cargo build --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
 	$(CC) $(WFLAGS) -I $(INCLUDES) -I $(LIBFTINCL) -L $(LIBFT) -lftprintf -framework Security $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -o $(NAME) $(OBJ)
 
+
+test:
+	cargo test --verbose --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml) -- --nocapture
+
 clean:
 	rm -rf $(OBJ)
 	cargo clean --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
