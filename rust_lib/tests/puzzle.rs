@@ -1,5 +1,3 @@
-extern crate rust_lib;
-
 #[cfg(test)]
 mod tests {
     use rust_lib::resolver::generate::r_generate_sorted_state;
