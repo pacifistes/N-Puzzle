@@ -1,13 +1,7 @@
-use crate::resolver::puzzle::*;
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader};
 use std::io::{Error, ErrorKind};
-use libc::c_char;
-use std::ffi::CStr;
-use std::ffi::CString;
-use std::ptr;
-use std::str;
 
 fn get_size(line: &str) -> Result<u8, io::Error> {
     match line.parse::<u8>() {
@@ -69,58 +63,5 @@ pub fn parse(filename: &str) -> Result<(Vec<u8>, u8), io::Error> {
     if start_state.len() != size as usize * size as usize {
         return Err(Error::new(ErrorKind::InvalidData, "Missing some lines"));
     }
-    // let start_state_index: Vec<u8> = r_generate_state_index(&start_state);
     Ok((start_state, size))
-}
-
-#[repr(C)]
-pub struct Parser {
-    state: *mut RVector,
-    error: *mut c_char,
-}
-
-#[no_mangle]
-pub extern "C" fn parser_new(filename: *const c_char) -> Parser {
-    let c_filename = unsafe {
-        assert!(!filename.is_null());
-        CStr::from_ptr(filename)
-    };
-    let rust_filename = c_filename.to_str().unwrap();
-
-    match parse(rust_filename) {
-        Ok((mut tmp_state, size)) => {
-            let c_error = CString::new("no error").unwrap();
-            let c_values = tmp_state.as_mut_ptr();
-            std::mem::forget(tmp_state);
-			Parser {
-				state: Box::into_raw(Box::new(RVector {
-					values: c_values,
-					size: u32::from(size * size),
-				})),
-				error: c_error.into_raw(),
-			}
-        }
-        Err(err) => {
-            let c_error = CString::new(err.to_string()).unwrap();
-            Parser {
-                state: ptr::null_mut(),
-                error: c_error.into_raw(),
-            }
-        }
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn parser_free(parser: Parser) {
-    unsafe {
-        if !parser.error.is_null() {
-            CString::from_raw(parser.error);
-        }
-        if !parser.state.is_null() {
-            // if !(*parser.state).values.is_null() {
-            // 	Box::from_raw((*parser.state).values);
-            // }
-            Box::from_raw(parser.state);
-        }
-    };
 }

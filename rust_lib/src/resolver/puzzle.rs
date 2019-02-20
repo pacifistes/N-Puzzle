@@ -1,16 +1,9 @@
-use crate::resolver::generate::r_generate_state_index;
 use crate::resolver::heuristic::*;
 use crate::resolver::resolver::Algo;
 use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
 use std::rc::Rc;
-
-#[repr(C)]
-pub struct RVector {
-    pub values: *mut u8,
-    pub size: u32,
-}
 
 #[repr(C)]
 #[derive(Debug, Clone, PartialEq, Eq, Copy)]
@@ -20,39 +13,6 @@ pub enum Move {
     BOT,
     RIGHT,
     NONE,
-}
-
-#[no_mangle]
-pub extern "C" fn vector_free(vector: RVector) {
-    if !vector.values.is_null() {
-        unsafe {
-            Box::from_raw(vector.values);
-        }
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn puzzle_new(state: RVector) -> *mut Puzzle {
-    let size = state.size;
-    unsafe {
-        let state: Vec<u8> = Vec::from_raw_parts(state.values, size as usize, size as usize);
-        let state_index: Vec<u8> = r_generate_state_index(&state);
-        let puzzle: Puzzle = Puzzle::new(
-            state,
-            state_index,
-            (f64::from(size)).sqrt() as u8,
-            0,
-            Move::NONE,
-        );
-        Box::into_raw(Box::new(puzzle))
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn c_is_solvable(puzzle: *mut Puzzle, goal: *mut Puzzle) -> i8 {
-    let puzzle = unsafe { (&mut *puzzle).clone() };
-    let goal = unsafe { (&mut *goal) };
-    puzzle.r_is_solvable(&goal) as i8
 }
 
 #[derive(Debug, Clone, Eq)]
@@ -321,15 +281,5 @@ impl Ord for RefPuzzle {
 impl Hash for RefPuzzle {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.ref_puzzle.borrow().state.hash(state);
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn puzzle_free(puzzle: *mut Puzzle) {
-    if puzzle.is_null() {
-        return;
-    }
-    unsafe {
-        Box::from_raw(puzzle);
     }
 }
