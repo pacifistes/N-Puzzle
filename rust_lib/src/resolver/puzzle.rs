@@ -69,7 +69,6 @@ impl Puzzle {
         let dist_x = distance(self.get_x(actual_index), goal.get_x(goal_index));
         let dist_y = distance(self.get_y(actual_index), goal.get_y(goal_index));
         let distance_empty_box: usize = manathan(dist_x, dist_y) as usize;
-
         for i in 0..self.state.len() {
             let value = goal.state[i];
             let actual_index: usize = state_permute.get_index_of_value(value) as usize;
@@ -175,7 +174,7 @@ impl Puzzle {
         Some(self.apply_move(
             x + y * self.size as usize,
             x - 1 + y * self.size as usize,
-            Move::LEFT,
+            Move::RIGHT,
         ))
     }
 
@@ -186,7 +185,7 @@ impl Puzzle {
         Some(self.apply_move(
             x + y * self.size as usize,
             x + (y - 1) * self.size as usize,
-            Move::TOP,
+            Move::BOT,
         ))
     }
 
@@ -197,7 +196,7 @@ impl Puzzle {
         Some(self.apply_move(
             x + y * self.size as usize,
             x + 1 + y * self.size as usize,
-            Move::RIGHT,
+            Move::LEFT,
         ))
     }
 
@@ -208,7 +207,7 @@ impl Puzzle {
         Some(self.apply_move(
             x + y * self.size as usize,
             x + (y + 1) * self.size as usize,
-            Move::BOT,
+            Move::TOP,
         ))
     }
 

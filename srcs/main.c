@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/20 18:33:04 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/02/23 17:49:04 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,21 @@ void run(t_vector state) {
 		c_set_heuristics(resolver, heuristics, size);
 		t_algo algo = Greedy;
 		c_set_algo(resolver, algo);
-		t_resolver_info info = c_resolve(resolver);
+		t_resolver_info *info = c_resolve(resolver);
 
-		for (uint32_t i=0; i < info.size; i++) {
-			print_move(info.all_state[i].move);
-			print_state("", info.all_state[i].state);
+		if (info == NULL) {
+			ft_printf("timeout retry");
+			return;
+		}
+		for (uint32_t i=0; i < info->size; i++) {
+			print_move(info->all_state[i].move);
+			print_state("", info->all_state[i].state);
 		}
 		ft_printf("Result:\n");
-		ft_printf("number of move : %d\n", info.size);
-		ft_printf("Time : %ss\n", info.time_use);
-		ft_printf("Total state selected : %d\n", info.total_state_selected);
-		ft_printf("Total state represented : %d\n", info.total_state_represented);
+		ft_printf("number of move : %d\n", info->size);
+		ft_printf("Time : %ss\n", info->time_use);
+		ft_printf("Total state selected : %d\n", info->total_state_selected);
+		ft_printf("Total state represented : %d\n", info->total_state_represented);
 		resolve_info_free(info);
 		resolver_free(resolver);
 	}
@@ -110,7 +114,7 @@ void do_all(char *filename)
 int main(int ac, char **av) {
 	if (ac == 2) {
 		do_all(av[1]);
-		while (1);
+		// while (1);
 	}
 	else
 	{

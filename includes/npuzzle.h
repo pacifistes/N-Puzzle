@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/20 18:33:04 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/02/23 15:51:09 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct	s_parser {
 
 typedef struct	s_puzzle {
 	t_vector	state;
+	uint8_t		index_case_move;
 	t_move		move;
 }				t_puzzle;
 
@@ -76,10 +77,10 @@ extern puzzle_t *puzzle_new(t_vector vector);
 extern resolver_t *resolver_new(puzzle_t *puzzle, puzzle_t *goal);
 extern void c_set_heuristics(resolver_t *resolver, t_heuristic *heuristics, size_t size);
 extern void c_set_algo(resolver_t *resolver, t_algo algo);
-extern t_resolver_info c_resolve(resolver_t *resolver);
+extern t_resolver_info *c_resolve(resolver_t *resolver);
 extern int8_t c_is_solvable(puzzle_t *puzzle, puzzle_t *goal);
 extern void resolver_free(resolver_t *resolver);
 extern void puzzle_free(puzzle_t *puzzle);
-extern void resolve_info_free(t_resolver_info info);
+extern void resolve_info_free(t_resolver_info *info);
 
 #endif

@@ -5,10 +5,12 @@ use crate::resolver::puzzle::{Puzzle, RefPuzzle, Move};
 use libc::{size_t, c_char};
 use std::slice;
 use std::ffi::CString;
+use std::ptr;
 
 #[repr(C)]
 pub struct RPuzzleVec {
     pub state: RVector,
+	pub index_case_move: u8,
     pub movement: Move,
 }
 
@@ -26,6 +28,10 @@ impl RPuzzleVec {
         let mut puzzle = ref_puzzle.ref_puzzle.borrow_mut().clone();
         let size = u32::from(puzzle.get_size());
         let movement = puzzle.movement;
+		let index_case_move: u8 = match puzzle.predecessor {
+			Some(ref_puzzle) => ref_puzzle.ref_puzzle.borrow().state_index[0],
+			None => 0,
+		};
         let c_values = puzzle.state.as_mut_ptr();
         std::mem::forget(puzzle.state);
         RPuzzleVec {
@@ -33,6 +39,7 @@ impl RPuzzleVec {
                 values: c_values,
                 size: size * size,
             },
+			index_case_move,
             movement,
         }
     }
@@ -47,14 +54,18 @@ pub extern "C" fn resolver_free(resolver: *mut Resolver) {
 }
 
 #[no_mangle]
-pub extern "C" fn resolve_info_free(info: ResolverInfo) {
+pub extern "C" fn resolve_info_free(info: *mut ResolverInfo) {
+	if info.is_null() {
+        return;
+    }
     unsafe {
-        if !info.time_use.is_null() {
-            CString::from_raw(info.time_use);
+        if !(*info).time_use.is_null() {
+            CString::from_raw((*info).time_use);
         }
-        Vec::from_raw_parts(info.all_state, info.size as usize, info.size as usize)
+        Vec::from_raw_parts((*info).all_state, (*info).size as usize, (*info).size as usize)
             .into_iter()
             .for_each(|c_puzzle| vector_free(c_puzzle.state));
+		Box::from_raw(info);
     }
 }
 
@@ -83,9 +94,12 @@ pub extern "C" fn c_set_algo(resolver: *mut Resolver, algo: Algo) {
 }
 
 #[no_mangle]
-pub extern "C" fn c_resolve(resolver: *mut Resolver) -> ResolverInfo {
+pub extern "C" fn c_resolve(resolver: *mut Resolver) -> *mut ResolverInfo {
     let resolver = unsafe {
 		&mut *resolver
 	};
-    resolver.r_resolve().unwrap()
+    match resolver.r_resolve() {
+		Some(resolver_info) => Box::into_raw(Box::new(resolver_info)),
+		None => ptr::null_mut(),
+	}
 }
