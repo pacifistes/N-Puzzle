@@ -13,8 +13,9 @@
 #ifndef NPUZZLE_H
 # define NPUZZLE_H
 
-# include "ft_printf.h"
+// # include "ft_printf.h"
 # include <math.h>
+# include <cstdint>
 
 typedef struct	s_vector {
 	void			*values;

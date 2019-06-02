@@ -3,10 +3,8 @@ NAME = npuzzle
 SRCS_PATH = srcs/
 HEADERS = npuzzle.h
 INCLUDES = includes/
-LIBFT = libftprintf/
-LIBFTINCL = libftprintf/printf/includes/
 
-SRCS = main.c
+SRCS = main.cpp
 RUST_RESOLVER_SRCS = generate.rs \
 			heuristic.rs \
 			parser.rs \
@@ -31,25 +29,22 @@ HEADER = $(addprefix $(INCLUDES), $(HEADERS))
 
 WFLAGS = -g -Wall -Werror -Wextra #-fsanitize=address
 
-CC = gcc
+CC = clang++
 
-OBJ = $(SRC:.c=.o)
+OBJ = $(SRC:.cpp=.o)
 
 all:$(NAME)
 
-libftprintf/libftprintf.a: libftprintf/libft/srcs/ libftprintf/libft/includes/ libftprintf/printf/ libftprintf/libft/includes/ libftprintf/Makefile
-	make -C $(LIBFT) all
-
 # $< ==  le nom de la dépendance (le .c)
 # $@ == représente le nom de la règlE
-%.o: %.c $(HEADER) Makefile
-	$(CC) -c $(WFLAGS) -I $(INCLUDES)  -I $(LIBFTINCL) $< -o $@
+%.o: %.cpp $(HEADER) Makefile
+	$(CC) -c $(WFLAGS) -I $(INCLUDES) $< -o $@
 
 # $^ ==représente tous ce qui est après le :
 
-$(NAME) : libftprintf/libftprintf.a $(OBJ) $(RUST_RESOLVER_SRC) $(RUST_BINDING_SRC)
+$(NAME) :  $(OBJ) $(RUST_RESOLVER_SRC) $(RUST_BINDING_SRC)
 	cargo build --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
-	$(CC) $(WFLAGS) -I $(INCLUDES) -I $(LIBFTINCL) -L $(LIBFT) -lftprintf -framework Security $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -o $(NAME) $(OBJ)
+	$(CC) $(WFLAGS) -I $(INCLUDES) -framework Security $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -o $(NAME) $(OBJ)
 
 
 test:
@@ -58,11 +53,9 @@ test:
 clean:
 	rm -rf $(OBJ)
 	cargo clean --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
-	make -C $(LIBFT) clean
 
 fclean: clean
 	rm -rf $(NAME)
-	make -C $(LIBFT) fclean
 
 re: fclean all
 
