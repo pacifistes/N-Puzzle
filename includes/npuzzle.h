@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/23 15:51:09 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/09/15 15:38:53 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,20 +68,20 @@ typedef struct	s_resolver_info {
 typedef struct Resolver resolver_t;
 typedef struct Puzzle puzzle_t;
 
-extern t_parser parser_new(const char *filename);
-extern void parser_free(t_parser parser);
-extern t_vector c_generate_sorted_state(uint32_t size);
-extern t_vector c_generate_random_state(void);
-extern void	vector_free(t_vector vector);
-extern puzzle_t *puzzle_new(t_vector vector);
+extern "C" t_parser parser_new(const char *filename);
+extern "C" void parser_free(t_parser parser);
+extern "C" t_vector c_generate_sorted_state(uint32_t size);
+extern "C" t_vector c_generate_random_state(void);
+extern "C" void	vector_free(t_vector vector);
+extern "C" puzzle_t *puzzle_new(t_vector vector);
 
-extern resolver_t *resolver_new(puzzle_t *puzzle, puzzle_t *goal);
-extern void c_set_heuristics(resolver_t *resolver, t_heuristic *heuristics, size_t size);
-extern void c_set_algo(resolver_t *resolver, t_algo algo);
-extern t_resolver_info *c_resolve(resolver_t *resolver);
-extern int8_t c_is_solvable(puzzle_t *puzzle, puzzle_t *goal);
-extern void resolver_free(resolver_t *resolver);
-extern void puzzle_free(puzzle_t *puzzle);
-extern void resolve_info_free(t_resolver_info *info);
+extern "C" resolver_t *resolver_new(puzzle_t *puzzle, puzzle_t *goal);
+extern "C" void c_set_heuristics(resolver_t *resolver, t_heuristic *heuristics, size_t size);
+extern "C" void c_set_algo(resolver_t *resolver, t_algo algo);
+extern "C" t_resolver_info *c_resolve(resolver_t *resolver);
+extern "C" int8_t c_is_solvable(puzzle_t *puzzle, puzzle_t *goal);
+extern "C" void resolver_free(resolver_t *resolver);
+extern "C" void puzzle_free(puzzle_t *puzzle);
+extern "C" void resolve_info_free(t_resolver_info *info);
 
 #endif
