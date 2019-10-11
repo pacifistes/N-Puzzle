@@ -43,8 +43,11 @@ all:$(NAME)
 # $^ ==représente tous ce qui est après le :
 
 $(NAME) :  $(OBJ) $(RUST_RESOLVER_SRC) $(RUST_BINDING_SRC)
-	cargo build --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
-	$(CC) $(WFLAGS) -I $(INCLUDES) -framework Security $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -o $(NAME) $(OBJ)
+	RUSTFLAGS="--print=native-static-libs" cargo build --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
+	# $(CC) $(WFLAGS) -v -I $(INCLUDES) $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -o $(NAME) $(OBJ)
+	$(CC) $(WFLAGS) -o $(NAME) $(OBJ) -v -I $(INCLUDES) ./rust_lib/target/release/librust_lib.a -lutil -lutil -ldl -lrt -lpthread -lgcc_s -lc -lm -lrt -lpthread -lutil -lutil
+#-framework -shared Security
+
 
 
 test:
