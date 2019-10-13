@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
         break;
       case 'h':
         hvalue[i] = optarg;
-        for( ;optind < argc && *argv[optind] != '-' && i++ < 5; optind++)
+        for( ;optind < argc - 1 && *argv[optind] != '-' && i++ < 5; optind++)
               hvalue[i] = argv[optind]; 
         break;
       case 'r':
@@ -157,8 +157,8 @@ int main(int argc, char **argv) {
       }
 	printf ("aflag = %s, hflag = %s, rvalue = %d\n", avalue, hvalue[3], rvalue);
 
-	for (index = optind; index < argc; index++)
-		printf ("Non-option argument %s\n", argv[index]);
+	index = optind;
+	printf ("filename %s\n", argv[index]);
   return (0);
 /////***** hmoussa *****/////
 
