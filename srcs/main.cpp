@@ -118,6 +118,7 @@ void do_all(char *filename)
 int main(int argc, char **argv) {
 
 /////***** hmoussa *****/////
+	char	*filename;
 	char	*avalue = NULL;
 	char	*hvalue[6];
 	int		rvalue = 0;
