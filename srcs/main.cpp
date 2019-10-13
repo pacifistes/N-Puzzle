@@ -112,14 +112,61 @@ void do_all(char *filename)
 	parser_free(parser);
 }
 
-int main(int ac, char **av) {
-	if (ac == 2) {
-		do_all(av[1]);
-		while (1);
-	}
-	else
-	{
-		//Generate random Puzzle
-	}
-	return (0);
+int main(int argc, char **argv) {
+
+/////***** hmoussa *****/////
+	char	*avalue = NULL;
+	char	*hvalue[6];
+	int		rvalue = 0;
+	int		index;
+	int		i;
+	int		c;
+	
+	opterr = 0;
+	i = 0;
+
+  while ((c = getopt (argc, argv, "a:h:r:")) != -1)
+  	switch (c)
+      {
+      case 'a':
+        avalue = optarg;
+        break;
+      case 'h':
+        hvalue[i] = optarg;
+        for( ;optind < argc && *argv[optind] != '-' && i++ < 5; optind++)
+              hvalue[i] = argv[optind]; 
+        break;
+      case 'r':
+        rvalue = atoi(optarg);
+        break;
+      case '?':
+      	if (optopt == 'a' || optopt == 'h' || optopt == 'r')
+        	fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+        else if (isprint (optopt))
+        	fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+        else
+          fprintf (stderr,
+                   "Unknown option character `\\x%x'.\n",
+                   optopt);
+        return 1;
+      default:
+        abort ();
+      }
+	printf ("aflag = %s, hflag = %s, rvalue = %d\n", avalue, hvalue[3], rvalue);
+
+	for (index = optind; index < argc; index++)
+		printf ("Non-option argument %s\n", argv[index]);
+  return (0);
+/////***** hmoussa *****/////
+
+	// if (argc == 2) {
+	// 	do_all(argv[1]);
+	// 	// while (1);
+	// }
+	// else
+	// {
+	// 	//Generate random Puzzle
+	// }
+	// return (0);
 }
+
