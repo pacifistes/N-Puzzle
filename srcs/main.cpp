@@ -158,7 +158,9 @@ int main(int argc, char **argv) {
 	printf ("aflag = %s, hflag = %s, rvalue = %d\n", avalue, hvalue[3], rvalue);
 
 	index = optind;
+	filename = argv[index];
 	printf ("filename %s\n", argv[index]);
+	do_all(filename);
   return (0);
 /////***** hmoussa *****/////
 
