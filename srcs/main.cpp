@@ -171,7 +171,8 @@ int main(int argc, char **argv) {
 
 	index = optind;
 	filename = argv[index];
-	printf ("filename %s\n", argv[index]);
+	if (filename == NULL)
+		do_random(rvalue);
 	do_all(filename);
   return (0);
 /////***** hmoussa *****/////
