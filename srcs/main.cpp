@@ -116,7 +116,6 @@ void do_all(char *filename)
 }
 
 int main(int argc, char **argv) {
-
 /////***** hmoussa *****/////
 	char	*filename;
 	char	*avalue = NULL;
@@ -129,6 +128,11 @@ int main(int argc, char **argv) {
 	opterr = 0;
 	i = 0;
 
+	if (argc == 1)
+	{
+		printf("usage: ./npuzzle -a [ALGO] -h [HEURISTIC] -r [VALUE BETWEEN 2 AND 15] filename\n");
+		exit(0);
+	}
   while ((c = getopt (argc, argv, "a:h:r:")) != -1)
   	switch (c)
       {
@@ -172,7 +176,7 @@ int main(int argc, char **argv) {
 	index = optind;
 	filename = argv[index];
 	if (filename == NULL)
-		do_random(rvalue);
+		;//do_random(rvalue);
 	do_all(filename);
   return (0);
 /////***** hmoussa *****/////
