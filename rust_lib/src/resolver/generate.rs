@@ -39,8 +39,7 @@ pub fn r_generate_state_index(state: &[u8]) -> Vec<u8> {
         .collect()
 }
 
-pub fn r_generate_random_state() -> Vec<u8> {
-    let size: u8 = 3;
+pub fn r_generate_random_state(size: u8) -> Vec<u8> {
     let mut start_state: Vec<u8> = r_generate_sorted_state(size);
 
     start_state.shuffle(&mut rand::thread_rng());

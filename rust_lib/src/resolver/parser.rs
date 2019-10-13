@@ -6,10 +6,13 @@ use std::io::{Error, ErrorKind};
 fn get_size(line: &str) -> Result<u8, io::Error> {
     match line.parse::<u8>() {
         Ok(num) if num > 1 && num < 16 => Ok(num),
-        _ => Err(Error::new(
+        _ =>
+        {
+            Err(Error::new(
             ErrorKind::InvalidInput,
             "The first no-comment line should be the size of the puzzle (between 2 and 15)",
-        )),
+            ))
+        },
     }
 }
 
@@ -55,13 +58,19 @@ pub fn parse(filename: &str) -> Result<(Vec<u8>, u8), io::Error> {
         match line.is_empty() {
             true => (),
             false => match size == 0 {
-                true => size = get_size(&line)?,
+                true =>  size = get_size(&line)?,
                 false => start_state = add_to_state(start_state, &line, size)?,
             },
         }
     }
     if start_state.len() != size as usize * size as usize {
         return Err(Error::new(ErrorKind::InvalidData, "Missing some lines"));
+    }
+    if size < 2 || size > 15 {
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "The first no-comment line should be the size of the puzzle (between 2 and 15)",
+            ))
     }
     Ok((start_state, size))
 }

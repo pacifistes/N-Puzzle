@@ -29,6 +29,14 @@ HEADER = $(addprefix $(INCLUDES), $(HEADERS))
 
 WFLAGS = -g -Wall -Werror -Wextra #-fsanitize=address
 
+
+ifeq ($(OS),Windows_NT)
+	NATIVE_STATIC_LIBS = -lutil -lutil -ldl -lrt -lpthread -lgcc_s -lc -lm -lrt -lpthread -lutil -lutil
+else
+	NATIVE_STATIC_LIBS = -framework Security -lSystem -lresolv -lc -lm
+endif
+
+
 CC = clang++
 
 OBJ = $(SRC:.cpp=.o)
@@ -44,9 +52,7 @@ all:$(NAME)
 
 $(NAME) :  $(OBJ) $(RUST_RESOLVER_SRC) $(RUST_BINDING_SRC)
 	RUSTFLAGS="--print=native-static-libs" cargo build --release --manifest-path=$(addprefix $(RUST_LIB_NAME), /Cargo.toml)
-	# $(CC) $(WFLAGS) -v -I $(INCLUDES) $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) -o $(NAME) $(OBJ)
-	$(CC) $(WFLAGS) -o $(NAME) $(OBJ) -v -I $(INCLUDES) ./rust_lib/target/release/librust_lib.a -lutil -lutil -ldl -lrt -lpthread -lgcc_s -lc -lm -lrt -lpthread -lutil -lutil
-#-framework -shared Security
+	$(CC) $(WFLAGS) -o $(NAME) $(OBJ) -v -I $(INCLUDES) $(addprefix $(RUST_LIB_PATH),  $(addsuffix .a, $(addprefix lib, $(RUST_LIB_NAME)))) $(NATIVE_STATIC_LIBS)
 
 
 

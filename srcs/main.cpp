@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/02/23 17:49:04 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/10/13 18:12:36 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,12 +94,12 @@ void do_all(char *filename)
 		printf("puzzle is null\n");
 	else
 	{
+		printf("error: %s\n", parser.error);
 		printf("puzzle is not null\n");
 		printf("size: %d\n", parser.state->size);
 		print_state("puzzle of file", *parser.state);
-		// vector_free(*parser.state);
 
-		t_vector random_state = c_generate_random_state();
+		t_vector random_state = c_generate_random_state(3);
 		print_state("random puzzle", random_state);
 		vector_free(random_state);
 
@@ -107,7 +107,6 @@ void do_all(char *filename)
 		print_state("sorted puzzle", sorted_state);
 		vector_free(sorted_state);
 		run(*parser.state);
-
 	}
 	printf("error = %s\n", parser.error);
 	parser_free(parser);
@@ -116,7 +115,7 @@ void do_all(char *filename)
 int main(int ac, char **av) {
 	if (ac == 2) {
 		do_all(av[1]);
-		// while (1);
+		while (1);
 	}
 	else
 	{
