@@ -134,6 +134,12 @@ int main(int argc, char **argv) {
       {
       case 'a':
         avalue = optarg;
+        if (strcmp("UniformCost", avalue) != 0 && strcmp("strAStar", avalue) != 0 && strcmp("Greedy", avalue) != 0)
+        {
+        	printf("%s\n", avalue);
+        	printf("Algo value error.\n");
+        	exit(1);
+        }
         break;
       case 'h':
         hvalue[i] = optarg;
@@ -142,6 +148,11 @@ int main(int argc, char **argv) {
         break;
       case 'r':
         rvalue = atoi(optarg);
+        if (rvalue < 2 || rvalue > 15)
+        {
+        	printf("random value error.\n");
+        	exit(1);
+        }
         break;
       case '?':
       	if (optopt == 'a' || optopt == 'h' || optopt == 'r')
