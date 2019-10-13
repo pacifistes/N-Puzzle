@@ -89,7 +89,7 @@ void run(t_vector state) {
 	puzzle_free(goal);
 }
 
-void do_all(char *filename)
+void do_all(char *filename, int random)
 {
 
 	t_parser parser = parser_new(filename);
@@ -102,13 +102,10 @@ void do_all(char *filename)
 		printf("size: %d\n", parser.state->size);
 		print_state("puzzle of file", *parser.state);
 
-		t_vector random_state = c_generate_random_state(3);
+		t_vector random_state = c_generate_random_state(random);
 		print_state("random puzzle", random_state);
 		vector_free(random_state);
 
-		t_vector sorted_state = c_generate_sorted_state(4);
-		print_state("sorted puzzle", sorted_state);
-		vector_free(sorted_state);
 		run(*parser.state);
 	}
 	printf("error = %s\n", parser.error);
