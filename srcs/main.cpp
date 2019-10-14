@@ -22,7 +22,9 @@ void print_state(std::string str, t_vector state)
     printf("%s\n", str.c_str());
 	printf("size = %d\n", state.size);
 	for (uint32_t i=0; i < state.size; i++) {
-		printf(" %d", ((int8_t *)state.values)[i]);
+		if (i != 0 && i % (int(sqrt(state.size))) == 0)
+			printf("\n");
+		printf("\t%d", ((int8_t *)state.values)[i]);
 	}
 	printf("\n");
 }
