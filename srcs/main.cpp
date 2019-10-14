@@ -104,10 +104,16 @@ void do_all(char *filename, int random)
 		printf("size: %d\n", parser.state->size);
 		print_state("puzzle of file", *parser.state);
 
-		t_vector random_state = c_generate_random_state(random);
-		print_state("random puzzle", random_state);
-		vector_free(random_state);
-
+		if (random > 2 && random < 16)
+		{
+			t_vector random_state = c_generate_random_state(random);
+			print_state("random puzzle", random_state);
+			vector_free(random_state);
+		}
+		else
+		{
+			printf("")
+		}
 		run(*parser.state);
 	}
 	printf("error = %s\n", parser.error);
@@ -117,7 +123,7 @@ void do_all(char *filename, int random)
 int main(int argc, char **argv) {
 /////***** hmoussa *****/////
 	char	*filename;
-	char	*avalue = NULL;
+	char	*avalue;
 	char	*hvalue[6];
 	int		rvalue = 0;
 	int		index;
@@ -175,8 +181,9 @@ int main(int argc, char **argv) {
 	index = optind;
 	filename = argv[index];
 	if (filename == NULL)
-		;//do_random(rvalue);
-	do_all(filename, rvalue);
+		;	
+	do_all(filename, rvalue);//do_random(rvalue);
+	// do_all(filename, rvalue);
   return (0);
 /////***** hmoussa *****/////
 
