@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/10/13 18:12:36 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/10/14 18:52:40 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,103 +91,36 @@ void run(t_vector state) {
 	puzzle_free(goal);
 }
 
-void do_all(char *filename, int random)
+void do_all(char *filename)
 {
-
-	t_parser parser = parser_new(filename);
-	if (parser.state == NULL)
+	t_created_puzzle created_puzzle = parser_new(filename);
+	if (created_puzzle.state == NULL)
 		printf("puzzle is null\n");
 	else
 	{
-		printf("error: %s\n", parser.error);
+		printf("error: %s\n", created_puzzle.error);
 		printf("puzzle is not null\n");
-		printf("size: %d\n", parser.state->size);
-		print_state("puzzle of file", *parser.state);
+		printf("size: %d\n", created_puzzle.state->size);
+		print_state("puzzle of file", *created_puzzle.state);
 
-		t_vector random_state = c_generate_random_state(random);
+		t_vector random_state = c_generate_random_state(3);
 		print_state("random puzzle", random_state);
 		vector_free(random_state);
-
-		run(*parser.state);
+		run(*created_puzzle.state);
 	}
-	printf("error = %s\n", parser.error);
-	parser_free(parser);
+	printf("error = %s\n", created_puzzle.error);
+	created_puzzle_free(created_puzzle);
 }
 
 int main(int argc, char **argv) {
-/////***** hmoussa *****/////
-	char	*filename;
-	char	*avalue = NULL;
-	char	*hvalue[6];
-	int		rvalue = 0;
-	int		index;
-	int		i;
-	int		c;
-	
-	opterr = 0;
-	i = 0;
-
-	if (argc == 1)
-	{
-		printf("usage: ./npuzzle -a [ALGO] -h [HEURISTIC] -r [VALUE BETWEEN 2 AND 15] filename\n");
-		exit(0);
+	if (argc == 2) {
+		do_all(argv[1]);
+		while (1);
 	}
-  while ((c = getopt (argc, argv, "a:h:r:")) != -1)
-  	switch (c)
-      {
-      case 'a':
-        avalue = optarg;
-        if (strcmp("UniformCost", avalue) != 0 && strcmp("strAStar", avalue) != 0 && strcmp("Greedy", avalue) != 0)
-        {
-        	printf("%s\n", avalue);
-        	printf("Algo value error.\n");
-        	exit(1);
-        }
-        break;
-      case 'h':
-        hvalue[i] = optarg;
-        for( ;optind < argc - 1 && *argv[optind] != '-' && i++ < 5; optind++)
-              hvalue[i] = argv[optind]; 
-        break;
-      case 'r':
-        rvalue = atoi(optarg);
-        if (rvalue < 2 || rvalue > 15)
-        {
-        	printf("random value error.\n");
-        	exit(1);
-        }
-        break;
-      case '?':
-      	if (optopt == 'a' || optopt == 'h' || optopt == 'r')
-        	fprintf (stderr, "Option -%c requires an argument.\n", optopt);
-        else if (isprint (optopt))
-        	fprintf (stderr, "Unknown option `-%c'.\n", optopt);
-        else
-          fprintf (stderr,
-                   "Unknown option character `\\x%x'.\n",
-                   optopt);
-        return 1;
-      default:
-        abort ();
-      }
-	printf ("aflag = %s, hflag = %s, rvalue = %d\n", avalue, hvalue[3], rvalue);
-
-	index = optind;
-	filename = argv[index];
-	if (filename == NULL)
-		;//do_random(rvalue);
-	do_all(filename);
-  return (0);
-/////***** hmoussa *****/////
-
-	// if (argc == 2) {
-	// 	do_all(argv[1]);
-	// 	// while (1);
-	// }
-	// else
-	// {
-	// 	//Generate random Puzzle
-	// }
-	// return (0);
+	else
+	{
+		//Generate random Puzzle
+	}
+	return (0);
 }
 
