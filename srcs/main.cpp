@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
 	filename = argv[index];
 	if (filename == NULL)
 		;//do_random(rvalue);
-	do_all(filename);
+	do_all(filename, rvalue);
   return (0);
 /////***** hmoussa *****/////
 
