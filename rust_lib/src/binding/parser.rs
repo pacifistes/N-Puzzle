@@ -11,16 +11,17 @@ pub struct CreatedPuzzle {
     error: *mut c_char,
 }
 
-fn create_puzzle(result: Result<(Vec<u8>, u8), io::Error>) -> CreatedPuzzle {
+fn create_puzzle(result: Result<Vec<u8>, io::Error>) -> CreatedPuzzle {
     match result {
-        Ok((mut r_values, size)) => {
+        Ok(mut r_values) => {
             let c_error = CString::new("no error").unwrap();
             let c_values = r_values.as_mut_ptr();
+            let size: u32 = r_values.len() as u32;
             std::mem::forget(r_values);
 			CreatedPuzzle {
 				state: Box::into_raw(Box::new(RVector {
 					values: c_values,
-					size: u32::from(size * size),
+					size,
 				})),
 				error: c_error.into_raw(),
 			}

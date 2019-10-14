@@ -48,7 +48,7 @@ fn add_to_state(mut start_state: Vec<u8>, line: &str, size: u8) -> Result<Vec<u8
     Ok(start_state)
 }
 
-pub fn parse(filename: &str) -> Result<(Vec<u8>, u8), io::Error> {
+pub fn parse(filename: &str) -> Result<Vec<u8>, io::Error> {
     let file = File::open(filename)?;
     let mut size: u8 = 0;
     let mut start_state: Vec<u8> = Vec::new();
@@ -72,5 +72,5 @@ pub fn parse(filename: &str) -> Result<(Vec<u8>, u8), io::Error> {
             "The first no-comment line should be the size of the puzzle (between 2 and 15)",
             ))
     }
-    Ok((start_state, size))
+    Ok(start_state)
 }
