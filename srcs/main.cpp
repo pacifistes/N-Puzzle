@@ -6,16 +6,11 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/10/15 17:42:39 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:55:03 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "npuzzle.h"
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string>
 
 void print_state(std::string str, t_vector state)
 {
@@ -100,18 +95,18 @@ void do_all(char *filename)
 		printf("puzzle is null\n");
 	else
 	{
-		// printf("error: %s\n", created_puzzle.error);
-		// printf("puzzle is not null\n");
-		// printf("size: %d\n", created_puzzle.state->size);
-		// print_state("puzzle of file", *created_puzzle.state);
+		printf("error: %s\n", created_puzzle.error);
+		printf("puzzle is not null\n");
+		printf("size: %d\n", created_puzzle.state->size);
+		print_state("puzzle of file", *created_puzzle.state);
 
-		// t_created_puzzle random_state = c_generate_random_state(3);
-		// print_state("random puzzle", *random_state.state);
-		// created_puzzle_free(random_state);
+		t_created_puzzle random_state = c_generate_random_state(3);
+		print_state("random puzzle", *random_state.state);
+		created_puzzle_free(random_state);
 
-		// t_created_puzzle sorted_state = c_generate_sorted_state(3);
-		// print_state("sorted puzzle", *sorted_state.state);
-		// created_puzzle_free(sorted_state);
+		t_created_puzzle sorted_state = c_generate_sorted_state(3);
+		print_state("sorted puzzle", *sorted_state.state);
+		created_puzzle_free(sorted_state);
 		run(&created_puzzle);
 	}
 	printf("error = %s\n", created_puzzle.error);

@@ -27,7 +27,7 @@ RUST_BINDING_SRC = $(addprefix $(RUST_PATH_BINDING_SRCS), $(RUST_BINDING_SRCS))
 SRC = $(addprefix $(SRCS_PATH), $(SRCS))
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
 
-WFLAGS = -g -Wall -Werror -Wextra #-fsanitize=address
+WFLAGS = -g -Wall -Werror -Wextra
 
 
 ifeq ($(OS),Windows_NT)

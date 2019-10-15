@@ -6,16 +6,20 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/10/14 19:31:48 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:55:17 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef NPUZZLE_H
 # define NPUZZLE_H
 
-// # include "ft_printf.h"
 # include <math.h>
 # include <cstdint>
+# include <stdio.h>
+# include <ctype.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <string>
 
 typedef struct	s_vector {
 	void			*values;
