@@ -11,7 +11,7 @@ pub struct CreatedPuzzle {
     error: *mut c_char,
 }
 
-fn create_puzzle(result: Result<Vec<u8>, io::Error>) -> CreatedPuzzle {
+pub fn create_puzzle(result: Result<Vec<u8>, io::Error>) -> CreatedPuzzle {
     match result {
         Ok(mut r_values) => {
             let c_error = CString::new("no error").unwrap();
@@ -53,7 +53,11 @@ pub extern "C" fn created_puzzle_free(created_puzzle: CreatedPuzzle) {
             CString::from_raw(created_puzzle.error);
         }
         if !created_puzzle.state.is_null() {
-            Box::from_raw(created_puzzle.state);
+            let state = Box::from_raw(created_puzzle.state);
+            if !state.values.is_null() {
+                let size: usize = state.size as usize;
+                Vec::from_raw_parts(state.values, size, size);
+            }
         }
     };
 }

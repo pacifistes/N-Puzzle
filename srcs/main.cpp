@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/10/14 18:52:40 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:42:39 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,10 @@ void print_move(t_move move) {
 	}
 }
 
-void run(t_vector state) {
-	puzzle_t *puzzle = puzzle_new(state);
-	t_vector goal_state = c_generate_sorted_state((uint32_t) sqrt(state.size));
-	puzzle_t *goal = puzzle_new(goal_state);
-
+void run(t_created_puzzle *created_puzzle) {
+	puzzle_t *puzzle = puzzle_new(*created_puzzle->state);
+	t_created_puzzle goal_state = c_generate_sorted_state((uint32_t) sqrt(created_puzzle->state->size));
+	puzzle_t *goal = puzzle_new(*goal_state.state);
 
 	if (c_is_solvable(puzzle, goal))
 	{
@@ -87,8 +86,11 @@ void run(t_vector state) {
 	{
 		printf("the puzzle is not solvable\n");
 	}
+	created_puzzle->state->values = NULL;
+	goal_state.state->values = NULL;
 	puzzle_free(puzzle);
 	puzzle_free(goal);
+	created_puzzle_free(goal_state);
 }
 
 void do_all(char *filename)
@@ -98,15 +100,19 @@ void do_all(char *filename)
 		printf("puzzle is null\n");
 	else
 	{
-		printf("error: %s\n", created_puzzle.error);
-		printf("puzzle is not null\n");
-		printf("size: %d\n", created_puzzle.state->size);
-		print_state("puzzle of file", *created_puzzle.state);
+		// printf("error: %s\n", created_puzzle.error);
+		// printf("puzzle is not null\n");
+		// printf("size: %d\n", created_puzzle.state->size);
+		// print_state("puzzle of file", *created_puzzle.state);
 
-		t_vector random_state = c_generate_random_state(3);
-		print_state("random puzzle", random_state);
-		vector_free(random_state);
-		run(*created_puzzle.state);
+		// t_created_puzzle random_state = c_generate_random_state(3);
+		// print_state("random puzzle", *random_state.state);
+		// created_puzzle_free(random_state);
+
+		// t_created_puzzle sorted_state = c_generate_sorted_state(3);
+		// print_state("sorted puzzle", *sorted_state.state);
+		// created_puzzle_free(sorted_state);
+		run(&created_puzzle);
 	}
 	printf("error = %s\n", created_puzzle.error);
 	created_puzzle_free(created_puzzle);

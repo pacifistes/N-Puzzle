@@ -1,12 +1,20 @@
 use rand::seq::SliceRandom;
 use std::vec::Vec;
+use std::io;
+use std::io::{Error, ErrorKind};
 
-pub fn r_generate_sorted_state(size: u8) -> Vec<u8> {
+pub fn r_generate_sorted_state(size: u32) -> Result<Vec<u8>, io::Error> {
+    if size < 2 || size > 15 {
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "The first no-comment line should be the size of the puzzle (between 2 and 15)",
+        ))
+    }
     let mut sorted: Vec<u8> = vec![0; size as usize * size as usize];
     let mut is_horizontal: bool = true;
     let mut is_increment: bool = true;
-    let mut nbr_movement: u8 = 0;
-    let mut movement_need: u8 = size;
+    let mut nbr_movement: u32 = 0;
+    let mut movement_need: u32 = size;
     let mut x: usize = 0;
     let mut y: usize = 0;
 
@@ -28,7 +36,7 @@ pub fn r_generate_sorted_state(size: u8) -> Vec<u8> {
             y = if is_increment { y + 1 } else { y - 1 };
         }
     }
-    sorted
+    Ok(sorted)
 }
 
 pub fn r_generate_state_index(state: &[u8]) -> Vec<u8> {
@@ -39,9 +47,8 @@ pub fn r_generate_state_index(state: &[u8]) -> Vec<u8> {
         .collect()
 }
 
-pub fn r_generate_random_state(size: u8) -> Vec<u8> {
-    let mut start_state: Vec<u8> = r_generate_sorted_state(size);
-
+pub fn r_generate_random_state(size: u32) -> Result<Vec<u8>, io::Error> {
+    let mut start_state: Vec<u8> = r_generate_sorted_state(size)?;
     start_state.shuffle(&mut rand::thread_rng());
-    start_state
+    Ok(start_state)
 }

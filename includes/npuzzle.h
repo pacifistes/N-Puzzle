@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/19 12:42:51 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/10/14 18:35:25 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/10/14 19:31:48 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ typedef struct Puzzle puzzle_t;
 
 extern "C" t_created_puzzle parser_new(const char *filename);
 extern "C" void created_puzzle_free(t_created_puzzle created_puzzle);
-extern "C" t_vector c_generate_sorted_state(uint32_t size);
-extern "C" t_vector c_generate_random_state(uint32_t size);
+extern "C" t_created_puzzle c_generate_sorted_state(uint32_t size);
+extern "C" t_created_puzzle c_generate_random_state(uint32_t size);
 extern "C" void	vector_free(t_vector vector);
 extern "C" puzzle_t *puzzle_new(t_vector vector);
 
