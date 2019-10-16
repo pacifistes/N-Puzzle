@@ -12,6 +12,12 @@
 
 #include "npuzzle.h"
 
+typedef enum {
+	heuristic,
+	algo,
+	randval
+	} WaitingOption;
+
 void print_state(std::string str, t_vector state)
 {
     printf("%s\n", str.c_str());
@@ -44,7 +50,26 @@ void print_move(t_move move) {
 	}
 }
 
-void run(t_created_puzzle *created_puzzle) {
+void print_info(t_resolver_info *info)
+{
+	if (info == NULL) {
+		return;
+	}
+	for (uint32_t i=0; i < info->size; i++) {
+		print_move(info->all_state[i].move);
+		print_state("", info->all_state[i].state);
+	}
+	printf("Result:\n");
+	printf("number of move : %d\n", info->size);
+	printf("Time : %ss\n", info->time_use);
+	printf("Total state selected : %d\n", info->total_state_selected);
+	printf("Total state represented : %d\n", info->total_state_represented);
+}
+
+void run(t_created_puzzle *created_puzzle, int random, char *avalue, char *hvalue) {
+	printf("random : %d\n", random);
+	printf("avalue : %s\n", avalue);
+	printf("hvalue : %s\n", hvalue);
 	puzzle_t *puzzle = puzzle_new(*created_puzzle->state);
 	t_created_puzzle goal_state = c_generate_sorted_state((uint32_t) sqrt(created_puzzle->state->size));
 	puzzle_t *goal = puzzle_new(*goal_state.state);
@@ -60,20 +85,7 @@ void run(t_created_puzzle *created_puzzle) {
 		t_algo algo = Greedy;
 		c_set_algo(resolver, algo);
 		t_resolver_info *info = c_resolve(resolver);
-
-		if (info == NULL) {
-			printf("timeout retry");
-			return;
-		}
-		for (uint32_t i=0; i < info->size; i++) {
-			print_move(info->all_state[i].move);
-			print_state("", info->all_state[i].state);
-		}
-		printf("Result:\n");
-		printf("number of move : %d\n", info->size);
-		printf("Time : %ss\n", info->time_use);
-		printf("Total state selected : %d\n", info->total_state_selected);
-		printf("Total state represented : %d\n", info->total_state_represented);
+		print_info(info);
 		resolve_info_free(info);
 		resolver_free(resolver);
 	}
@@ -88,40 +100,186 @@ void run(t_created_puzzle *created_puzzle) {
 	created_puzzle_free(goal_state);
 }
 
-void do_all(char *filename)
+void do_all(char *filename, int random, char *avalue, char *hvalue)
 {
-	t_created_puzzle created_puzzle = parser_new(filename);
+	t_created_puzzle created_puzzle;
+	if (filename)
+		created_puzzle = parser_new(filename);
+	else
+		created_puzzle = c_generate_random_state(random);
 	if (created_puzzle.state == NULL)
-		printf("puzzle is null\n");
+		printf("Error : %s\n", created_puzzle.error);
 	else
 	{
-		printf("error: %s\n", created_puzzle.error);
-		printf("puzzle is not null\n");
-		printf("size: %d\n", created_puzzle.state->size);
-		print_state("puzzle of file", *created_puzzle.state);
-
-		t_created_puzzle random_state = c_generate_random_state(3);
-		print_state("random puzzle", *random_state.state);
-		created_puzzle_free(random_state);
-
-		t_created_puzzle sorted_state = c_generate_sorted_state(3);
-		print_state("sorted puzzle", *sorted_state.state);
-		created_puzzle_free(sorted_state);
-		run(&created_puzzle);
+		run(&created_puzzle, random, avalue, hvalue);
 	}
-	printf("error = %s\n", created_puzzle.error);
 	created_puzzle_free(created_puzzle);
 }
-
 int main(int argc, char **argv) {
-	if (argc == 2) {
-		do_all(argv[1]);
-		while (1);
-	}
-	else
+	bool	isWaiting;
+	char	*heuristic[6];
+	int		i;
+	int		randomValue;
+	char	*algoValue;
+	char	*filename;
+
+	isWaiting= false;
+	i = 0;
+	while (i < argc)
 	{
-		//Generate random Puzzle
+		if (!isWaiting)
+		{
+			if(strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "-r") == 0)
+			{
+				if(strcmp(argv[i], "-a"))
+					WaitingOption = "algo";
+				if(strcmp(argv[i], "-h"))
+					WaitingOption = "heuristic";
+				if(strcmp(argv[i], "-r"))
+					WaitingOption = "randval";
+				isWaiting = true;
+			}
+			else
+			{
+				filename = argv[i];
+				break;
+			}
+		}
+		else
+		{}
+	}
+	if (isWaiting)
+	{
+		switch (WaitingOption)
+		{
+			case "heuristic":
+			case "algo":
+				if (strcmp("UniformCost", argv[i]) != 0 && strcmp("AStar", argv[i]) != 0 &&
+					strcmp("Greedy", argv[i]) != 0)
+	        	{
+	        		printf("Algo value error.\n");
+	        		exit(1);
+	        	}
+				else
+	        		algoValue = argv[i];
+			case "randval":
+				randomValue = atoi(argv[i]);
+				if (randomValue < 2 || randomValue > 15)
+				{
+					printf("random value error.\n");
+	        		exit(1);
+				}
+			i++;
+		}
 	}
 	return (0);
 }
+
+// int main(int argc, char **argv) {
+// 	char	*filename;
+// 	char	*avalue;
+// 	char	*hvalue = NULL;
+// 	char	*heur[6];
+// 	const char	*heuristic[6] = { "manathan", "chebyshev", "euclidienne",
+//     						"octile", "hamming", "linear_conflict"};
+// 	int		rvalue = 0;
+// 	int		arglen;
+// 	int		index;
+// 	int		i;
+// 	int		c;
+	
+// 	opterr = 0;
+// 	i = 0;
+
+// 	if (argc == 1)
+// 	{
+// 		printf("usage: ./npuzzle -a [ALGO] -h [HEURISTIC] -r [VALUE BETWEEN 2 AND 15] filename\n");
+// 		exit(0);
+// 	}
+// 	while ((c = getopt (argc, argv, "a:h:r:")) != -1)
+// 	  	switch (c)
+// 	    {
+// 		  case 'a':
+// 	        if (strcmp("UniformCost", optarg) != 0 && strcmp("AStar", optarg) != 0 &&
+// 				strcmp("Greedy", optarg) != 0)
+// 	        {
+// 	        	printf("Algo value error.\n");
+// 	        	exit(1);
+// 	        }
+// 			else
+// 	        	avalue = optarg;
+// 	        break;
+// 	      case 'h':
+// 	        optind--;
+// 			for( ;optind < argc && *argv[optind] != '-' && i++ < 5; optind++)
+// 				if (strcmp("manathan", optarg) == 0 || strcmp("chebyshev", optarg) == 0 ||
+// 				strcmp("euclidienne", optarg) == 0 || strcmp("octile", optarg) == 0 ||
+// 				strcmp("hamming", optarg) == 0 || strcmp("linear_conflict", optarg) == 0)
+// 				{
+// 					arglen = strlen(optarg) + 1;               
+// 			    	heur[i] = (char*)malloc(arglen * sizeof(char));
+// 			    	strcpy(heur[i], optarg);
+// 					printf("HEUR : %s\n", heur[i]);
+// 					optarg++;
+// 				}
+// 				else
+// 				{
+// 					printf("ERROR HEURISTIC\n");
+// 					exit(0);
+// 				}
+// 	        // 
+// 	        // {
+// 			// 	// if (argv[optind])
+// 			// 	hvalue[i] = argv[optind]; 
+// 			// }
+// 	        break;
+// 	      case 'r':
+// 	        rvalue = atoi(optarg);
+// 	        // if (rvalue < 2 || rvalue > 15)
+// 	        // {
+// 	        // 	printf("random value error.\n");
+// 	        // 	exit(1);
+// 	        // }
+// 	        break;
+// 	      case '?':
+// 	      	if (optopt == 'a' || optopt == 'h' || optopt == 'r')
+//           		fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+//         	else if (isprint (optopt))
+//           		fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+//         	else
+//           		fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
+// 	        return 1;
+// 	      default:
+// 	        abort ();
+// 	      }
+// 		(void)heuristic;
+// 		printf ("FIRST TIME : aflag = %s, hflag = %s, rvalue = %d\n", avalue, hvalue, rvalue);		
+// 		if (avalue == '\0')
+// 			avalue = (char *)"AStar";
+// 		if (hvalue == '\0')
+// 			hvalue = (char*)"manathan";
+// 		printf ("aflag = %s, hflag = %s, rvalue = %d\n", avalue, hvalue, rvalue);
+// 		// for (index = optind; index < argc; index++)
+//     	// 	printf ("Non-option argument %s\n", argv[index]);
+// 		index = optind;
+// 		if (index == argc - 1)
+// 			printf("PAS DE NOM DE FICHIER\n");
+// 		else index++;
+// 		filename = argv[index];
+// 		printf("%s\n", filename);
+// 		if (filename)
+// 			do_all(filename, 0, avalue, hvalue);
+// 		else
+		
+
+// 	// if (argc == 2) {
+// 	// 	do_all(argv[1]);
+// 	// 	while (1);
+// 	// }
+// 	// else
+// 	// {
+// 	// 	//Generate random Puzzle
+// 	// }
+// 	return (0);
+// }
 
