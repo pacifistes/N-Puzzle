@@ -6,17 +6,17 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/10/15 17:55:03 by bbrunell         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:55:03 by hmoussa          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "npuzzle.h"
 
-typedef enum {
+enum WaitingOption {
 	heuristic,
 	algo,
 	randval
-	} WaitingOption;
+	};
 
 void print_state(std::string str, t_vector state)
 {
@@ -117,14 +117,16 @@ void do_all(char *filename, int random, char *avalue, char *hvalue)
 }
 int main(int argc, char **argv) {
 	bool	isWaiting;
-	char	*heuristic[6];
+	char	*heuristic_list[6];
 	int		i;
 	int		randomValue;
 	char	*algoValue;
 	char	*filename;
+	enum	WaitingOption option;
 
 	isWaiting= false;
 	i = 0;
+	(void)heuristic_list;
 	while (i < argc)
 	{
 		if (!isWaiting)
@@ -132,11 +134,11 @@ int main(int argc, char **argv) {
 			if(strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "-r") == 0)
 			{
 				if(strcmp(argv[i], "-a"))
-					WaitingOption = "algo";
+					option = algo;
 				if(strcmp(argv[i], "-h"))
-					WaitingOption = "heuristic";
+					option = heuristic;
 				if(strcmp(argv[i], "-r"))
-					WaitingOption = "randval";
+					option = randval;
 				isWaiting = true;
 			}
 			else
@@ -150,10 +152,10 @@ int main(int argc, char **argv) {
 	}
 	if (isWaiting)
 	{
-		switch (WaitingOption)
+		switch (option)
 		{
-			case "heuristic":
-			case "algo":
+			case heuristic:
+			case algo:
 				if (strcmp("UniformCost", argv[i]) != 0 && strcmp("AStar", argv[i]) != 0 &&
 					strcmp("Greedy", argv[i]) != 0)
 	        	{
@@ -162,7 +164,7 @@ int main(int argc, char **argv) {
 	        	}
 				else
 	        		algoValue = argv[i];
-			case "randval":
+			case randval:
 				randomValue = atoi(argv[i]);
 				if (randomValue < 2 || randomValue > 15)
 				{
