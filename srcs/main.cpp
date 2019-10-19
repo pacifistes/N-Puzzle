@@ -122,7 +122,7 @@ void	print_usage(const char *error)
 	printf("usage: ./npuzzle -a [ALGO] -h [HEURISTIC] -r [VALUE BETWEEN 2 AND 15] filename\n");
 	printf("ALGO : UniformCost || AStar || Greedy\n");
 	printf("HEURISTIC : manathan,chebyshev,euclidienne,octile,hamming,linear_conflict\n");
-	exit(0);
+	exit(1);
 }
 
 // int		check_arguments(char *arg)
@@ -170,18 +170,15 @@ int		check_heuristic(int heuristic, char *arg)
 	return (0);
 }
 
-char	*check_algo(char *arg)
+t_algo	check_algo(char *arg)
 {
-	char	*algoValue;
-
-	algoValue = NULL;
-	if (strcmp("UniformCost", arg) != 0 && strcmp("AStar", arg) != 0 &&
-		strcmp("Greedy", arg) != 0)
+	if (!strcmp("UniformCost", arg))
+		return(UniformCost);
+	else if (!strcmp("Greedy", arg))
+		return(Greedy);
+	else if (strcmp("AStar", arg))
 		print_usage("Algo value error");
-	else
-		algoValue = arg;
-
-	return (algoValue);
+	return (AStar);
 }
 
 int		check_random_value(char* arg)
@@ -241,7 +238,7 @@ int 	main(int argc, char **argv) {
 	int			heuristic;
 	bool		isWaiting;
 	char		*filename;
-	char		*algoValue;
+	t_algo		algoValue;
 	t_option	option;
 
 	i = 1;
@@ -278,7 +275,6 @@ int 	main(int argc, char **argv) {
 			{
 				case HOPTION:
 					heuristic = check_heuristic(heuristic, argv[i]);
-
 					break;
 				case AOPTION:
 					algoValue = check_algo(argv[i]);
@@ -306,7 +302,7 @@ int 	main(int argc, char **argv) {
     set_heuristic(heuristic, heuristic_list);
 	// for(int k = 0; k < tab_size; ++k)
  //    	printf("heuristic : %d\n", heuristic_list[k]);
-    
+    // do_all()
 	return (0);
 }
 
