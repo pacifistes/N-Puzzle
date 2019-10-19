@@ -66,8 +66,8 @@ void print_info(t_resolver_info *info)
 	printf("Total state represented : %d\n", info->total_state_represented);
 }
 
-void run(t_created_puzzle *created_puzzle, int random, char *avalue, char *hvalue) {
-	printf("random : %d\n", random);
+void run(t_created_puzzle *created_puzzle, int rvalue, char *avalue, char *hvalue) {
+	printf("rvalue : %d\n", rvalue);
 	printf("avalue : %s\n", avalue);
 	printf("hvalue : %s\n", hvalue);
 	puzzle_t *puzzle = puzzle_new(*created_puzzle->state);
@@ -115,85 +115,212 @@ void do_all(char *filename, int random, char *avalue, char *hvalue)
 	}
 	created_puzzle_free(created_puzzle);
 }
-int main(int argc, char **argv) {
-	bool		isWaiting;
+
+void	print_usage(const char *error)
+{
+	printf("Error : %s\n\n", error);
+	printf("usage: ./npuzzle -a [ALGO] -h [HEURISTIC] -r [VALUE BETWEEN 2 AND 15] filename\n");
+	printf("ALGO : UniformCost || AStar || Greedy\n");
+	printf("HEURISTIC : manathan,chebyshev,euclidienne,octile,hamming,linear_conflict\n");
+	exit(0);
+}
+
+// int		check_arguments(char *arg)
+// {
+// 	int	option;
+
+// 	option = 0;
+// 	if(!strcmp(arg, "-a"))
+// 			option = AOPTION;
+// 		else if(!strcmp(arg, "-h"))
+// 			option = HOPTION;
+// 		else if(!strcmp(arg, "-r"))
+// 			option = ROPTION;
+// 		else
+// 			{
+// 				if (argc == 2 || i == argc - 1)
+// 				{
+// 					filename = arg;
+// 					break;
+// 				}
+// 				else
+// 					print_usage("Invalid filename");
+// 			}
+// 	return (option);
+// }
+
+int		check_heuristic(int heuristic, char *arg)
+{
+
+	if (!strcmp(arg, "chebyshev"))
+		return (heuristic |= C);
+	else if (!strcmp(arg, "euclidienne"))
+		return (heuristic |= E);
+	else if (!strcmp(arg, "hamming"))
+		return (heuristic |= H);
+	else if (!strcmp(arg, "linear_conflict"))
+		return (heuristic |= L);
+	else if (!strcmp(arg, "manathan"))
+		return (heuristic |= M);
+	else if (!strcmp(arg, "octile"))
+		return (heuristic |= O);
+	else
+		print_usage("Invalid Heuristic");
+
+	return (0);
+}
+
+char	*check_algo(char *arg)
+{
+	char	*algoValue;
+
+	algoValue = NULL;
+	if (strcmp("UniformCost", arg) != 0 && strcmp("AStar", arg) != 0 &&
+		strcmp("Greedy", arg) != 0)
+		print_usage("Algo value error");
+	else
+		algoValue = arg;
+
+	return (algoValue);
+}
+
+int		check_random_value(char* arg)
+{
+	int	randomValue;
+
+	randomValue = atoi(arg);
+	if (randomValue < 2 || randomValue > 15)
+		print_usage("random value error");
+	return (randomValue);
+}
+
+void	set_heuristic(int heuristic, t_heuristic *heuristic_list)
+{
+	int	j;
+
+	j = 0;
+	if ((heuristic >> 0) & 1)
+	{
+		heuristic_list[j] = manathan;
+		j++;
+	}
+	if ((heuristic >> 1) & 1)
+	{
+		heuristic_list[j] = chebyshev;
+		j++;
+	}
+	if ((heuristic >> 2) & 1)
+	{
+		heuristic_list[j] = euclidienne;
+		j++;
+	}
+	if ((heuristic >> 3) & 1)
+	{
+		heuristic_list[j] = octile;
+		j++;
+	}
+	if ((heuristic >> 4) & 1)
+	{
+		heuristic_list[j] = hamming;
+		j++;
+	}
+	if ((heuristic >> 5) & 1)
+	{
+		heuristic_list[j] = linear_conflict;
+		j++;
+	}
+
+}
+
+
+int 	main(int argc, char **argv) {
 	int			i;
+	int			j;
+	int			tab_size;
 	int			randomValue;
-	char		*algoValue;
+	int			heuristic;
+	bool		isWaiting;
 	char		*filename;
-	t_heuristic	heuristic_list;
+	char		*algoValue;
 	t_option	option;
 
-	isWaiting= false;
 	i = 1;
-	(void)heuristic_list;
+	j = 0;
+	tab_size = 0;
+	heuristic = 0;
+	randomValue = 3;
+	isWaiting = false;
 	while (i < argc)
 	{
 		if (!isWaiting)
 		{
-			if(strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "-r") == 0)
-			{
-				if(strcmp(argv[i], "-a"))
-					option = AOPTION;
-				if(strcmp(argv[i], "-h"))
-					option = HOPTION;
-				if(strcmp(argv[i], "-r"))
-					option = ROPTION;
-				isWaiting = true;
-				printf("%d\n", option);
-			}
+			if(!strcmp(argv[i], "-a"))
+				option = AOPTION;
+			else if(!strcmp(argv[i], "-h"))
+				option = HOPTION;
+			else if(!strcmp(argv[i], "-r"))
+				option = ROPTION;
 			else
 			{
-				filename = argv[i];
-				break;
+				if (argc == 2 || i == argc - 1)
+				{
+					filename = argv[i];
+					break;
+				}
+				else
+					print_usage("Invalid filename");
 			}
+			isWaiting = true;
 		}
-		// else
-		// {
-		// 	i++;
-		// }
-		if (isWaiting)
+		else
 		{
-			printf("IN IF OK\n");
-			printf("option %d\n", option);
 			switch (option)
 			{
 				case HOPTION:
-					printf("je passe\n");
+					heuristic = check_heuristic(heuristic, argv[i]);
+
 					break;
 				case AOPTION:
-	   		     	printf("Algovalue\n");				
-					if (strcmp("UniformCost", argv[i]) != 0 && strcmp("AStar", argv[i]) != 0 &&
-						strcmp("Greedy", argv[i]) != 0)
-	       		 	{
-	        			printf("Algo value error.\n");
-	        			exit(1);
-	        		}
-					else
-					{
-	        			printf("Algovalue\n");
-						(void)algoValue;
-						//algoValue = argv[i];
-					}
+					algoValue = check_algo(argv[i]);
 					break;
 				case ROPTION:
-					randomValue = atoi(argv[i]);
-					if (randomValue < 2 || randomValue > 15)
-					{
-						printf("random value error.\n");
-		        		exit(1);
-					}
+					randomValue = check_random_value(argv[i]);
 					break;
 				default:
-					printf("ici\n");
 					break;
 			}
 			isWaiting = false;
-			i++;
 		}
+		i++;
 	}
+	if (isWaiting == true)
+		print_usage("missing argument");
+	while (j < 6)
+	{
+		if ((heuristic >> j) & 1)
+			tab_size++;
+		j++;
+	}
+
+	t_heuristic* heuristic_list = new t_heuristic[tab_size];
+    set_heuristic(heuristic, heuristic_list);
+	// for(int k = 0; k < tab_size; ++k)
+ //    	printf("heuristic : %d\n", heuristic_list[k]);
+    
 	return (0);
 }
+
+// int i;
+
+// i = 0
+// while (i < 6)
+// {
+// if option >> i(0-5) & 1
+// taille_tableau++
+// }
+
+
+
 
 // int main(int argc, char **argv) {
 // 	char	*filename;
