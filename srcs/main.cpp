@@ -12,11 +12,11 @@
 
 #include "npuzzle.h"
 
-enum WaitingOption {
-	heuristic,
-	algo,
-	randval
-	};
+typedef enum e_option {
+	HOPTION,
+	AOPTION,
+	ROPTION
+	} t_option;
 
 void print_state(std::string str, t_vector state)
 {
@@ -116,16 +116,16 @@ void do_all(char *filename, int random, char *avalue, char *hvalue)
 	created_puzzle_free(created_puzzle);
 }
 int main(int argc, char **argv) {
-	bool	isWaiting;
-	char	*heuristic_list[6];
-	int		i;
-	int		randomValue;
-	char	*algoValue;
-	char	*filename;
-	enum	WaitingOption option;
+	bool		isWaiting;
+	int			i;
+	int			randomValue;
+	char		*algoValue;
+	char		*filename;
+	t_heuristic	heuristic_list;
+	t_option	option;
 
 	isWaiting= false;
-	i = 0;
+	i = 1;
 	(void)heuristic_list;
 	while (i < argc)
 	{
@@ -134,12 +134,13 @@ int main(int argc, char **argv) {
 			if(strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "-r") == 0)
 			{
 				if(strcmp(argv[i], "-a"))
-					option = algo;
+					option = AOPTION;
 				if(strcmp(argv[i], "-h"))
-					option = heuristic;
+					option = HOPTION;
 				if(strcmp(argv[i], "-r"))
-					option = randval;
+					option = ROPTION;
 				isWaiting = true;
+				printf("%d\n", option);
 			}
 			else
 			{
@@ -147,30 +148,47 @@ int main(int argc, char **argv) {
 				break;
 			}
 		}
-		else
-		{}
-	}
-	if (isWaiting)
-	{
-		switch (option)
+		// else
+		// {
+		// 	i++;
+		// }
+		if (isWaiting)
 		{
-			case heuristic:
-			case algo:
-				if (strcmp("UniformCost", argv[i]) != 0 && strcmp("AStar", argv[i]) != 0 &&
-					strcmp("Greedy", argv[i]) != 0)
-	        	{
-	        		printf("Algo value error.\n");
-	        		exit(1);
-	        	}
-				else
-	        		algoValue = argv[i];
-			case randval:
-				randomValue = atoi(argv[i]);
-				if (randomValue < 2 || randomValue > 15)
-				{
-					printf("random value error.\n");
-	        		exit(1);
-				}
+			printf("IN IF OK\n");
+			printf("option %d\n", option);
+			switch (option)
+			{
+				case HOPTION:
+					printf("je passe\n");
+					break;
+				case AOPTION:
+	   		     	printf("Algovalue\n");				
+					if (strcmp("UniformCost", argv[i]) != 0 && strcmp("AStar", argv[i]) != 0 &&
+						strcmp("Greedy", argv[i]) != 0)
+	       		 	{
+	        			printf("Algo value error.\n");
+	        			exit(1);
+	        		}
+					else
+					{
+	        			printf("Algovalue\n");
+						(void)algoValue;
+						//algoValue = argv[i];
+					}
+					break;
+				case ROPTION:
+					randomValue = atoi(argv[i]);
+					if (randomValue < 2 || randomValue > 15)
+					{
+						printf("random value error.\n");
+		        		exit(1);
+					}
+					break;
+				default:
+					printf("ici\n");
+					break;
+			}
+			isWaiting = false;
 			i++;
 		}
 	}
