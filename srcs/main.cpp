@@ -74,7 +74,7 @@ void run(t_created_puzzle *created_puzzle, t_algo algo, t_heuristic *heuristic_l
 	puzzle_t *goal = puzzle_new(*goal_state.state);
 
 	print_state("puzzle", *created_puzzle->state);
-	printf("size = %d\n", state.size);
+	printf("size = %d\n", created_puzzle->state->size);
 	//	// for(int k = 0; k < tab_size; ++k)
  //    	printf("heuristic : %d\n", heuristic_list[k]);
 	if (c_is_solvable(puzzle, goal))
@@ -121,7 +121,7 @@ void do_all(char *filename, int random, t_algo avalue, t_heuristic *hvalue, int 
 
 void	print_usage(const char *error)
 {
-	printf("Error : %s\n\n", error);
+	printf("%s\n\n", error);
 	printf("usage: ./npuzzle -a [ALGO] -h [HEURISTIC] -r [VALUE BETWEEN 2 AND 15] filename\n");
 	printf("ALGO : UniformCost || AStar || Greedy\n");
 	printf("HEURISTIC : manathan,chebyshev,euclidienne,octile,hamming,linear_conflict\n");
@@ -156,17 +156,17 @@ int		check_heuristic(int heuristic, char *arg)
 {
 
 	if (!strcmp(arg, "chebyshev"))
-		return (heuristic |= C);
+		return (heuristic |= 1 << C);
 	else if (!strcmp(arg, "euclidienne"))
-		return (heuristic |= E);
+		return (heuristic |= 1 << E);
 	else if (!strcmp(arg, "hamming"))
-		return (heuristic |= H);
+		return (heuristic |= 1 << H);
 	else if (!strcmp(arg, "linear_conflict"))
-		return (heuristic |= L);
+		return (heuristic |= 1 << L);
 	else if (!strcmp(arg, "manathan"))
-		return (heuristic |= M);
+		return (heuristic |= 1 << M);
 	else if (!strcmp(arg, "octile"))
-		return (heuristic |= O);
+		return (heuristic |= 1 << O);
 	else
 		print_usage("Invalid Heuristic");
 
@@ -175,12 +175,22 @@ int		check_heuristic(int heuristic, char *arg)
 
 t_algo	check_algo(char *arg)
 {
+	printf("Algo : ");
 	if (!strcmp("UniformCost", arg))
+	{
+		printf("UniformCost\n");
 		return(UniformCost);
+	}
 	else if (!strcmp("Greedy", arg))
+	{
+		printf("Greedy\n");
 		return(Greedy);
+	}
 	else if (strcmp("AStar", arg))
+	{
 		print_usage("Algo value error");
+	}
+	printf("AStar\n");
 	return (AStar);
 }
 
@@ -199,38 +209,44 @@ void	set_heuristic(int heuristic, t_heuristic *heuristic_list)
 	int	j;
 
 	j = 0;
-	printf("Heuristiques: ")
-	if ((heuristic >> 0) & 1)
-	{
-		heuristic_list[j] = manathan;
-		j++;
-	}
-	if ((heuristic >> 1) & 1)
+	printf("Heuristiques: ");
+	if ((heuristic >> C) & 1)
 	{
 		heuristic_list[j] = chebyshev;
+		printf("chebyshev ");
 		j++;
 	}
-	if ((heuristic >> 2) & 1)
+	if ((heuristic >> E) & 1)
 	{
 		heuristic_list[j] = euclidienne;
+		printf("euclidienne ");
 		j++;
 	}
-	if ((heuristic >> 3) & 1)
-	{
-		heuristic_list[j] = octile;
-		j++;
-	}
-	if ((heuristic >> 4) & 1)
+	if ((heuristic >> H) & 1)
 	{
 		heuristic_list[j] = hamming;
+		printf("hamming ");
 		j++;
 	}
-	if ((heuristic >> 5) & 1)
+	if ((heuristic >> L) & 1)
 	{
 		heuristic_list[j] = linear_conflict;
+		printf("linear_conflict ");
 		j++;
 	}
-
+	if ((heuristic >> M) & 1)
+	{
+		heuristic_list[j] = manathan;
+		printf("manathan ");
+		j++;
+	}
+	if ((heuristic >> O) & 1)
+	{
+		heuristic_list[j] = octile;
+		printf("octile ");		
+		j++;
+	}
+	printf("\n");
 }
 
 void	check_arguments(t_option option, char *arg, int *randomValue, t_algo *algoValue, int *heuristic)
@@ -272,6 +288,8 @@ int 	main(int argc, char **argv) {
 	{
 		if (!isWaiting)
 		{
+			if(!strcmp(argv[i], "--help"))
+				print_usage("");
 			if(!strcmp(argv[i], "-a"))
 				option = AOPTION;
 			else if(!strcmp(argv[i], "-h"))
@@ -312,124 +330,3 @@ int 	main(int argc, char **argv) {
     do_all(filename, randomValue, algoValue, heuristic_list, tab_size);
 	return (0);
 }
-
-// int i;
-
-// i = 0
-// while (i < 6)
-// {
-// if option >> i(0-5) & 1
-// taille_tableau++
-// }
-
-
-
-
-// int main(int argc, char **argv) {
-// 	char	*filename;
-// 	char	*avalue;
-// 	char	*hvalue = NULL;
-// 	char	*heur[6];
-// 	const char	*heuristic[6] = { "manathan", "chebyshev", "euclidienne",
-//     						"octile", "hamming", "linear_conflict"};
-// 	int		rvalue = 0;
-// 	int		arglen;
-// 	int		index;
-// 	int		i;
-// 	int		c;
-	
-// 	opterr = 0;
-// 	i = 0;
-
-// 	if (argc == 1)
-// 	{
-// 		printf("usage: ./npuzzle -a [ALGO] -h [HEURISTIC] -r [VALUE BETWEEN 2 AND 15] filename\n");
-// 		exit(0);
-// 	}
-// 	while ((c = getopt (argc, argv, "a:h:r:")) != -1)
-// 	  	switch (c)
-// 	    {
-// 		  case 'a':
-// 	        if (strcmp("UniformCost", optarg) != 0 && strcmp("AStar", optarg) != 0 &&
-// 				strcmp("Greedy", optarg) != 0)
-// 	        {
-// 	        	printf("Algo value error.\n");
-// 	        	exit(1);
-// 	        }
-// 			else
-// 	        	avalue = optarg;
-// 	        break;
-// 	      case 'h':
-// 	        optind--;
-// 			for( ;optind < argc && *argv[optind] != '-' && i++ < 5; optind++)
-// 				if (strcmp("manathan", optarg) == 0 || strcmp("chebyshev", optarg) == 0 ||
-// 				strcmp("euclidienne", optarg) == 0 || strcmp("octile", optarg) == 0 ||
-// 				strcmp("hamming", optarg) == 0 || strcmp("linear_conflict", optarg) == 0)
-// 				{
-// 					arglen = strlen(optarg) + 1;               
-// 			    	heur[i] = (char*)malloc(arglen * sizeof(char));
-// 			    	strcpy(heur[i], optarg);
-// 					printf("HEUR : %s\n", heur[i]);
-// 					optarg++;
-// 				}
-// 				else
-// 				{
-// 					printf("ERROR HEURISTIC\n");
-// 					exit(0);
-// 				}
-// 	        // 
-// 	        // {
-// 			// 	// if (argv[optind])
-// 			// 	hvalue[i] = argv[optind]; 
-// 			// }
-// 	        break;
-// 	      case 'r':
-// 	        rvalue = atoi(optarg);
-// 	        // if (rvalue < 2 || rvalue > 15)
-// 	        // {
-// 	        // 	printf("random value error.\n");
-// 	        // 	exit(1);
-// 	        // }
-// 	        break;
-// 	      case '?':
-// 	      	if (optopt == 'a' || optopt == 'h' || optopt == 'r')
-//           		fprintf (stderr, "Option -%c requires an argument.\n", optopt);
-//         	else if (isprint (optopt))
-//           		fprintf (stderr, "Unknown option `-%c'.\n", optopt);
-//         	else
-//           		fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
-// 	        return 1;
-// 	      default:
-// 	        abort ();
-// 	      }
-// 		(void)heuristic;
-// 		printf ("FIRST TIME : aflag = %s, hflag = %s, rvalue = %d\n", avalue, hvalue, rvalue);		
-// 		if (avalue == '\0')
-// 			avalue = (char *)"AStar";
-// 		if (hvalue == '\0')
-// 			hvalue = (char*)"manathan";
-// 		printf ("aflag = %s, hflag = %s, rvalue = %d\n", avalue, hvalue, rvalue);
-// 		// for (index = optind; index < argc; index++)
-//     	// 	printf ("Non-option argument %s\n", argv[index]);
-// 		index = optind;
-// 		if (index == argc - 1)
-// 			printf("PAS DE NOM DE FICHIER\n");
-// 		else index++;
-// 		filename = argv[index];
-// 		printf("%s\n", filename);
-// 		if (filename)
-// 			do_all(filename, 0, avalue, hvalue);
-// 		else
-		
-
-// 	// if (argc == 2) {
-// 	// 	do_all(argv[1]);
-// 	// 	while (1);
-// 	// }
-// 	// else
-// 	// {
-// 	// 	//Generate random Puzzle
-// 	// }
-// 	return (0);
-// }
-

@@ -21,12 +21,12 @@
 # include <unistd.h>
 # include <string>
 
-# define C (1 << 0)
-# define E (1 << 1)
-# define H (1 << 2)
-# define L (1 << 3)
-# define M (1 << 4)
-# define O (1 << 5)
+# define C 0
+# define E 1
+# define H 2
+# define L 3
+# define M 4
+# define O 5
 
 typedef struct	s_vector {
 	void			*values;
@@ -49,12 +49,12 @@ typedef enum e_move {
 }			t_move;
 
 typedef enum e_heuristic {
-	manathan,
     chebyshev,
     euclidienne,
-    octile,
     hamming,
     linear_conflict,
+	manathan,
+    octile,
 }			t_heuristic;
 
 typedef struct	s_created_puzzle {
