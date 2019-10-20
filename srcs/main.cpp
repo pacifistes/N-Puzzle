@@ -92,6 +92,7 @@ void run(t_created_puzzle *created_puzzle, t_algo algo, t_heuristic *heuristic_l
 	else
 	{
 		printf("the puzzle is not solvable\n");
+		print_state("Not solvable", *created_puzzle->state);
 	}
 	created_puzzle->state->values = NULL;
 	goal_state.state->values = NULL;
