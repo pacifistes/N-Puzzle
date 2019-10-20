@@ -66,7 +66,7 @@ void print_info(t_resolver_info *info)
 	printf("Total state represented : %d\n", info->total_state_represented);
 }
 
-void run(t_created_puzzle *created_puzzle, t_algo algo, t_heuristic *heuristic_list) {
+void run(t_created_puzzle *created_puzzle, t_algo algo, t_heuristic *heuristic_list, int size) {
 	// printf("rvalue : %d\n", rvalue);
 	// printf("avalue : %s\n", avalue);
 	// printf("hvalue : %s\n", hvalue);
@@ -100,7 +100,7 @@ void run(t_created_puzzle *created_puzzle, t_algo algo, t_heuristic *heuristic_l
 	created_puzzle_free(goal_state);
 }
 
-void do_all(char *filename, int random, t_algo avalue, t_heuristic *hvalue)
+void do_all(char *filename, int random, t_algo avalue, t_heuristic *hvalue, int size)
 {
 	t_created_puzzle created_puzzle;
 	if (filename)
@@ -111,7 +111,7 @@ void do_all(char *filename, int random, t_algo avalue, t_heuristic *hvalue)
 		printf("Error : %s\n", created_puzzle.error);
 	else
 	{
-		run(&created_puzzle, avalue, hvalue);
+		run(&created_puzzle, avalue, hvalue, size);
 	}
 	created_puzzle_free(created_puzzle);
 }
@@ -306,7 +306,7 @@ int 	main(int argc, char **argv) {
     set_heuristic(heuristic, heuristic_list);
 	// for(int k = 0; k < tab_size; ++k)
  //    	printf("heuristic : %d\n", heuristic_list[k]);
-    do_all(filename, randomValue, algoValue, heuristic_list);
+    do_all(filename, randomValue, algoValue, heuristic_list, tab_size);
 	return (0);
 }
 
