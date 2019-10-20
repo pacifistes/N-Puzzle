@@ -6,7 +6,7 @@
 /*   By: bbrunell <bbrunell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 17:24:21 by bbrunell          #+#    #+#             */
-/*   Updated: 2019/10/15 17:55:03 by hmoussa          ###   ########.fr       */
+/*   Updated: 2019/10/20 20:17:51 by bbrunell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ typedef enum e_option {
 
 void print_state(std::string str, t_vector state)
 {
-    printf("%s\n", str.c_str());
-	printf("size = %d\n", state.size);
+	printf("%s\n", str.c_str());
 	for (uint32_t i=0; i < state.size; i++) {
 		if (i != 0 && i % (int(sqrt(state.size))) == 0)
 			printf("\n");
@@ -74,6 +73,10 @@ void run(t_created_puzzle *created_puzzle, t_algo algo, t_heuristic *heuristic_l
 	t_created_puzzle goal_state = c_generate_sorted_state((uint32_t) sqrt(created_puzzle->state->size));
 	puzzle_t *goal = puzzle_new(*goal_state.state);
 
+	print_state("puzzle", *created_puzzle->state);
+	printf("size = %d\n", state.size);
+	//	// for(int k = 0; k < tab_size; ++k)
+ //    	printf("heuristic : %d\n", heuristic_list[k]);
 	if (c_is_solvable(puzzle, goal))
 	{
 		resolver_t *resolver = resolver_new(puzzle, goal);
@@ -92,7 +95,6 @@ void run(t_created_puzzle *created_puzzle, t_algo algo, t_heuristic *heuristic_l
 	else
 	{
 		printf("the puzzle is not solvable\n");
-		print_state("Not solvable", *created_puzzle->state);
 	}
 	created_puzzle->state->values = NULL;
 	goal_state.state->values = NULL;
@@ -197,6 +199,7 @@ void	set_heuristic(int heuristic, t_heuristic *heuristic_list)
 	int	j;
 
 	j = 0;
+	printf("Heuristiques: ")
 	if ((heuristic >> 0) & 1)
 	{
 		heuristic_list[j] = manathan;
@@ -305,8 +308,7 @@ int 	main(int argc, char **argv) {
 	}
 	t_heuristic* heuristic_list = new t_heuristic[tab_size];
     set_heuristic(heuristic, heuristic_list);
-	// for(int k = 0; k < tab_size; ++k)
- //    	printf("heuristic : %d\n", heuristic_list[k]);
+
     do_all(filename, randomValue, algoValue, heuristic_list, tab_size);
 	return (0);
 }
