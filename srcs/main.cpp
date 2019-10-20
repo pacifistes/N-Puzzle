@@ -125,7 +125,7 @@ void	print_usage(const char *error)
 	exit(1);
 }
 
-// int		check_arguments(char *arg)
+// int		check_options(char *arg)
 // {
 // 	int	option;
 
@@ -229,6 +229,23 @@ void	set_heuristic(int heuristic, t_heuristic *heuristic_list)
 
 }
 
+void	check_arguments(t_option option, char *arg, int *randomValue, t_algo *algoValue, int *heuristic)
+{
+	switch (option)
+	{
+		case HOPTION:
+			*heuristic = check_heuristic(*heuristic, arg);
+			break;
+		case AOPTION:
+			*algoValue = check_algo(arg);
+			break;
+		case ROPTION:
+			*randomValue = check_random_value(arg);
+			break;
+		default:
+			break;
+	}
+}
 
 int 	main(int argc, char **argv) {
 	int			i;
@@ -271,20 +288,8 @@ int 	main(int argc, char **argv) {
 		}
 		else
 		{
-			switch (option)
-			{
-				case HOPTION:
-					heuristic = check_heuristic(heuristic, argv[i]);
-					break;
-				case AOPTION:
-					algoValue = check_algo(argv[i]);
-					break;
-				case ROPTION:
-					randomValue = check_random_value(argv[i]);
-					break;
-				default:
-					break;
-			}
+			check_arguments(option, argv[i], &randomValue, &algoValue, &heuristic);
+			// printf ("FIRST TIME : aflag = %d, hflag = %x, rvalue = %d\n", algoValue, heuristic, randomValue);
 			isWaiting = false;
 		}
 		i++;
@@ -297,7 +302,6 @@ int 	main(int argc, char **argv) {
 			tab_size++;
 		j++;
 	}
-
 	t_heuristic* heuristic_list = new t_heuristic[tab_size];
     set_heuristic(heuristic, heuristic_list);
 	// for(int k = 0; k < tab_size; ++k)

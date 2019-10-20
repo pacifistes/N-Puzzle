@@ -21,6 +21,13 @@
 # include <unistd.h>
 # include <string>
 
+# define C (1 << 0)
+# define E (1 << 1)
+# define H (1 << 2)
+# define L (1 << 3)
+# define M (1 << 4)
+# define O (1 << 5)
+
 typedef struct	s_vector {
 	void			*values;
 	uint32_t		size;
