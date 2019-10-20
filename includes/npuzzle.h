@@ -33,6 +33,11 @@ typedef struct	s_vector {
 	uint32_t		size;
 }				t_vector;
 
+typedef enum e_option {
+	HOPTION,
+	AOPTION,
+	ROPTION
+	} t_option;
 
 typedef enum e_algo {
     UniformCost,
@@ -94,5 +99,14 @@ extern "C" int8_t c_is_solvable(puzzle_t *puzzle, puzzle_t *goal);
 extern "C" void resolver_free(resolver_t *resolver);
 extern "C" void puzzle_free(puzzle_t *puzzle);
 extern "C" void resolve_info_free(t_resolver_info *info);
+void	print_state(std::string str, t_vector state);
+void	print_move(t_move move);
+void	print_info(t_resolver_info *info);
+void	print_usage(const char *error);
+int		check_heuristic(int heuristic, char *arg);
+t_algo	check_algo(char *arg);
+int		check_random_value(char* arg);
+void	set_heuristic(int heuristic, t_heuristic *heuristic_list);
+void	check_arguments(t_option option, char *arg, int *randomValue, t_algo *algoValue, int *heuristic);
 
 #endif

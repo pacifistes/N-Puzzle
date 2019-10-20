@@ -4,7 +4,9 @@ SRCS_PATH = srcs/
 HEADERS = npuzzle.h
 INCLUDES = includes/
 
-SRCS = main.cpp
+SRCS = main.cpp \
+	print.cpp \
+	check.cpp
 RUST_RESOLVER_SRCS = generate.rs \
 			heuristic.rs \
 			parser.rs \
