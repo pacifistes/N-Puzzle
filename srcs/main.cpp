@@ -328,5 +328,6 @@ int 	main(int argc, char **argv) {
     set_heuristic(heuristic, heuristic_list);
 
     do_all(filename, randomValue, algoValue, heuristic_list, tab_size);
+	delete[] heuristic_list;
 	return (0);
 }
