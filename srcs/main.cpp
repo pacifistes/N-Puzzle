@@ -74,6 +74,7 @@ int 	main(int argc, char **argv) {
 	tab_size = 0;
 	heuristic = 0;
 	randomValue = 3;
+	algoValue = AStar;
 	isWaiting = false;
 	while (i < argc)
 	{
@@ -108,6 +109,8 @@ int 	main(int argc, char **argv) {
 	}
 	if (isWaiting == true)
 		print_usage("missing argument");
+	if (heuristic == 0)
+		heuristic = (1 << M) + (1 << H);	
 	while (j < 6)
 	{
 		if ((heuristic >> j) & 1)
