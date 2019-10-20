@@ -66,10 +66,10 @@ void print_info(t_resolver_info *info)
 	printf("Total state represented : %d\n", info->total_state_represented);
 }
 
-void run(t_created_puzzle *created_puzzle, int rvalue, char *avalue, char *hvalue) {
-	printf("rvalue : %d\n", rvalue);
-	printf("avalue : %s\n", avalue);
-	printf("hvalue : %s\n", hvalue);
+void run(t_created_puzzle *created_puzzle, t_algo algo, t_heuristic *heuristic_list) {
+	// printf("rvalue : %d\n", rvalue);
+	// printf("avalue : %s\n", avalue);
+	// printf("hvalue : %s\n", hvalue);
 	puzzle_t *puzzle = puzzle_new(*created_puzzle->state);
 	t_created_puzzle goal_state = c_generate_sorted_state((uint32_t) sqrt(created_puzzle->state->size));
 	puzzle_t *goal = puzzle_new(*goal_state.state);
@@ -79,10 +79,10 @@ void run(t_created_puzzle *created_puzzle, int rvalue, char *avalue, char *hvalu
 		resolver_t *resolver = resolver_new(puzzle, goal);
 		printf("the puzzle solvable\n");
 
-		t_heuristic heuristics[] = {manathan, hamming};
-		size_t size = sizeof heuristics / sizeof *heuristics;
-		c_set_heuristics(resolver, heuristics, size);
-		t_algo algo = Greedy;
+		// t_heuristic heuristics[] = {manathan, hamming};
+		// size_t size = sizeof heuristics / sizeof *heuristics;
+		c_set_heuristics(resolver, heuristic_list, size);
+		// t_algo algo = Greedy;
 		c_set_algo(resolver, algo);
 		t_resolver_info *info = c_resolve(resolver);
 		print_info(info);
@@ -100,7 +100,7 @@ void run(t_created_puzzle *created_puzzle, int rvalue, char *avalue, char *hvalu
 	created_puzzle_free(goal_state);
 }
 
-void do_all(char *filename, int random, char *avalue, char *hvalue)
+void do_all(char *filename, int random, t_algo avalue, t_heuristic *hvalue)
 {
 	t_created_puzzle created_puzzle;
 	if (filename)
@@ -111,7 +111,7 @@ void do_all(char *filename, int random, char *avalue, char *hvalue)
 		printf("Error : %s\n", created_puzzle.error);
 	else
 	{
-		run(&created_puzzle, random, avalue, hvalue);
+		run(&created_puzzle, avalue, hvalue);
 	}
 	created_puzzle_free(created_puzzle);
 }
@@ -306,7 +306,7 @@ int 	main(int argc, char **argv) {
     set_heuristic(heuristic, heuristic_list);
 	// for(int k = 0; k < tab_size; ++k)
  //    	printf("heuristic : %d\n", heuristic_list[k]);
-    // do_all()
+    do_all(filename, randomValue, algoValue, heuristic_list);
 	return (0);
 }
 
