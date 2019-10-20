@@ -17,6 +17,13 @@ void run(t_created_puzzle *created_puzzle, t_algo algo, t_heuristic *heuristic_l
 	t_created_puzzle goal_state = c_generate_sorted_state((uint32_t) sqrt(created_puzzle->state->size));
 	puzzle_t *goal = puzzle_new(*goal_state.state);
 
+	printf("Algo : ");
+	if (algo == UniformCost)
+		printf("UniformCost\n");
+	else if (algo == Greedy)
+		printf("Greedy\n");
+	else
+		printf("AStar\n");
 	print_state("puzzle", *created_puzzle->state);
 	printf("size = %d\n", created_puzzle->state->size);
 	if (c_is_solvable(puzzle, goal))

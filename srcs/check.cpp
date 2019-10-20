@@ -23,22 +23,12 @@ int		check_heuristic(int heuristic, char *arg)
 
 t_algo	check_algo(char *arg)
 {
-	printf("Algo : ");
 	if (!strcmp("UniformCost", arg))
-	{
-		printf("UniformCost\n");
 		return(UniformCost);
-	}
 	else if (!strcmp("Greedy", arg))
-	{
-		printf("Greedy\n");
 		return(Greedy);
-	}
 	else if (strcmp("AStar", arg))
-	{
 		print_usage("Algo value error");
-	}
-	printf("AStar\n");
 	return (AStar);
 }
 
