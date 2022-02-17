@@ -4,7 +4,9 @@ SRCS_PATH = srcs/
 HEADERS = npuzzle.h
 INCLUDES = includes/
 
-SRCS = main.cpp
+SRCS = main.cpp \
+	print.cpp \
+	check.cpp
 RUST_RESOLVER_SRCS = generate.rs \
 			heuristic.rs \
 			parser.rs \
@@ -27,7 +29,7 @@ RUST_BINDING_SRC = $(addprefix $(RUST_PATH_BINDING_SRCS), $(RUST_BINDING_SRCS))
 SRC = $(addprefix $(SRCS_PATH), $(SRCS))
 HEADER = $(addprefix $(INCLUDES), $(HEADERS))
 
-WFLAGS = -g -Wall -Werror -Wextra #-fsanitize=address
+WFLAGS = -g -Wall -Werror -Wextra
 
 
 ifeq ($(OS),Windows_NT)

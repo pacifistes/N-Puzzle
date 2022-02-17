@@ -8,7 +8,7 @@ mod tests {
     fn function_r_is_solvable() {
         //Solvable and size = 2
         let size: u8 = u8::from(2);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![2, 0, 1, 3];
@@ -93,7 +93,7 @@ mod tests {
         assert_eq!(true, puzzle.r_is_solvable(&goal));
         //Solvable and size = 3
         let size: u8 = u8::from(3);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![4, 7, 3, 8, 0, 5, 6, 2, 1];
@@ -178,7 +178,7 @@ mod tests {
         assert_eq!(true, puzzle.r_is_solvable(&goal));
         //Solvable and size = 4
         let size: u8 = u8::from(4);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![10, 7, 6, 11, 13, 12, 4, 3, 1, 14, 8, 2, 9, 5, 0, 15];
@@ -263,7 +263,7 @@ mod tests {
         assert_eq!(true, puzzle.r_is_solvable(&goal));
         //Solvable and size = 5
         let size: u8 = u8::from(5);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -408,7 +408,7 @@ mod tests {
         assert_eq!(true, puzzle.r_is_solvable(&goal));
         //Solvable and size = 6
         let size: u8 = u8::from(6);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -553,7 +553,7 @@ mod tests {
         assert_eq!(true, puzzle.r_is_solvable(&goal));
         //Solvable and size = 7
         let size: u8 = u8::from(7);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -718,7 +718,7 @@ mod tests {
         assert_eq!(true, puzzle.r_is_solvable(&goal));
         //Solvable and size = 8
         let size: u8 = u8::from(8);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -883,7 +883,7 @@ mod tests {
         assert_eq!(true, puzzle.r_is_solvable(&goal));
         //Solvable and size = 9
         let size: u8 = u8::from(9);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -1068,7 +1068,7 @@ mod tests {
         assert_eq!(true, puzzle.r_is_solvable(&goal));
         //Solvable and size = 10
         let size: u8 = u8::from(10);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -1273,7 +1273,7 @@ mod tests {
         assert_eq!(true, puzzle.r_is_solvable(&goal));
         //Unolvable and size = 2
         let size: u8 = u8::from(2);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![1, 3, 0, 2];
@@ -1358,7 +1358,7 @@ mod tests {
         assert_eq!(false, puzzle.r_is_solvable(&goal));
         //Unolvable and size = 3
         let size: u8 = u8::from(3);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![5, 3, 4, 7, 0, 8, 1, 2, 6];
@@ -1443,7 +1443,7 @@ mod tests {
         assert_eq!(false, puzzle.r_is_solvable(&goal));
         //Unolvable and size = 4
         let size: u8 = u8::from(4);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![10, 7, 5, 8, 12, 9, 4, 13, 6, 14, 3, 2, 15, 11, 0, 1];
@@ -1528,7 +1528,7 @@ mod tests {
         assert_eq!(false, puzzle.r_is_solvable(&goal));
         //Unolvable and size = 5
         let size: u8 = u8::from(5);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -1673,7 +1673,7 @@ mod tests {
         assert_eq!(false, puzzle.r_is_solvable(&goal));
         //Unolvable and size = 6
         let size: u8 = u8::from(6);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -1818,7 +1818,7 @@ mod tests {
         assert_eq!(false, puzzle.r_is_solvable(&goal));
         //Unolvable and size = 7
         let size: u8 = u8::from(7);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -1983,7 +1983,7 @@ mod tests {
         assert_eq!(false, puzzle.r_is_solvable(&goal));
         //Unolvable and size = 8
         let size: u8 = u8::from(8);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -2148,7 +2148,7 @@ mod tests {
         assert_eq!(false, puzzle.r_is_solvable(&goal));
         //Unolvable and size = 9
         let size: u8 = u8::from(9);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
@@ -2333,7 +2333,7 @@ mod tests {
         assert_eq!(false, puzzle.r_is_solvable(&goal));
         //Unolvable and size = 10
         let size: u8 = u8::from(10);
-        let goal_state = r_generate_sorted_state(size);
+        let goal_state = r_generate_sorted_state(size as u32).unwrap();
 		let goal_state_index = r_generate_state_index(&goal_state);
 		let goal: Puzzle = Puzzle::new(goal_state, goal_state_index, size, 0, Move::NONE);
         let vector: Vec<u8> = vec![
